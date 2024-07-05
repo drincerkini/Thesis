@@ -1,0 +1,422 @@
+# Visual Studio files
+.vs/
+
+# Rider files
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# NuGet packages
+*.nuget.props
+*.nuget.targets
+project.lock.json
+packages/
+*.nupkg
+*.paket.restore.log
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio Code directories
+.vscode/
+
+# Rider directories
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# .NET Core
+project.lock.json
+.projectname.userprefs
+
+# Rider
+.idea/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Visual Studio Code
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Resharper
+_ReSharper*/
+
+# GhostDoc
+[Gg]host[Gg]oc[Gg]ontent/
+
+# TeamCity
+_TeamCity*
+
+# DotCover
+*.dotCover
+
+# JustCode
+.JustCode
+
+# AxoCover
+.axoCover*/
+
+# Coverlet
+coverage*/
+
+# OpenCover
+OpenCover*/
+*.opencover.xml
+
+# Reports
+*.sreport
+*.info
+
+# Xamarin
+*.apk
+*.ap_
+*.aab
+*.dll
+*.so
+*.pdb
+*.dSYM/
+*.ipa
+*.xcarchive
+*.msym/
+
+# Gradle
+.gradle/
+.build/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Visual Studio Code directories
+.vscode/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Visual Studio Code
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Resharper
+_ReSharper*/
+
+# GhostDoc
+[Gg]host[Gg]oc[Gg]ontent/
+
+# TeamCity
+_TeamCity*
+
+# DotCover
+*.dotCover
+
+# JustCode
+.JustCode
+
+# AxoCover
+.axoCover*/
+
+# Coverlet
+coverage*/
+
+# OpenCover
+OpenCover*/
+*.opencover.xml
+
+# Reports
+*.sreport
+*.info
+
+# Xamarin
+*.apk
+*.ap_
+*.aab
+*.dll
+*.so
+*.pdb
+*.dSYM/
+*.ipa
+*.xcarchive
+*.msym/
+
+# Gradle
+.gradle/
+.build/
+
+# Local history
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+
+# Command-line compilation output
+bin/
+obj/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# .NET Core
+project.lock.json
+.projectname.userprefs
+
+# Rider
+.idea/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Visual Studio Code
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Resharper
+_ReSharper*/
+
+# GhostDoc
+[Gg]host[Gg]oc[Gg]ontent/
+
+# TeamCity
+_TeamCity*
+
+# DotCover
+*.dotCover
+
+# JustCode
+.JustCode
+
+# AxoCover
+.axoCover*/
+
+# Coverlet
+coverage*/
+
+# OpenCover
+OpenCover*/
+*.opencover.xml
+
+# Reports
+*.sreport
+*.info
+
+# Xamarin
+*.apk
+*.ap_
+*.aab
+*.dll
+*.so
+*.pdb
+*.dSYM/
+*.ipa
+*.xcarchive
+*.msym/
+
+# Gradle
+.gradle/
+.build/
+
+# Local history
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+
+# Command-line compilation output
+bin/
+obj/
+
+# Visual Studio Code directories
+.vscode/
+
+# Rider directories
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# .NET Core
+project.lock.json
+.projectname.userprefs
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Visual Studio Code
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Resharper
+_ReSharper*/
+
+# GhostDoc
+[Gg]host[Gg]oc[Gg]ontent/
+
+# TeamCity
+_TeamCity*
+
+# DotCover
+*.dotCover
+
+# JustCode
+.JustCode
+
+# AxoCover
+.axoCover*/
+
+# Coverlet
+coverage*/
+
+# OpenCover
+OpenCover*/
+*.opencover.xml
+
+# Reports
+*.sreport
+*.info
+
+# Xamarin
+*.apk
+*.ap_
+*.aab
+*.dll
+*.so
+*.pdb
+*.dSYM/
+*.ipa
+*.xcarchive
+*.msym/
+
+# Gradle
+.gradle/
+.build/
+
+# Local history
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+
+# Command-line compilation output
+bin/
+obj/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+.Trashes
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+.DS_Store
+
+# Directories potentially created on remote AFP share
+.AppleDB/
+.AppleDesktop/
+Network Trash Folder/
+Temporary Items/
+.apdisk/
