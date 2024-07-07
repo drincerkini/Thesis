@@ -1,14 +1,23 @@
-import axios from "axios";
+import axiosInstance from "../helpers/axiosInstance";
 import { IStudent } from "../interfaces/IStudent";
-
-const API_BASE_URL = "https://localhost:7098/api/Students";
+import { createStudentDto } from "../dtos/studentDtos/createStudentDto";
 
 export const fetchStudents = async (): Promise<IStudent[]> => {
   try {
-    const response = await axios.get<IStudent[]>(API_BASE_URL);
+    const response = await axiosInstance.get<IStudent[]>("/students");
     return response.data;
   } catch (error) {
-    console.error("Erro fetsching departmets: ", error);
+    console.error("Error fetching students:", error);
+    throw error;
+  }
+};
+
+export const createStudent = async (student: createStudentDto) => {
+  try {
+    const response = await axiosInstance.post("/students", student);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating student:", error);
     throw error;
   }
 };

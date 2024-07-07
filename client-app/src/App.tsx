@@ -3,18 +3,25 @@ import { Department } from "./components/Department";
 import { Student } from "./components/Student";
 import { Home } from "./components/Home";
 import { CreateDepartment } from "./components/CreateDepartment";
+import Layout from "./components/Layout";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import { CreateStudent } from "./components/CreateStudent";
 
 function App() {
   return (
     <Router>
-      <div>
+      <Layout>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/department" element={<Department />} />
           <Route path="/student" element={<Student />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/create-student" element={<CreateStudent />} />
           <Route path="/create-department" element={<CreateDepartment />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
-      </div>
+      </Layout>
     </Router>
   );
 }
