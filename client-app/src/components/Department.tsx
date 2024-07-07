@@ -1,12 +1,12 @@
 // src/components/Department.tsx
 
 import { useEffect, useState } from "react";
-import { IDepartment } from "../interfaces/IDepartment";
 import { fetchDepartments } from "../services/DepartmentService";
 import { Link } from "react-router-dom";
+import { DepartmentDto } from "../dtos/departmentDtos/departmentDto";
 
 export const Department = () => {
-  const [departments, setDepartments] = useState<IDepartment[]>([]);
+  const [departments, setDepartments] = useState<DepartmentDto[]>([]);
 
   useEffect(() => {
     const fetchAndSetDepartments = async () => {

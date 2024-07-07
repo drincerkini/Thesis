@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createStudent } from "../services/StudentService";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchDepartments } from "../services/DepartmentService";
 import { createStudentDto } from "../dtos/studentDtos/createStudentDto";
@@ -51,9 +51,8 @@ export const CreateStudent: React.FC = () => {
       setLoading(false);
 
       // Navigate back to student list page after a short delay to show the toast message
-      setTimeout(() => {
-        navigate("/students");
-      }, 2000);
+
+      navigate("/student");
     } catch (error) {
       setError("Failed to create student");
       toast.error("Failed to create student");
@@ -145,7 +144,6 @@ export const CreateStudent: React.FC = () => {
       </form>
       {loading && <p className="text-blue-500 mt-4">Loading...</p>}
       {error && <p className="text-red-500 mt-4">{error}</p>}
-      <ToastContainer />
     </div>
   );
 };

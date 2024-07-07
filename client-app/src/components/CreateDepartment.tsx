@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createDepartment } from "../services/DepartmentService";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const CreateDepartment = () => {
@@ -23,9 +23,7 @@ export const CreateDepartment = () => {
 
       setLoading(false);
 
-      setTimeout(() => {
-        navigate("/department");
-      }, 2000);
+      navigate("/department");
     } catch (error) {
       setError("Failed to create department");
       toast.error("Failed to create department");
@@ -77,7 +75,6 @@ export const CreateDepartment = () => {
         {loading && <p className="text-blue-500 mt-4">Loading...</p>}
         {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
-      <ToastContainer />
     </>
   );
 };

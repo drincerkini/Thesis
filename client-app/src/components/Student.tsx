@@ -1,12 +1,12 @@
 // src/components/Student.tsx
 
 import { useEffect, useState } from "react";
-import { IStudent } from "../interfaces/IStudent";
 import { fetchStudents } from "../services/StudentService";
 import { Link } from "react-router-dom";
+import { StudentDto } from "../dtos/studentDtos/studentDto";
 
 export const Student = () => {
-  const [students, setStudents] = useState<IStudent[]>([]);
+  const [students, setStudents] = useState<StudentDto[]>([]);
 
   useEffect(() => {
     const fetchAndSetStudents = async () => {

@@ -1,13 +1,13 @@
 import axios from "axios";
-import { IDepartment } from "../interfaces/IDepartment";
 import { createDepartmentDto } from "../dtos/departmentDtos/createDepartmentDto";
 import axiosInstance from "../helpers/axiosInstance";
+import { DepartmentDto } from "../dtos/departmentDtos/departmentDto";
 
 const API_BASE_URL = "https://localhost:7098/api/Departments";
 
-export const fetchDepartments = async (): Promise<IDepartment[]> => {
+export const fetchDepartments = async (): Promise<DepartmentDto[]> => {
   try {
-    const response = await axios.get<IDepartment[]>(API_BASE_URL);
+    const response = await axios.get<DepartmentDto[]>(API_BASE_URL);
     return response.data;
   } catch (error) {
     console.error("Erro fetsching departmets: ", error);
