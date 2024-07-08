@@ -9,6 +9,7 @@ import { CreateStudent } from "./components/student/CreateStudent";
 import { ToastContainer } from "react-toastify";
 import DepartmentDetails from "./components/department/DepartmentDetails";
 import { CreateDepartment } from "./components/department/CreateDepartment";
+import StudentDetails from "./components/student/StudentDetails";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/create-student" element={<CreateStudent />} />
           <Route path="/create-department" element={<CreateDepartment />} />
           <Route path="/department/:id" element={<DepartmentDetails />} />
+          <Route path="/student/:id" element={<StudentDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

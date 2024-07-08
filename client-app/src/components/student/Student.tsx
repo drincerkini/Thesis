@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { fetchStudents } from "../../services/StudentService";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchStudents } from "../../services/StudentService";
 import { StudentDto } from "../../dtos/studentDtos/studentDto";
-import LoadingSpinner from "../LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "../LoadingSpinner";
+import { deleteStudent } from "../../services/StudentService";
 
 export const Student = () => {
   const [students, setStudents] = useState<StudentDto[]>([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAndSetStudents = async () => {
@@ -15,18 +17,33 @@ export const Student = () => {
         setStudents(data);
       } catch (error) {
         console.error("Error fetching students:", error);
+        setError("Error fetching students");
       } finally {
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
       }
     };
 
     fetchAndSetStudents();
   }, []);
 
+  const handleDelete = async (id: number) => {
+    if (window.confirm("Are you sure you want to delete this student?")) {
+      setLoading(true);
+      try {
+        await deleteStudent(id);
+        setStudents(students.filter((student) => student.id !== id));
+      } catch (error) {
+        console.error("Error deleting student:", error);
+        setError("Failed to delete student");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <>
-      {loading && <LoadingSpinner />}{" "}
-      {/* Conditionally render the LoadingSpinner */}
+      {loading && <LoadingSpinner />}
       <div className={`container mx-auto py-8 ${loading ? "opacity-50" : ""}`}>
         <div className="mb-4 flex justify-between items-center">
           <h1 className="text-3xl font-bold">Students List</h1>
@@ -38,6 +55,7 @@ export const Student = () => {
           </Link>
         </div>
         <hr className="mb-4" />
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="overflow-x-auto">
           <table className="table-auto min-w-full bg-white border-collapse border border-gray-300">
             <thead className="bg-gray-800 text-white">
@@ -47,23 +65,40 @@ export const Student = () => {
                 <th className="py-2 px-4 border border-gray-300">Last Name</th>
                 <th className="py-2 px-4 border border-gray-300">Age</th>
                 <th className="py-2 px-4 border border-gray-300">Gender</th>
+                <th className="py-2 px-4 border border-gray-300">Actions</th>
               </tr>
             </thead>
             <tbody className="text-gray-800">
-              {students.map((std) => (
-                <tr key={std.id}>
-                  <td className="py-2 px-4 border border-gray-300">{std.id}</td>
+              {students.map((student) => (
+                <tr key={student.id}>
                   <td className="py-2 px-4 border border-gray-300">
-                    {std.name}
+                    {student.id}
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
-                    {std.lastName}
+                    {student.name}
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
-                    {std.age}
+                    {student.lastName}
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
-                    {std.gender}
+                    {student.age}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {student.gender}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    <button
+                      onClick={() => handleDelete(student.id)}
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2"
+                    >
+                      Delete
+                    </button>
+                    <Link
+                      to={`/student/${student.id}`}
+                      className="bg-blue-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Details
+                    </Link>
                   </td>
                 </tr>
               ))}
