@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createStudent } from "../services/StudentService";
+import { createStudent } from "../../services/StudentService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { fetchDepartments } from "../services/DepartmentService";
-import { createStudentDto } from "../dtos/studentDtos/createStudentDto";
-import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner component
+import { fetchDepartments } from "../../services/DepartmentService";
+import { createStudentDto } from "../../dtos/studentDtos/createStudentDto";
+import LoadingSpinner from "../LoadingSpinner"; // Import the LoadingSpinner component
 
 export const CreateStudent: React.FC = () => {
   const [name, setName] = useState("");

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createDepartment } from "../services/DepartmentService";
+import { createDepartment } from "../../services/DepartmentService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "../LoadingSpinner"; // Import the LoadingSpinner component
+import React from "react";
 
-export const CreateDepartment = () => {
+export const CreateDepartment: React.FC = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);

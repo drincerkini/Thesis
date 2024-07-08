@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchStudents } from "../services/StudentService";
+import { fetchStudents } from "../../services/StudentService";
 import { Link } from "react-router-dom";
-import { StudentDto } from "../dtos/studentDtos/studentDto";
-import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner component
+import { StudentDto } from "../../dtos/studentDtos/studentDto";
+import LoadingSpinner from "../LoadingSpinner"; // Import the LoadingSpinner component
 
 export const Student = () => {
   const [students, setStudents] = useState<StudentDto[]>([]);
