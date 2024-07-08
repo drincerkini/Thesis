@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createDepartment } from "../services/DepartmentService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner component
 
 export const CreateDepartment = () => {
   const [name, setName] = useState("");
@@ -33,7 +34,13 @@ export const CreateDepartment = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+      {loading && <LoadingSpinner />}{" "}
+      {/* Conditionally render the LoadingSpinner */}
+      <div
+        className={`flex flex-col items-center w-full max-w-md p-6 bg-white rounded-lg shadow-md ${
+          loading ? "opacity-50" : ""
+        }`}
+      >
         <h2 className="text-2xl font-bold mb-4">Create Department</h2>
         <form onSubmit={handleSubmit} className="w-full">
           <div className="mb-4">
@@ -72,7 +79,6 @@ export const CreateDepartment = () => {
             </button>
           </div>
         </form>
-        {loading && <p className="text-blue-500 mt-4">Loading...</p>}
         {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
     </>

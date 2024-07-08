@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchDepartments } from "../services/DepartmentService";
 import { createStudentDto } from "../dtos/studentDtos/createStudentDto";
+import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner component
 
 export const CreateStudent: React.FC = () => {
   const [name, setName] = useState("");
@@ -51,7 +52,6 @@ export const CreateStudent: React.FC = () => {
       setLoading(false);
 
       // Navigate back to student list page after a short delay to show the toast message
-
       navigate("/student");
     } catch (error) {
       setError("Failed to create student");
@@ -61,89 +61,96 @@ export const CreateStudent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Create Student</h2>
-      <form onSubmit={handleSubmit} className="w-full">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Name:
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Last Name:
-          </label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Age:
-          </label>
-          <input
-            type="number"
-            value={age === 0 ? "" : age}
-            onChange={(e) => setAge(parseInt(e.target.value))}
-            required
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Gender:
-          </label>
-          <input
-            type="text"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            required
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Department:
-          </label>
-          <select
-            value={departmentId}
-            onChange={(e) => setDepartmentId(parseInt(e.target.value))}
-            required
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option value="">Select Department</option>
-            {departmentsData.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            disabled={loading}
-            className={`${
-              loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-700"
-            } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
-          >
-            {loading ? "Creating..." : "Create"}
-          </button>
-        </div>
-      </form>
-      {loading && <p className="text-blue-500 mt-4">Loading...</p>}
-      {error && <p className="text-red-500 mt-4">{error}</p>}
-    </div>
+    <>
+      {loading && <LoadingSpinner />}{" "}
+      {/* Conditionally render the LoadingSpinner */}
+      <div
+        className={`flex flex-col items-center w-full max-w-md p-6 bg-white rounded-lg shadow-md ${
+          loading ? "opacity-50" : ""
+        }`}
+      >
+        <h2 className="text-2xl font-bold mb-4">Create Student</h2>
+        <form onSubmit={handleSubmit} className="w-full">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Name:
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Last Name:
+            </label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Age:
+            </label>
+            <input
+              type="number"
+              value={age === 0 ? "" : age}
+              onChange={(e) => setAge(parseInt(e.target.value))}
+              required
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Gender:
+            </label>
+            <input
+              type="text"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              required
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Department:
+            </label>
+            <select
+              value={departmentId}
+              onChange={(e) => setDepartmentId(parseInt(e.target.value))}
+              required
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+              <option value="">Select Department</option>
+              {departmentsData.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center justify-between">
+            <button
+              type="submit"
+              disabled={loading}
+              className={`${
+                loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-700"
+              } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+            >
+              {loading ? "Creating..." : "Create"}
+            </button>
+          </div>
+        </form>
+        {error && <p className="text-red-500 mt-4">{error}</p>}
+      </div>
+    </>
   );
 };
