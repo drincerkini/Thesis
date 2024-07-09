@@ -1,4 +1,3 @@
-// components/Department.tsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DepartmentDto } from "../../dtos/departmentDtos/departmentDto";
@@ -8,14 +7,15 @@ import {
 } from "../../services/DepartmentService";
 import LoadingSpinner from "../LoadingSpinner";
 import Search from "../Search"; // Import the Search component
+import Pagination from "../Pagination"; // Import the Pagination component
 
 export const Department = () => {
   const [departments, setDepartments] = useState<DepartmentDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
-  const [sortField, setSortField] = useState<keyof DepartmentDto | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchAndSetDepartments = async () => {
@@ -52,22 +52,14 @@ export const Department = () => {
     setSearchTerm(term);
   };
 
-  const handleSort = (field: keyof DepartmentDto) => {
-    const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
-    setSortField(field);
-    setSortOrder(order);
-
-    const sortedData = [...departments].sort((a, b) => {
-      if (a[field] < b[field]) return order === "asc" ? -1 : 1;
-      if (a[field] > b[field]) return order === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    setDepartments(sortedData);
-  };
-
   const filteredDepartments = departments.filter((dept) =>
     dept.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredDepartments.length / itemsPerPage);
+  const paginatedDepartments = filteredDepartments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   return (
@@ -90,50 +82,16 @@ export const Department = () => {
           <table className="table-auto min-w-full bg-white border-collapse border border-gray-300">
             <thead className="bg-gray-800 text-white">
               <tr>
+                <th className="py-2 px-4 border border-gray-300">ID</th>
+                <th className="py-2 px-4 border border-gray-300">Name</th>
                 <th className="py-2 px-4 border border-gray-300">
-                  <button
-                    className="text-white"
-                    onClick={() => handleSort("id")}
-                  >
-                    ID{" "}
-                    {sortField === "id"
-                      ? sortOrder === "asc"
-                        ? "↑"
-                        : "↓"
-                      : "↑↓"}
-                  </button>
-                </th>
-                <th className="py-2 px-4 border border-gray-300">
-                  <button
-                    className="text-white"
-                    onClick={() => handleSort("name")}
-                  >
-                    Name{" "}
-                    {sortField === "name"
-                      ? sortOrder === "asc"
-                        ? "↑"
-                        : "↓"
-                      : "↑↓"}
-                  </button>
-                </th>
-                <th className="py-2 px-4 border border-gray-300">
-                  <button
-                    className="text-white"
-                    onClick={() => handleSort("description")}
-                  >
-                    Description{" "}
-                    {sortField === "description"
-                      ? sortOrder === "asc"
-                        ? "↑"
-                        : "↓"
-                      : "↑↓"}
-                  </button>
+                  Description
                 </th>
                 <th className="py-2 px-4 border border-gray-300">Actions</th>
               </tr>
             </thead>
             <tbody className="text-gray-800">
-              {filteredDepartments.map((dept) => (
+              {paginatedDepartments.map((dept) => (
                 <tr key={dept.id}>
                   <td className="py-2 px-4 border border-gray-300">
                     {dept.id}
@@ -169,6 +127,11 @@ export const Department = () => {
             </tbody>
           </table>
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </>
   );

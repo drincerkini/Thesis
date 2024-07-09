@@ -1,10 +1,10 @@
-// components/DepartmentStudents.tsx
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { fetchStudentsByDepartment } from "../../services/DepartmentService";
 import { StudentListDto } from "../../dtos/departmentDtos/studentListDto";
 import LoadingSpinner from "../LoadingSpinner";
 import Search from "../Search"; // Import the Search component
+import Pagination from "../Pagination"; // Import the Pagination component
 
 const DepartmentStudents = () => {
   const { departmentId } = useParams<{ departmentId: string }>();
@@ -16,6 +16,10 @@ const DepartmentStudents = () => {
   const [error, setError] = useState<string | null>(null);
   const [sortField, setSortField] = useState<keyof StudentListDto | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5); // Number of students per page
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -43,20 +47,6 @@ const DepartmentStudents = () => {
     setFilteredStudents(filteredData);
   };
 
-  const handleFilter = (filters: { age?: string; gender?: string }) => {
-    const filteredData = students.filter((student) => {
-      return (
-        (!filters.age || student.age === parseInt(filters.age)) &&
-        (!filters.gender || student.gender === filters.gender)
-      );
-    });
-    setFilteredStudents(filteredData);
-  };
-
-  const handleReset = () => {
-    setFilteredStudents(students);
-  };
-
   const handleSort = (field: keyof StudentListDto) => {
     const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
     setSortField(field);
@@ -70,6 +60,18 @@ const DepartmentStudents = () => {
 
     setFilteredStudents(sortedData);
   };
+
+  // Pagination handlers
+  const totalPages = Math.ceil(filteredStudents.length / pageSize);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate current page students
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentStudents = filteredStudents.slice(startIndex, endIndex);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -101,42 +103,6 @@ const DepartmentStudents = () => {
         Students in Department {departmentId}
       </h1>
       <Search onSearch={handleSearch} />
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <label className="mr-2">Age:</label>
-          <select
-            onChange={(e) => handleFilter({ age: e.target.value })}
-            className="border p-2 mr-2"
-          >
-            <option value="">All</option>
-            {[...new Set(students.map((s) => s.age))]
-              .sort((a, b) => a - b)
-              .map((age) => (
-                <option key={age} value={age}>
-                  {age}
-                </option>
-              ))}
-          </select>
-          <label className="mr-2">Gender:</label>
-          <select
-            onChange={(e) => handleFilter({ gender: e.target.value })}
-            className="border p-2"
-          >
-            <option value="">All</option>
-            {[...new Set(students.map((s) => s.gender))].map((gender) => (
-              <option key={gender} value={gender}>
-                {gender}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          onClick={handleReset}
-          className="bg-gray-500 text-white p-2 rounded"
-        >
-          Reset
-        </button>
-      </div>
       <div className="overflow-x-auto">
         <table className="table-auto min-w-full bg-white border-collapse border border-gray-300 mt-4">
           <thead className="bg-gray-800 text-white">
@@ -206,7 +172,7 @@ const DepartmentStudents = () => {
             </tr>
           </thead>
           <tbody className="text-gray-800">
-            {filteredStudents.map((student) => (
+            {currentStudents.map((student) => (
               <tr key={student.id}>
                 <td className="py-2 px-4 border border-gray-300">
                   {student.id}
@@ -228,6 +194,11 @@ const DepartmentStudents = () => {
           </tbody>
         </table>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

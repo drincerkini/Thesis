@@ -4,6 +4,7 @@ import { fetchStudents, deleteStudent } from "../../services/StudentService";
 import { StudentDto } from "../../dtos/studentDtos/studentDto";
 import LoadingSpinner from "../LoadingSpinner";
 import Search from "../Search"; // Assuming you have implemented the Search component
+import Pagination from "../Pagination"; // Import the Pagination component
 
 export const Student = () => {
   const [students, setStudents] = useState<StudentDto[]>([]);
@@ -15,6 +16,10 @@ export const Student = () => {
   const [resetFilters, setResetFilters] = useState(false); // State for reset button
   const [sortField, setSortField] = useState<keyof StudentDto | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5); // Number of students per page
 
   useEffect(() => {
     const fetchAndSetStudents = async () => {
@@ -101,6 +106,18 @@ export const Student = () => {
     setGenderFilter("");
     setResetFilters((prev) => !prev); // Toggle resetFilters state to trigger useEffect
   };
+
+  // Pagination handlers
+  const totalPages = Math.ceil(filteredStudents.length / pageSize);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate current page students
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentStudents = filteredStudents.slice(startIndex, endIndex);
 
   return (
     <>
@@ -226,7 +243,7 @@ export const Student = () => {
               </tr>
             </thead>
             <tbody className="text-gray-800">
-              {filteredStudents.map((student) => (
+              {currentStudents.map((student) => (
                 <tr key={student.id}>
                   <td className="py-2 px-4 border border-gray-300">
                     {student.id}
@@ -262,6 +279,11 @@ export const Student = () => {
             </tbody>
           </table>
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </>
   );

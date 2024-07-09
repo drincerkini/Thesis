@@ -1,6 +1,5 @@
 import axios from "axios";
 import { createDepartmentDto } from "../dtos/departmentDtos/createDepartmentDto";
-import axiosInstance from "../helpers/axiosInstance";
 import { DepartmentDto } from "../dtos/departmentDtos/departmentDto";
 import { StudentListDto } from "../dtos/departmentDtos/studentListDto";
 
@@ -23,7 +22,7 @@ export const fetchDepartmentById = async (id: number) => {
 
 export const createDepartment = async (department: createDepartmentDto) => {
   try {
-    const response = await axiosInstance.post("/departments", department);
+    const response = await axios.post(API_BASE_URL, department);
     return response.data;
   } catch (error) {
     console.error("Error creating department", error);
