@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchStudents, deleteStudent } from "../../services/StudentService";
 import { StudentDto } from "../../dtos/studentDtos/studentDto";
 import LoadingSpinner from "../LoadingSpinner";
-import Search from "../Search"; // Import the Search component
+import Search from "../Search"; // Assuming you have implemented the Search component
 
 export const Student = () => {
   const [students, setStudents] = useState<StudentDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filteredStudents, setFilteredStudents] = useState<StudentDto[]>([]); // State to hold filtered students
+  const [filteredStudents, setFilteredStudents] = useState<StudentDto[]>([]);
+  const [ageFilter, setAgeFilter] = useState<number | undefined>();
+  const [genderFilter, setGenderFilter] = useState<string>("");
+  const [resetFilters, setResetFilters] = useState(false); // State for reset button
 
   useEffect(() => {
     const fetchAndSetStudents = async () => {
@@ -46,11 +49,41 @@ export const Student = () => {
     }
   };
 
+  // Function to filter students based on selected filters
+  const applyFilters = () => {
+    let filteredData = [...students];
+
+    if (typeof ageFilter !== "undefined") {
+      filteredData = filteredData.filter(
+        (student) => student.age === ageFilter
+      );
+    }
+
+    if (genderFilter) {
+      filteredData = filteredData.filter(
+        (student) => student.gender.toLowerCase() === genderFilter.toLowerCase()
+      );
+    }
+
+    setFilteredStudents(filteredData);
+  };
+
+  // Call applyFilters whenever any filter state changes
+  useEffect(() => {
+    applyFilters();
+  }, [ageFilter, genderFilter, resetFilters]);
+
   const handleSearch = (term: string) => {
     const filteredData = students.filter((student) =>
       student.name.toLowerCase().includes(term.toLowerCase())
     );
     setFilteredStudents(filteredData); // Update filtered students based on search term
+  };
+
+  const handleResetFilters = () => {
+    setAgeFilter(undefined);
+    setGenderFilter("");
+    setResetFilters((prev) => !prev); // Toggle resetFilters state to trigger useEffect
   };
 
   return (
@@ -67,6 +100,41 @@ export const Student = () => {
           </Link>
         </div>
         <Search onSearch={handleSearch} />
+        <div className="mb-4 flex items-center">
+          <div className="mr-4">
+            <label htmlFor="ageFilter" className="mr-2">
+              Age:
+            </label>
+            <input
+              type="number"
+              id="ageFilter"
+              value={ageFilter || ""}
+              onChange={(e) => setAgeFilter(parseInt(e.target.value))}
+              className="border p-2"
+            />
+          </div>
+          <div>
+            <label htmlFor="genderFilter" className="mr-2">
+              Gender:
+            </label>
+            <select
+              id="genderFilter"
+              value={genderFilter}
+              onChange={(e) => setGenderFilter(e.target.value)}
+              className="border p-2"
+            >
+              <option value="">All</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <button
+            onClick={handleResetFilters}
+            className="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Reset Filters
+          </button>
+        </div>
         <hr className="mb-4" />
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="overflow-x-auto">
