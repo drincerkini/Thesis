@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchStudents } from "../../services/StudentService";
+import { fetchStudents, deleteStudent } from "../../services/StudentService";
 import { StudentDto } from "../../dtos/studentDtos/studentDto";
 import LoadingSpinner from "../LoadingSpinner";
-import { deleteStudent } from "../../services/StudentService";
+import Search from "../Search"; // Import the Search component
 
 export const Student = () => {
   const [students, setStudents] = useState<StudentDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filteredStudents, setFilteredStudents] = useState<StudentDto[]>([]); // State to hold filtered students
 
   useEffect(() => {
     const fetchAndSetStudents = async () => {
       try {
         const data = await fetchStudents();
         setStudents(data);
+        setFilteredStudents(data); // Initialize filtered students with all students
       } catch (error) {
         console.error("Error fetching students:", error);
         setError("Error fetching students");
@@ -32,6 +34,9 @@ export const Student = () => {
       try {
         await deleteStudent(id);
         setStudents(students.filter((student) => student.id !== id));
+        setFilteredStudents(
+          filteredStudents.filter((student) => student.id !== id)
+        ); // Update filtered students as well
       } catch (error) {
         console.error("Error deleting student:", error);
         setError("Failed to delete student");
@@ -39,6 +44,13 @@ export const Student = () => {
         setLoading(false);
       }
     }
+  };
+
+  const handleSearch = (term: string) => {
+    const filteredData = students.filter((student) =>
+      student.name.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredStudents(filteredData); // Update filtered students based on search term
   };
 
   return (
@@ -54,6 +66,7 @@ export const Student = () => {
             Create Student
           </Link>
         </div>
+        <Search onSearch={handleSearch} />
         <hr className="mb-4" />
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="overflow-x-auto">
@@ -69,7 +82,7 @@ export const Student = () => {
               </tr>
             </thead>
             <tbody className="text-gray-800">
-              {students.map((student) => (
+              {filteredStudents.map((student) => (
                 <tr key={student.id}>
                   <td className="py-2 px-4 border border-gray-300">
                     {student.id}

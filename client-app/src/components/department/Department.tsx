@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { DepartmentDto } from "../../dtos/departmentDtos/departmentDto";
 import {
   fetchDepartments,
   deleteDepartment,
 } from "../../services/DepartmentService";
-import LoadingSpinner from "../LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "../LoadingSpinner";
+import Search from "../Search"; // Import the Search component
 
 export const Department = () => {
   const [departments, setDepartments] = useState<DepartmentDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
 
   useEffect(() => {
     const fetchAndSetDepartments = async () => {
@@ -44,14 +45,17 @@ export const Department = () => {
     }
   };
 
-  const handleShowStudents = (departmentId: number) => {
-    navigate(`/department/${departmentId}/students`);
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
   };
+
+  const filteredDepartments = departments.filter((dept) =>
+    dept.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
-      {loading && <LoadingSpinner />}{" "}
-      {/* Conditionally render the LoadingSpinner */}
+      {loading && <LoadingSpinner />}
       <div className={`container mx-auto py-8 ${loading ? "opacity-50" : ""}`}>
         <div className="mb-4 flex justify-between items-center">
           <h1 className="text-3xl font-bold">Departments List</h1>
@@ -62,6 +66,7 @@ export const Department = () => {
             Create Department
           </Link>
         </div>
+        <Search onSearch={handleSearch} />
         <hr className="mb-4" />
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="overflow-x-auto">
@@ -77,7 +82,7 @@ export const Department = () => {
               </tr>
             </thead>
             <tbody className="text-gray-800">
-              {departments.map((dept) => (
+              {filteredDepartments.map((dept) => (
                 <tr key={dept.id}>
                   <td className="py-2 px-4 border border-gray-300">
                     {dept.id}
@@ -95,17 +100,17 @@ export const Department = () => {
                     >
                       Details
                     </Link>
+                    <Link
+                      to={`/department/${dept.id}/students`}
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+                    >
+                      Show Students
+                    </Link>
                     <button
                       onClick={() => handleDelete(dept.id)}
                       className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                     >
                       Delete
-                    </button>
-                    <button
-                      onClick={() => handleShowStudents(dept.id)}
-                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
-                    >
-                      Show Students
                     </button>
                   </td>
                 </tr>
