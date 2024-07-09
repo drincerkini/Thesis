@@ -1,19 +1,9 @@
-import { Link } from "react-router-dom";
-
 export const Home = () => {
   return (
-    <div>
-      <h1>Home Page</h1>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/department">Department Page</Link>
-          </li>
-          <li>
-            <Link to="/student">Student Page</Link>
-          </li>
-        </ul>
-      </nav>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div>
+        <h1 className="text-4xl font-bold text-blue-500">Hello, Home Page!</h1>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-export interface IStudent {
+export interface StudentDto {
   id: number;
   name: string;
   lastName: string;
