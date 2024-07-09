@@ -13,6 +13,8 @@ export const Student = () => {
   const [ageFilter, setAgeFilter] = useState<number | undefined>();
   const [genderFilter, setGenderFilter] = useState<string>("");
   const [resetFilters, setResetFilters] = useState(false); // State for reset button
+  const [sortField, setSortField] = useState<keyof StudentDto | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
     const fetchAndSetStudents = async () => {
@@ -47,6 +49,20 @@ export const Student = () => {
         setLoading(false);
       }
     }
+  };
+
+  const handleSort = (field: keyof StudentDto) => {
+    const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
+    setSortField(field);
+    setSortOrder(order);
+
+    const sortedData = [...filteredStudents].sort((a, b) => {
+      if (a[field] < b[field]) return order === "asc" ? -1 : 1;
+      if (a[field] > b[field]) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setFilteredStudents(sortedData);
   };
 
   // Function to filter students based on selected filters
@@ -141,11 +157,71 @@ export const Student = () => {
           <table className="table-auto min-w-full bg-white border-collapse border border-gray-300">
             <thead className="bg-gray-800 text-white">
               <tr>
-                <th className="py-2 px-4 border border-gray-300">ID</th>
-                <th className="py-2 px-4 border border-gray-300">Name</th>
-                <th className="py-2 px-4 border border-gray-300">Last Name</th>
-                <th className="py-2 px-4 border border-gray-300">Age</th>
-                <th className="py-2 px-4 border border-gray-300">Gender</th>
+                <th className="py-2 px-4 border border-gray-300">
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("id")}
+                  >
+                    ID{" "}
+                    {sortField === "id"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
+                </th>
+                <th className="py-2 px-4 border border-gray-300">
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("name")}
+                  >
+                    Name{" "}
+                    {sortField === "name"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
+                </th>
+                <th className="py-2 px-4 border border-gray-300">
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("lastName")}
+                  >
+                    Last Name{" "}
+                    {sortField === "lastName"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
+                </th>
+                <th className="py-2 px-4 border border-gray-300">
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("age")}
+                  >
+                    Age{" "}
+                    {sortField === "age"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
+                </th>
+                <th className="py-2 px-4 border border-gray-300">
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("gender")}
+                  >
+                    Gender{" "}
+                    {sortField === "gender"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
+                </th>
                 <th className="py-2 px-4 border border-gray-300">Actions</th>
               </tr>
             </thead>
