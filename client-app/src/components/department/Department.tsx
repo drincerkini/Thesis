@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DepartmentDto } from "../../dtos/departmentDtos/departmentDto";
 import {
   fetchDepartments,
@@ -11,6 +11,7 @@ export const Department = () => {
   const [departments, setDepartments] = useState<DepartmentDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAndSetDepartments = async () => {
@@ -41,6 +42,10 @@ export const Department = () => {
         setLoading(false);
       }
     }
+  };
+
+  const handleShowStudents = (departmentId: number) => {
+    navigate(`/department/${departmentId}/students`);
   };
 
   return (
@@ -95,6 +100,12 @@ export const Department = () => {
                       className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                     >
                       Delete
+                    </button>
+                    <button
+                      onClick={() => handleShowStudents(dept.id)}
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                    >
+                      Show Students
                     </button>
                   </td>
                 </tr>

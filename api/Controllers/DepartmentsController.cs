@@ -101,5 +101,16 @@ namespace api.Controllers
         {
             return _context.Departments.Any(e => e.Id == id);
         }
+
+        [HttpGet("{departmentId}/students/")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByDepartment(int departmentId)
+        {
+            var students = await _context.Students
+                .Where(s => s.DepartmentId == departmentId)
+                .ToListAsync();
+
+            return Ok(students);
+        }
+
     }
 }

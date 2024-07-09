@@ -2,6 +2,7 @@ import axios from "axios";
 import { createDepartmentDto } from "../dtos/departmentDtos/createDepartmentDto";
 import axiosInstance from "../helpers/axiosInstance";
 import { DepartmentDto } from "../dtos/departmentDtos/departmentDto";
+import { StudentListDto } from "../dtos/departmentDtos/studentListDto";
 
 const API_BASE_URL = "https://localhost:7098/api/departments";
 
@@ -41,5 +42,13 @@ export const updateDepartment = async (
 ) => {
   console.log("Updating department:", id, department); // Add console log
   const response = await axios.put(`${API_BASE_URL}/${id}`, department);
+  return response.data;
+};
+
+export const fetchStudentsByDepartment = async (
+  departmentId: number
+): Promise<StudentListDto[]> => {
+  const response = await axios.get(`${API_BASE_URL}/${departmentId}/students`);
+  console.log(response.data);
   return response.data;
 };
