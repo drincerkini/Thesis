@@ -1,3 +1,4 @@
+// components/Department.tsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DepartmentDto } from "../../dtos/departmentDtos/departmentDto";
@@ -13,6 +14,8 @@ export const Department = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [sortField, setSortField] = useState<keyof DepartmentDto | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
     const fetchAndSetDepartments = async () => {
@@ -49,6 +52,20 @@ export const Department = () => {
     setSearchTerm(term);
   };
 
+  const handleSort = (field: keyof DepartmentDto) => {
+    const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
+    setSortField(field);
+    setSortOrder(order);
+
+    const sortedData = [...departments].sort((a, b) => {
+      if (a[field] < b[field]) return order === "asc" ? -1 : 1;
+      if (a[field] > b[field]) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setDepartments(sortedData);
+  };
+
   const filteredDepartments = departments.filter((dept) =>
     dept.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -73,10 +90,44 @@ export const Department = () => {
           <table className="table-auto min-w-full bg-white border-collapse border border-gray-300">
             <thead className="bg-gray-800 text-white">
               <tr>
-                <th className="py-2 px-4 border border-gray-300">ID</th>
-                <th className="py-2 px-4 border border-gray-300">Name</th>
                 <th className="py-2 px-4 border border-gray-300">
-                  Description
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("id")}
+                  >
+                    ID{" "}
+                    {sortField === "id"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
+                </th>
+                <th className="py-2 px-4 border border-gray-300">
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("name")}
+                  >
+                    Name{" "}
+                    {sortField === "name"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
+                </th>
+                <th className="py-2 px-4 border border-gray-300">
+                  <button
+                    className="text-white"
+                    onClick={() => handleSort("description")}
+                  >
+                    Description{" "}
+                    {sortField === "description"
+                      ? sortOrder === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↑↓"}
+                  </button>
                 </th>
                 <th className="py-2 px-4 border border-gray-300">Actions</th>
               </tr>
