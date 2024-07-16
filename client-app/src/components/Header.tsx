@@ -1,30 +1,46 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../Auth/AuthContext";
 
 const Header = () => {
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Perform any necessary cleanup on the server
+      logout(); // Clear the user from context
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   return (
-    <header className="bg-blue-500 text-white py-4">
-      <div className="container mx-auto flex justify-between items-center px-6">
-        <div className="text-xl font-bold">
-          <Link to="/">My University</Link>
-        </div>
-        <nav className="flex space-x-4">
-          <Link to="/" className="hover:underline">
-            Home
-          </Link>
-          <Link to="/department" className="hover:underline">
-            Departments
-          </Link>
-          <Link to="/student" className="hover:underline">
-            Students
-          </Link>
-          <Link to="/login" className="hover:underline">
-            Login
-          </Link>
-          <Link to="/register" className="hover:underline">
-            Register
-          </Link>
-        </nav>
-      </div>
+    <header className="bg-blue-500 text-white p-4 flex justify-between items-center">
+      <h1 className="text-xl font-bold">My App</h1>
+      <nav>
+        <Link to="/" className="mr-4">
+          Home
+        </Link>
+        {user ? (
+          <>
+            <span className="mr-4">Welcome, {user.email}!</span>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 px-3 py-1 rounded"
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="mr-4">
+              Login
+            </Link>
+            <Link to="/register" className="mr-4">
+              Register
+            </Link>
+          </>
+        )}
+      </nav>
     </header>
   );
 };

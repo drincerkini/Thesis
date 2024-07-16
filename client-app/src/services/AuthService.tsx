@@ -1,45 +1,37 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://localhost:7098/api/Auth"; // Replace with your actual API base URL
+const API_BASE_URL = "https://localhost:7098/api/auth";
 
-export interface RegisterDto {
+export const login = async (credentials: {
   email: string;
   password: string;
-}
-
-export const register = async (userData: RegisterDto) => {
+}) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/register`, userData);
+    const response = await axios.post(`${API_BASE_URL}/login`, credentials);
+    localStorage.setItem("token", response.data.token); // Store the token
     return response.data;
   } catch (error) {
-    console.error("Error registering user:", error);
+    console.error("Error logging in:", error);
     throw error;
   }
 };
-
-export interface LoginDto {
-  email: string;
-  password: string;
-}
-
-export const login = async (userData: LoginDto) => {
+export const register = async (user: { email: string; password: string }) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, userData);
+    const response = await axios.post(`${API_BASE_URL}/register`, user);
+    localStorage.setItem("token", response.data.token); // Store the token
     return response.data;
   } catch (error) {
-    console.error("Error logging in user:", error);
+    console.error("Error registering:", error);
     throw error;
   }
 };
 
 export const logout = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/logout`);
-    return response.data;
+    await axios.post(`${API_BASE_URL}/logout`);
+    localStorage.removeItem("token"); // Clear the token
   } catch (error) {
-    console.error("Error logging out user:", error);
+    console.error("Error logging out:", error);
     throw error;
   }
 };
-
-// Add other authentication-related functions as needed

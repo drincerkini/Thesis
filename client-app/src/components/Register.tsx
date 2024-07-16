@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register } from "../services/AuthService"; // Adjust the path as per your file structure
+import { useAuth } from "../Auth/AuthContext"; // Adjust the path as per your file structure
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -15,9 +18,10 @@ const Register = () => {
 
     try {
       await register({ email, password });
-
+      setUser({ email });
       setLoading(false);
       toast.success("Registration successful!");
+      navigate("/");
     } catch (error) {
       setLoading(false);
       toast.error("Failed to register. Please try again later.");

@@ -1,11 +1,13 @@
-// src/pages/Login.tsx
-
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { login } from "../services/AuthService";
+import { useAuth } from "../Auth/AuthContext";
 
 const Login = () => {
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,29 +17,24 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Perform login logic here
-      // Example: await loginUser({ email, password });
-
-      setLoading(false);
+      const user = await login({ email, password });
+      setUser({ email: user.email }); // Set the actual user data received from login
       toast.success("Login successful!");
+      navigate("/");
     } catch (error) {
+      toast.error("Failed to log in. Please check your credentials and try again.");
+    } finally {
       setLoading(false);
-      toast.error(
-        "Failed to log in. Please check your credentials and try again."
-      );
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
@@ -50,10 +47,7 @@ const Login = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
@@ -80,7 +74,6 @@ const Login = () => {
           </Link>
         </p>
       </div>
-      <ToastContainer />
     </div>
   );
 };

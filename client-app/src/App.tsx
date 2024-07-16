@@ -11,29 +11,33 @@ import DepartmentDetails from "./components/department/DepartmentDetails";
 import { CreateDepartment } from "./components/department/CreateDepartment";
 import StudentDetails from "./components/student/StudentDetails";
 import DepartmentStudents from "./components/department/DepartmentStudents ";
+import "./helpers/axiosInterceptor";
+import { AuthProvider } from "./Auth/AuthContext";
 
 function App() {
   return (
-    <Router>
-      <ToastContainer />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/department" element={<Department />} />
-          <Route
-            path="/department/:departmentId/students"
-            element={<DepartmentStudents />}
-          />
-          <Route path="/student" element={<Student />} />
-          <Route path="/create-student" element={<CreateStudent />} />
-          <Route path="/create-department" element={<CreateDepartment />} />
-          <Route path="/department/:id" element={<DepartmentDetails />} />
-          <Route path="/student/:id" element={<StudentDetails />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <ToastContainer />
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/department" element={<Department />} />
+            <Route
+              path="/department/:departmentId/students"
+              element={<DepartmentStudents />}
+            />
+            <Route path="/student" element={<Student />} />
+            <Route path="/create-student" element={<CreateStudent />} />
+            <Route path="/create-department" element={<CreateDepartment />} />
+            <Route path="/department/:id" element={<DepartmentDetails />} />
+            <Route path="/student/:id" element={<StudentDetails />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </AuthProvider>
   );
 }
 
