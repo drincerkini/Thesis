@@ -18,11 +18,13 @@ const Login = () => {
 
     try {
       const user = await login({ email, password });
-      setUser({ email: user.email }); // Set the actual user data received from login
+      setUser({ email: user.email }); // Set the user in context upon successful login
       toast.success("Login successful!");
-      navigate("/");
+      navigate("/"); // Redirect to home or desired page
     } catch (error) {
-      toast.error("Failed to log in. Please check your credentials and try again.");
+      toast.error(
+        "Failed to log in. Please check your credentials and try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -34,7 +36,10 @@ const Login = () => {
         <h2 className="text-2xl font-bold mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <input
@@ -47,7 +52,10 @@ const Login = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input
