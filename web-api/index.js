@@ -5,14 +5,15 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 
-dotenv.config(); // Load environment variables
+const ActivityRouter = require("./Routes/ActivityRouter");
+
+dotenv.config();
 
 const MONGO_CONECTION_URI = process.env.MONGO_CONECTION_URI;
 const MONGO_PORT = process.env.MONGO_PORT;
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME;
 const API_PORT = process.env.API_PORT || 3000;
 
-// Construct the MongoDB connection string
 const mongoConnectionString = `${MONGO_CONECTION_URI}:${MONGO_PORT}/${MONGO_DB_NAME}`;
 
 mongoose
@@ -29,7 +30,7 @@ mongoose
     // Multer library for storing images
     const storage = multer.diskStorage({
       destination: function (req, file, cb) {
-        cb(null, "./../clientapp/public/uploads");
+        cb(null, "../client-app/public/uploads");
       },
       filename: function (req, file, cb) {
         const ext = file.mimetype.split("/")[1];
@@ -41,11 +42,8 @@ mongoose
 
     app.use(cors({ origin: "*" }));
 
-    app.get("*", (req, res) => {
-      res.json({ msg: "Not Found" });
-    });
-
     // API Routes...
+    app.use("/activities", upload.single("image"), ActivityRouter);
 
     // Server running port
     app.listen(API_PORT, () => {
