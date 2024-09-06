@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 
 const ActivityRouter = require("./Routes/ActivityRouter");
+const AuthRouter = require("./Routes/AuthRouter");
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ mongoose
     app.use(express.static("./uploads"));
 
     // Body parser library for accepting requests in JSON format
+    app.use(cors({ origin: "*" }));
     app.use(bodyParser.json());
 
     // Multer library for storing images
@@ -40,11 +42,10 @@ mongoose
 
     const upload = multer({ storage });
 
-    app.use(cors({ origin: "*" }));
-
     // API Routes...
     app.use("/activities", upload.single("image"), ActivityRouter);
 
+    app.use("/api/auth", AuthRouter);
     // Server running port
     app.listen(API_PORT, () => {
       console.log(`Server is listening on port ${API_PORT} ....`);
