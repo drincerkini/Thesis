@@ -2,6 +2,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Login from "./components/Login";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -11,9 +15,12 @@ function App() {
         <main className="flex-grow container mx-auto p-4">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             {/* Add more routes here */}
           </Routes>
         </main>
+        <ToastContainer />
         <Footer />
       </div>
     </Router>
