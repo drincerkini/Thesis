@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { loginUser } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { isLoading, error, user } = useAppSelector((state) => state.auth);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,10 +18,12 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      await dispatch(loginUser({ username, password })).unwrap();
+      const action = await dispatch(loginUser({ username, password })).unwrap();
       toast.success("Logged in successfully!");
-      navigate("/dashboard"); // Redirect to dashboard or another page
-    } catch {
+      if (action) {
+        navigate("/dashboard"); // Redirect to dashboard on successful login
+      }
+    } catch (err) {
       toast.error("Login failed. Please check your credentials.");
     }
   };

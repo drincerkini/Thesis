@@ -11,7 +11,7 @@ export const login = async (payload: LoginPayload) => {
     return response.data;
   } catch (error) {
     console.error("Login error:", error);
-    throw new Error("Failed to login");
+    throw new Error("Login failed");
   }
 };
 
@@ -23,6 +23,6 @@ export const fetchCurrentUser = async (token: string) => {
     return response.data;
   } catch (error) {
     console.error("Fetch current user error:", error);
-    throw new Error("Failed to fetch user");
+    throw new Error("Fetching user failed");
   }
 };

@@ -29,11 +29,11 @@ const AuthController = {
     try {
       const user = await UserModel.findOne({ username });
       if (!user)
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(400).json({ message: "username is incorrect" });
 
       const isMatch = await user.comparePassword(password);
       if (!isMatch)
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(400).json({ message: "password is incorrect " });
 
       const token = jwt.sign(
         { id: user._id, role: user.role },
@@ -50,7 +50,7 @@ const AuthController = {
     try {
       const user = await UserModel.findById(req.user.id).select("-password");
       if (!user) return res.status(404).json({ message: "User not found" });
-
+      console.log(user + "useri logedin");
       res.json(user);
     } catch (err) {
       res.status(500).json({ message: "Server error" });
