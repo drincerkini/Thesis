@@ -3,7 +3,6 @@ import Home from "./components/Home";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Login from "./components/Login";
-import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
@@ -13,6 +12,7 @@ import { useEffect } from "react";
 import authStore from "./stores/authStore";
 import NewsList from "./components/NewsList";
 import AddNews from "./components/AddNews";
+import NewsDetail from "./components/NewsDetail";
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -28,8 +28,8 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/news" element={<NewsList />} />
             <Route path="/add-news" element={<AddNews />} />
+            <Route path="/news/:id" element={<NewsDetail />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
             {/* Protect the dashboard route */}
             <Route
               path="/dashboard"

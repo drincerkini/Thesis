@@ -1,3 +1,4 @@
+// src/components/NewsList.tsx
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import newsStore from "../stores/newsStore"; // Import your news store
@@ -9,21 +10,19 @@ const NewsList: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
+    <section className="w-full py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-semibold text-center mb-10">
-          University News
-        </h1>
+        <h2 className="text-3xl font-semibold text-center mb-8">Latest News</h2>
         {newsStore.loading ? (
           <div className="text-center text-blue-500">Loading...</div>
         ) : newsStore.error ? (
           <div className="text-center text-red-500">{newsStore.error}</div>
         ) : (
-          <div className="flex flex-wrap gap-8 justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {newsStore.newsList.map((newsItem) => (
               <div
                 key={newsItem._id}
-                className="bg-white shadow-md rounded-lg overflow-hidden w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
+                className="bg-white shadow-lg rounded-lg overflow-hidden"
               >
                 <img
                   src={`../../public/uploads/${newsItem.image.filename}`}
@@ -31,9 +30,12 @@ const NewsList: React.FC = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
-                  <h2 className="text-xl font-bold mb-2">{newsItem.title}</h2>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="text-xl font-bold mb-2">{newsItem.title}</h3>
+                  <p className="text-sm text-gray-500 mb-4">
                     {new Date(newsItem.createdAt).toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-600">
+                    {newsItem.content.substring(0, 100)}...
                   </p>
                   <Link
                     to={`/news/${newsItem._id}`}
@@ -47,7 +49,7 @@ const NewsList: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 

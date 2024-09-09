@@ -1,6 +1,8 @@
+// src/pages/Home.tsx
 import React from "react";
 import universityImage from "../assets/uni.jpg";
 import backgroundImage from "../assets/background.jpeg";
+import NewsList from "../components/NewsList";
 
 const Home: React.FC = () => {
   return (
@@ -51,6 +53,9 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* News List Section */}
+      <NewsList />
 
       {/* Call to Action Section */}
       <section
