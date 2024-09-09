@@ -26,7 +26,7 @@ const NewsList: React.FC = () => {
                 className="bg-white shadow-md rounded-lg overflow-hidden w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
               >
                 <img
-                  src={newsItem.image.url}
+                  src={`../../public/uploads/${newsItem.image.filename}`}
                   alt={newsItem.title}
                   className="w-full h-48 object-cover"
                 />
