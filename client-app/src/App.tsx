@@ -11,6 +11,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import authStore from "./stores/authStore";
+import NewsList from "./components/NewsList";
+import AddNews from "./components/AddNews";
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -24,6 +26,8 @@ const App: React.FC = () => {
         <main className="flex-grow container mx-auto p-4">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/news" element={<NewsList />} />
+            <Route path="/add-news" element={<AddNews />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             {/* Protect the dashboard route */}

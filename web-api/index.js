@@ -5,8 +5,9 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 
-const ActivityRouter = require("./Routes/ActivityRouter");
 const AuthRouter = require("./Routes/AuthRouter");
+const ActivityRouter = require("./Routes/ActivityRouter");
+const NewsRouter = require("./Routes/NewsRouter");
 
 dotenv.config();
 
@@ -43,7 +44,9 @@ mongoose
     const upload = multer({ storage });
 
     // API Routes...
-    app.use("/activities", upload.single("image"), ActivityRouter);
+    app.use("/api/activities", upload.single("image"), ActivityRouter);
+
+    app.use("/api/news", upload.single("image"), NewsRouter);
 
     app.use("/api/auth", AuthRouter);
     // Server running port
