@@ -1,36 +1,53 @@
 import { makeAutoObservable } from "mobx";
-import { loginApi } from "../services/authApi"; // Import the login API function
+import axiosInstance from "../services/axiosConfig"; // Your axios instance with interceptors
+import { loginApi } from "../services/authApi";
 
 class AuthStore {
-  user: { username: string; role: string } | null = null;
-  token: string | null = localStorage.getItem("token") || null;
-  isAuthenticated = false;
+  user: { username: string } | null = null;
+  token: string | null = null;
 
   constructor() {
     makeAutoObservable(this);
-    if (this.token) {
-      this.isAuthenticated = true;
-    }
+  }
+
+  // Computed property to check if the user is authenticated
+  get isAuthenticated() {
+    return this.token !== null;
   }
 
   async login(username: string, password: string) {
     try {
-      const { token, user } = await loginApi(username, password); // Call login API
-      this.token = token;
+      const { token, user } = await loginApi(username, password);
       this.user = user;
-      this.isAuthenticated = true;
-      localStorage.setItem("token", token); // Store the token in localStorage
+      this.token = token;
+      localStorage.setItem("token", token); // Store token in local storage
     } catch (error) {
       console.error("Login failed:", error);
-      throw error;
+    }
+  }
+
+  async loadUserFromToken() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.token = token;
+      try {
+        const response = await axiosInstance.get("/auth/me", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the request
+          },
+        });
+        this.user = response.data;
+      } catch (error) {
+        console.error("Failed to load user from token:", error);
+        this.user = null;
+      }
     }
   }
 
   logout() {
-    this.token = null;
     this.user = null;
-    this.isAuthenticated = false;
-    localStorage.removeItem("token"); // Remove token from localStorage
+    this.token = null;
+    localStorage.removeItem("token");
   }
 }
 

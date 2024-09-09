@@ -9,8 +9,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
+import authStore from "./stores/authStore";
 
 const App: React.FC = () => {
+  useEffect(() => {
+    // Load the user from token when the app starts
+    authStore.loadUserFromToken();
+  }, []);
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">

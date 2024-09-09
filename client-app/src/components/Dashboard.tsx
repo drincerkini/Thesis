@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import authStore from "../stores/authStore"; // Import the authStore
+import authStore from "../stores/authStore";
 
 const Dashboard: React.FC = () => {
   return (
