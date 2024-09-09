@@ -9,6 +9,6 @@ router.get("/:id", newsController.getById);
 
 router.post("/", newsController.post);
 
-router.delete("/", newsController.delete);
+router.delete("/:id", newsController.delete);
 
 module.exports = router;

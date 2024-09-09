@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 interface INews {
   _id: string;
@@ -86,6 +87,20 @@ class NewsStore {
     } catch (error) {
       console.error("Failed to add news", error);
       throw error;
+    }
+  }
+
+  // DELETE a news item
+  async deleteNews(id: string) {
+    try {
+      await axios.delete(`http://localhost:5001/api/news/${id}`);
+      runInAction(() => {
+        this.newsList = this.newsList.filter((news) => news._id !== id);
+        toast.success("News deleted successfully");
+      });
+    } catch (error) {
+      console.error("Failed to delete news", error);
+      toast.error("Failed to delete news");
     }
   }
 }
