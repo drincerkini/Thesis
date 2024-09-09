@@ -1,39 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { observer } from "mobx-react-lite";
-
-interface INews {
-  _id: string;
-  title: string;
-  content: string;
-  image: {
-    filename: string;
-    mimetype: string;
-    size: number;
-    url: string;
-  };
-  createdAt: string;
-}
+import newsStore from "../stores/newsStore"; // Import the news store
 
 const NewsDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get the ID from the URL
-  const [newsItem, setNewsItem] = useState<INews | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Use navigate for programmatic navigation
 
   useEffect(() => {
     const fetchNewsDetail = async () => {
-      try {
-        const response = await axios.get<INews>(
-          `http://localhost:5001/api/news/${id}`
-        );
-        setNewsItem(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError("Failed to fetch news details.");
-        setLoading(false);
+      if (id) {
+        await newsStore.fetchNewsById(id); // Fetch news by ID
       }
     };
 
@@ -44,9 +21,12 @@ const NewsDetail: React.FC = () => {
     navigate(-1); // Go back to the previous page
   };
 
-  if (loading)
+  if (newsStore.loading)
     return <div className="text-center text-blue-500">Loading...</div>;
-  if (error) return <div className="text-center text-red-500">{error}</div>;
+  if (newsStore.error)
+    return <div className="text-center text-red-500">{newsStore.error}</div>;
+
+  const newsItem = newsStore.currentNews;
 
   return (
     <div className="min-h-screen bg-gray-100 py-10">

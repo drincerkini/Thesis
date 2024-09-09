@@ -38,7 +38,7 @@ class NewsStore {
     try {
       const response = await axios.get<INews[]>(
         "http://localhost:5001/api/news"
-      ); // Typed response
+      );
       runInAction(() => {
         this.newsList = response.data;
         this.setLoading(false);
@@ -46,6 +46,25 @@ class NewsStore {
     } catch (error) {
       runInAction(() => {
         this.setError("Failed to fetch news");
+        this.setLoading(false);
+      });
+    }
+  }
+
+  // GET news by ID
+  async fetchNewsById(id: string) {
+    this.setLoading(true);
+    try {
+      const response = await axios.get<INews>(
+        `http://localhost:5001/api/news/${id}`
+      );
+      runInAction(() => {
+        this.currentNews = response.data;
+        this.setLoading(false);
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.setError("Failed to fetch news details.");
         this.setLoading(false);
       });
     }
