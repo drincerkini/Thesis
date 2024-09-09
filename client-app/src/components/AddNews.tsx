@@ -29,7 +29,7 @@ const AddNews: React.FC = () => {
 
     try {
       await newsStore.addNews(formData); // Call MobX store to add news
-      navigate("/news"); // Redirect to the news list page after successful submission
+      navigate("/"); // Redirect to the news list page after successful submission
     } catch (err) {
       setError("Failed to add news. Please try again.");
       console.error(err);

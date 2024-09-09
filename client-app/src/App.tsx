@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import authStore from "./stores/authStore";
-import NewsList from "./components/NewsList";
 import AddNews from "./components/AddNews";
 import NewsDetail from "./components/NewsDetail";
 
@@ -26,7 +25,6 @@ const App: React.FC = () => {
         <main className="flex-grow container mx-auto p-4">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/news" element={<NewsList />} />
             <Route path="/add-news" element={<AddNews />} />
             <Route path="/news/:id" element={<NewsDetail />} />
             <Route path="/login" element={<Login />} />

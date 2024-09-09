@@ -1,6 +1,5 @@
-// src/pages/NewsDetail.tsx
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { observer } from "mobx-react-lite";
 
@@ -22,6 +21,7 @@ const NewsDetail: React.FC = () => {
   const [newsItem, setNewsItem] = useState<INews | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Use navigate for programmatic navigation
 
   useEffect(() => {
     const fetchNewsDetail = async () => {
@@ -39,6 +39,10 @@ const NewsDetail: React.FC = () => {
 
     fetchNewsDetail();
   }, [id]);
+
+  const handleGoBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
 
   if (loading)
     return <div className="text-center text-blue-500">Loading...</div>;
@@ -59,7 +63,13 @@ const NewsDetail: React.FC = () => {
               <p className="text-sm text-gray-500 mb-4">
                 {new Date(newsItem.createdAt).toLocaleDateString()}
               </p>
-              <p className="text-gray-700">{newsItem.content}</p>
+              <p className="text-gray-700 mb-6">{newsItem.content}</p>
+              <button
+                onClick={handleGoBack}
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 transition duration-300"
+              >
+                Go Back
+              </button>
             </div>
           </div>
         )}
