@@ -1,7 +1,7 @@
-// src/components/NewsList.tsx
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import newsStore from "../stores/newsStore"; // Import your news store
+import authStore from "../stores/authStore"; // Import authStore to check login status
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,12 +28,14 @@ const NewsList: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-semibold mx-auto">Latest News</h2>
-          <Link
-            to="/add-news" // Adjust the path as needed
-            className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
-          >
-            <i className="fas fa-plus mr-2"></i> Add New
-          </Link>
+          {authStore.isAuthenticated && ( // Check if the user is authenticated
+            <Link
+              to="/add-news"
+              className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+            >
+              <i className="fas fa-plus mr-2"></i> Add New
+            </Link>
+          )}
         </div>
         {newsStore.loading ? (
           <Spinner />
@@ -66,12 +68,14 @@ const NewsList: React.FC = () => {
                     >
                       Read More
                     </Link>
-                    <button
-                      onClick={() => handleDelete(newsItem._id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
+                    {authStore.isAuthenticated && ( // Show delete button only if the user is authenticated
+                      <button
+                        onClick={() => handleDelete(newsItem._id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <i className="fas fa-trash-alt"></i>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
