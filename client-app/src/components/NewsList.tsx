@@ -1,9 +1,11 @@
+// src/components/NewsList.tsx
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import newsStore from "../stores/newsStore"; // Import your news store
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Spinner from "./Spinner"; // Import the Spinner component
 
 const NewsList: React.FC = () => {
   useEffect(() => {
@@ -34,14 +36,7 @@ const NewsList: React.FC = () => {
           </Link>
         </div>
         {newsStore.loading ? (
-          <div className="text-center text-blue-500">
-            <div
-              className="spinner-border animate-spin inline-block w-8 h-8 border-4 border-t-transparent border-blue-500 rounded-full"
-              role="status"
-            >
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
+          <Spinner />
         ) : newsStore.error ? (
           <div className="text-center text-red-500">{newsStore.error}</div>
         ) : (

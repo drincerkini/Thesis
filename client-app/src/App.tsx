@@ -8,16 +8,35 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import authStore from "./stores/authStore";
 import AddNews from "./components/AddNews";
 import NewsDetail from "./components/NewsDetail";
+import Spinner from "./components/Spinner"; // Import Spinner component
 
 const App: React.FC = () => {
+  const [loading, setLoading] = useState(true); // Add loading state
+
   useEffect(() => {
-    // Load the user from token when the app starts
-    authStore.loadUserFromToken();
+    // Simulate a 1-second loading delay
+    const loadApp = async () => {
+      await authStore.loadUserFromToken(); // Load user from token
+      setTimeout(() => {
+        setLoading(false); // Hide spinner after 1 second
+      }, 1000);
+    };
+
+    loadApp();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner /> {/* Display the spinner while loading */}
+      </div>
+    );
+  }
+
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">

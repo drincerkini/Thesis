@@ -1,25 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.spinner-border {
-  border-color: transparent;
-  border-right-color: currentColor;
-  border-radius: 50%;
-  border-width: 0.2em;
-  border-style: solid;
-  display: inline-block;
-  vertical-align: text-bottom;
-  width: 3rem;
-  height: 3rem;
-  animation: spinner-border 0.75s linear infinite;
-}
-
-@keyframes spinner-border {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
