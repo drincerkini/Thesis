@@ -1,0 +1,88 @@
+# Build Folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ASP.NET Scaffolding
+.scaffolding/
+
+# Visual Studio Code files
+.vscode/
+
+# Rider IDE files
+.idea/
+
+# Local History for Rider IDE
+.idea/.idea.localHistory
+
+# User secrets
+**/secrets.json
+
+# Auto-generated packages
+*.nupkg
+*.snupkg
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+packages/
+
+# Backup & Report files
+*.bak
+*.swp
+*.log
+*.csv
+*.pdm
+*.mdf
+*.ldf
+*.pidb
+*.publish.xml
+# SQL Server files
+*.mdf
+*.ldf
+*.ndf
+*.sdf
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Resharper and Rider temp files
+_ReSharper*
+.idea/
+
+# VS Code settings
+.vscode/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# OS-generated metadata files
+.DS_Store
+._*
+
+# ASP.NET Identity Database
+App_Data/
+
+# Include if you have tests or coverage reports
+TestResults/
+coverage/
+
+.vs/
