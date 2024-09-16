@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using smis_app.Models;
+using SchoolManagmentSystem.Models;
 using System.Diagnostics;
 
-namespace smis_app.Controllers
+namespace SchoolManagmentSystem.Controllers
 {
     public class HomeController : Controller
     {

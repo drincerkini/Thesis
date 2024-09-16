@@ -1,4 +1,4 @@
-namespace smis_app.Models
+namespace SchoolManagmentSystem.Models
 {
     public class ErrorViewModel
     {

@@ -1,0 +1,28 @@
+﻿@model Course
+
+<h1>Assigned Professors for @Model.Title Course</h1>
+
+<table class="table table-light table-striped">
+    <thead>
+        <tr>
+            <th>Professor ID</th>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var enrollment in Model.CourseAssignments)
+        {
+            <tr>
+                <td>@enrollment.Professor.ProfessorID</td>
+                <td>@enrollment.Professor.FullName</td>
+                <td>@enrollment.Professor.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <button class="btn btn btn-light">
+        <a class="btn btn-ligt text-secondary" asp-action="Index">Back to List</a>
+    </button>
+</div>

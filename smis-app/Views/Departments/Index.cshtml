@@ -1,0 +1,95 @@
+@model PaginatedList<SchoolManagmentSystem.Models.Department>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center">Departments</h1>
+
+<div class="container d-flex justify-content-between">
+    <p>
+        @if (User.IsInRole("Admin") || User.IsInRole("Academic Staff"))
+        {
+            <button class="btn btn btn-outline-light">
+                <a class="btn btn-outline-light text-primary" asp-action="Create">Create New Department</a>
+            </button>
+        }
+    </p>
+
+    <form asp-action="Index" method="get">
+        @*<div class="form-actions no-color">
+        <p>
+        Find Departments: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+        <input type="submit" value="Search" class="btn btn-default" /> |
+        <a asp-action="Index">Back to Full List</a>
+        </p>
+        </div>*@
+        <div class="input-group">
+            <div class="form-outline">
+                <input type="search" id="form1" class="form-control" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Search Departments" />
+            </div>
+            <button type="submit" class="btn btn-light">
+                Search
+            </button>
+        </div>
+
+        <button class="btn btn btn-light">
+            <a class="btn btn-ligt text-secondary" asp-action="Index">Back to List</a>
+        </button>
+    </form>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].Name)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CreatedDateParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].CreatedDate)</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    <a class="btn btn-ligt text-secondary" asp-action="DepProfessorsList" asp-route-id="@item.DepartmentID">Show Professors</a>
+                    <a class="btn btn-ligt text-secondary" asp-action="DepCoursesList" asp-route-id="@item.DepartmentID">Show Courses</a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Academic Staff"))
+                    {
+                        <a class="btn btn-ligt text-secondary" asp-action="Edit" asp-route-id="@item.DepartmentID">Edit</a>
+                        <a class="btn btn-ligt text-secondary" asp-action="Details" asp-route-id="@item.DepartmentID">Details</a>
+                        <a class="btn btn-ligt text-danger" asp-action="Delete" asp-route-id="@item.DepartmentID">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
