@@ -9,17 +9,17 @@ using SchoolManagmentSystem.Data;
 
 #nullable disable
 
-namespace smis_app.Data.Migrations
+namespace SchoolManagmentSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240916210216_initialApp")]
-    partial class initialApp
+    [Migration("20230506192530_university-DB-added")]
+    partial class universityDBadded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.32")
+                .HasAnnotation("ProductVersion", "6.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -176,7 +176,7 @@ namespace smis_app.Data.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("BranchID")
+                    b.Property<int>("DepartmentID")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -198,7 +198,7 @@ namespace smis_app.Data.Migrations
 
                     b.HasKey("AcStaffID");
 
-                    b.HasIndex("BranchID");
+                    b.HasIndex("DepartmentID");
 
                     b.ToTable("AcStaffs");
                 });
@@ -276,27 +276,6 @@ namespace smis_app.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SchoolManagmentSystem.Models.Artikulli", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Artikulli");
-                });
-
             modelBuilder.Entity("SchoolManagmentSystem.Models.Assistant", b =>
                 {
                     b.Property<int>("AssistantID")
@@ -311,6 +290,9 @@ namespace smis_app.Data.Migrations
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -333,6 +315,8 @@ namespace smis_app.Data.Migrations
                         .HasColumnType("nvarchar(15)");
 
                     b.HasKey("AssistantID");
+
+                    b.HasIndex("DepartmentID");
 
                     b.HasIndex("ProfessorID");
 
@@ -482,32 +466,6 @@ namespace smis_app.Data.Migrations
                     b.ToTable("Enrollments");
                 });
 
-            modelBuilder.Entity("SchoolManagmentSystem.Models.Komenti", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<int>("Article_ID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Article_ID");
-
-                    b.ToTable("Komenti");
-                });
-
             modelBuilder.Entity("SchoolManagmentSystem.Models.Professor", b =>
                 {
                     b.Property<int>("ProfessorID")
@@ -565,7 +523,7 @@ namespace smis_app.Data.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentID")
+                    b.Property<int?>("DepartmentID")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -645,22 +603,30 @@ namespace smis_app.Data.Migrations
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.AcStaff", b =>
                 {
-                    b.HasOne("SchoolManagmentSystem.Models.Branch", "Branch")
+                    b.HasOne("SchoolManagmentSystem.Models.Department", "Department")
                         .WithMany("AcStaffs")
-                        .HasForeignKey("BranchID")
+                        .HasForeignKey("DepartmentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Branch");
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Assistant", b =>
                 {
+                    b.HasOne("SchoolManagmentSystem.Models.Department", "Department")
+                        .WithMany("Assistants")
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SchoolManagmentSystem.Models.Professor", "Professor")
                         .WithMany("Assistants")
                         .HasForeignKey("ProfessorID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Department");
 
                     b.Navigation("Professor");
                 });
@@ -679,7 +645,7 @@ namespace smis_app.Data.Migrations
             modelBuilder.Entity("SchoolManagmentSystem.Models.CourseAssignment", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Course", "Course")
-                        .WithMany("CourseAssignments")
+                        .WithMany()
                         .HasForeignKey("CourseID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -733,17 +699,6 @@ namespace smis_app.Data.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("SchoolManagmentSystem.Models.Komenti", b =>
-                {
-                    b.HasOne("SchoolManagmentSystem.Models.Artikulli", "Artikulli")
-                        .WithMany("Komentet")
-                        .HasForeignKey("Article_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Artikulli");
-                });
-
             modelBuilder.Entity("SchoolManagmentSystem.Models.Professor", b =>
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Department", "Department")
@@ -759,34 +714,27 @@ namespace smis_app.Data.Migrations
                 {
                     b.HasOne("SchoolManagmentSystem.Models.Department", "Department")
                         .WithMany("Students")
-                        .HasForeignKey("DepartmentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentID");
 
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("SchoolManagmentSystem.Models.Artikulli", b =>
-                {
-                    b.Navigation("Komentet");
-                });
-
             modelBuilder.Entity("SchoolManagmentSystem.Models.Branch", b =>
                 {
-                    b.Navigation("AcStaffs");
-
                     b.Navigation("DeptBranches");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Course", b =>
                 {
-                    b.Navigation("CourseAssignments");
-
                     b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SchoolManagmentSystem.Models.Department", b =>
                 {
+                    b.Navigation("AcStaffs");
+
+                    b.Navigation("Assistants");
+
                     b.Navigation("Courses");
 
                     b.Navigation("DeptBranches");

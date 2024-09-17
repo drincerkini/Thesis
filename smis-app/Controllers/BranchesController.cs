@@ -101,30 +101,39 @@ namespace SchoolManagmentSystem.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BranchID,SMIAL,Name,Location")] Branch branch)
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create([Bind("BranchID,SMIAL,Name,Location")] Branch branch)
+{
+    var depList = await _context.Departments.ToListAsync();
+    
+    if (ModelState.IsValid)
+    {
+        // First, save the branch to get the generated BranchID
+        _context.Add(branch);
+        await _context.SaveChangesAsync();  // Save first so BranchID is generated
+
+        // Now, associate the departments with the newly created branch
+        if (depList != null)
         {
-            var depList = _context.Departments.ToListAsync();
-            if (ModelState.IsValid)
+            foreach (var item in depList)
             {
-                _context.Add(branch);
-                if (depList != null)
+                var depBranch = new DeptBranch
                 {
-                    foreach (var item in await depList)
-                    {
-                        var depBranch = new DeptBranch
-                        {
-                            BranchID = branch.BranchID,
-                            DepartmentID = item.DepartmentID
-                        };
-                        _context.Add(depBranch);
-                    }
-                }
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    BranchID = branch.BranchID,  // This now has the correct BranchID
+                    DepartmentID = item.DepartmentID
+                };
+                _context.Add(depBranch);
             }
-            return View(branch);
+
+            // Save changes after adding all DeptBranch entries
+            await _context.SaveChangesAsync();
         }
+        
+        return RedirectToAction(nameof(Index));
+    }
+    
+    return View(branch);
+}
 
         // GET: Branches/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagmentSystem.Data;
 using System;
 
-namespace smis_app.Data.Migrations
+namespace SchoolManagmentSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]

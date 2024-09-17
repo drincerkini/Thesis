@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
-namespace smis_app.Data.Migrations
+namespace SchoolManagmentSystem.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

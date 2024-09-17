@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace smis_app.Data.Migrations
+namespace SchoolManagmentSystem.Data.Migrations
 {
-    public partial class initialApp : Migration
+    public partial class universityDBadded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,20 +22,6 @@ namespace smis_app.Data.Migrations
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
-
-            migrationBuilder.CreateTable(
-                name: "Artikulli",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Artikulli", x => x.ID);
-                });
 
             migrationBuilder.CreateTable(
                 name: "Branches",
@@ -67,27 +53,6 @@ namespace smis_app.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Komenti",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Article_ID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Komenti", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Komenti_Artikulli_Article_ID",
-                        column: x => x.Article_ID,
-                        principalTable: "Artikulli",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AcStaffs",
                 columns: table => new
                 {
@@ -99,16 +64,16 @@ namespace smis_app.Data.Migrations
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BranchID = table.Column<int>(type: "int", nullable: false)
+                    DepartmentID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AcStaffs", x => x.AcStaffID);
                     table.ForeignKey(
-                        name: "FK_AcStaffs_Branches_BranchID",
-                        column: x => x.BranchID,
-                        principalTable: "Branches",
-                        principalColumn: "BranchID",
+                        name: "FK_AcStaffs_Departments_DepartmentID",
+                        column: x => x.DepartmentID,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -196,7 +161,7 @@ namespace smis_app.Data.Migrations
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DepartmentID = table.Column<int>(type: "int", nullable: false)
+                    DepartmentID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -205,8 +170,7 @@ namespace smis_app.Data.Migrations
                         name: "FK_Students_Departments_DepartmentID",
                         column: x => x.DepartmentID,
                         principalTable: "Departments",
-                        principalColumn: "DepartmentID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "DepartmentID");
                 });
 
             migrationBuilder.CreateTable(
@@ -221,7 +185,7 @@ namespace smis_app.Data.Migrations
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfessorID = table.Column<int>(type: "int", nullable: false)
+                    ProfessorID = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -231,7 +195,7 @@ namespace smis_app.Data.Migrations
                         column: x => x.ProfessorID,
                         principalTable: "Professors",
                         principalColumn: "ProfessorID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -278,19 +242,19 @@ namespace smis_app.Data.Migrations
                         column: x => x.CourseID,
                         principalTable: "Courses",
                         principalColumn: "CourseID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Enrollments_Students_StudentID",
                         column: x => x.StudentID,
                         principalTable: "Students",
                         principalColumn: "StudentID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AcStaffs_BranchID",
+                name: "IX_AcStaffs_DepartmentID",
                 table: "AcStaffs",
-                column: "BranchID");
+                column: "DepartmentID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assistants_ProfessorID",
@@ -333,11 +297,6 @@ namespace smis_app.Data.Migrations
                 column: "StudentID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Komenti_Article_ID",
-                table: "Komenti",
-                column: "Article_ID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Professors_DepartmentID",
                 table: "Professors",
                 column: "DepartmentID");
@@ -366,9 +325,6 @@ namespace smis_app.Data.Migrations
                 name: "Enrollments");
 
             migrationBuilder.DropTable(
-                name: "Komenti");
-
-            migrationBuilder.DropTable(
                 name: "Professors");
 
             migrationBuilder.DropTable(
@@ -379,9 +335,6 @@ namespace smis_app.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Students");
-
-            migrationBuilder.DropTable(
-                name: "Artikulli");
 
             migrationBuilder.DropTable(
                 name: "Departments");

@@ -12,7 +12,7 @@ const Home: React.FC = () => {
         className="w-full bg-cover bg-center py-20 text-white text-center"
         style={{ backgroundImage: `url(${universityImage})` }}
       >
-        <div className="bg-black bg-opacity-50 p-8 rounded-lg">
+        <div className=" bg-opacity-50 p-8 rounded-lg">
           <h1 className="text-4xl font-bold mb-4">
             Welcome to Drini's University
           </h1>
