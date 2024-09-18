@@ -1,23 +1,73 @@
 import { Link, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import authStore from "../stores/authStore"; // Import the authStore
+import authStore from "../stores/authStore";
+import { useState } from "react"; // Import useState from React
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false); // State to manage user dropdown visibility
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false); // State to manage menu dropdown visibility
 
   const handleLogout = () => {
     authStore.logout();
     navigate("/login");
   };
 
+  const toggleUserDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const toggleMenuDropdown = () => {
+    setShowMenuDropdown(!showMenuDropdown);
+  };
+
   return (
     <header className="p-4 bg-white shadow-md border-b border-gray-200">
       <nav className="container mx-auto flex justify-between items-center">
-        <div className="text-2xl font-semibold text-gray-800">
-          <Link to="/" className="hover:text-gray-600 transition duration-200">
+        {/* Home Link */}
+        <div className="flex items-center space-x-4">
+          <Link
+            to="/"
+            className="text-2xl font-semibold text-gray-800 hover:text-gray-600 transition duration-200"
+          >
             Home
           </Link>
+          {/* New Dropdown Next to Home */}
+          <div className="relative">
+            <button
+              onClick={toggleMenuDropdown}
+              className="text-gray-800 hover:text-gray-600 transition duration-200"
+            >
+              E-Sherbimet
+            </button>
+            {showMenuDropdown && (
+              <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                <a
+                  href="https://localhost:7057/"
+                  target="_blank" // Opens the link in a new tab
+                  rel="noopener noreferrer" // Security best practice
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                >
+                  Smis
+                </a>
+                <Link
+                  to="/services"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                >
+                  Services
+                </Link>
+                <Link
+                  to="/contact"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                >
+                  Contact
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* User Links */}
         <div className="flex items-center space-x-4">
           {authStore.isAuthenticated ? (
             <>
@@ -27,19 +77,27 @@ const Header: React.FC = () => {
               >
                 Dashboard
               </Link>
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <i className="fas fa-user-circle text-2xl text-gray-800"></i>
-                </div>
-                <span className="text-gray-800 font-medium">
-                  {authStore.user?.username}
-                </span>
+              <div className="relative">
                 <button
-                  onClick={handleLogout}
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:from-blue-600 hover:to-blue-700 transition duration-300"
+                  onClick={toggleUserDropdown}
+                  className="flex items-center space-x-2 text-gray-800 hover:text-gray-600 transition duration-200"
                 >
-                  Logout
+                  <i className="fas fa-user-circle text-2xl"></i>
+                  <span className="font-medium">
+                    {authStore.user?.username}
+                  </span>
                 </button>
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full py-2 text-left px-4 text-gray-800 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                    {/* Add more dropdown items as needed */}
+                  </div>
+                )}
               </div>
             </>
           ) : (
