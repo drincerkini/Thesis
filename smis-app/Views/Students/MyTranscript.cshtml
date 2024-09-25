@@ -24,7 +24,7 @@ else
                     <td>@grade.Course.CourseName</td>
                     <td>@grade.Score</td>
                     <td>@grade.Professor.Name @grade.Professor.Surname</td>
-                    @* <td>@grade.DateGraded?.ToString("yyyy-MM-dd")</td> *@ <!-- Assuming you add a DateGraded property -->
+                    <td>@grade.DateGraded?.ToString("dd-MM-yyyyy")</td> <!-- Assuming you add a DateGraded property -->
                 </tr>
             }
         </tbody>

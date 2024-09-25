@@ -12,6 +12,8 @@ namespace SchoolManagmentSystem.Models
         [Range(0, 100)] // Assuming grades are from 0 to 100
         public int Score { get; set; }
 
+        public DateTime? DateGraded { get; set; }
+
         // Foreign key to Course
         [ForeignKey("Course")]
         public int CourseId { get; set; }

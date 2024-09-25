@@ -355,7 +355,8 @@ namespace SchoolManagmentSystem.Controllers
                     StudentId = studentId,
                     CourseId = courseId,
                     Score = score,
-                    ProfessorId = professor.ProfessorID
+                    ProfessorId = professor.ProfessorID,
+                    DateGraded = DateTime.Now
                 };
 
                 _context.Grades.Add(grade);
