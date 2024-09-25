@@ -51,6 +51,54 @@ namespace SchoolManagmentSystem.Controllers
             return View(grades);
         }
 
+        [Authorize(Roles = "Student")]
+        [HttpPost]
+        public async Task<IActionResult> RemoveGrade(int gradeId)
+        {
+            // Get the current logged-in user's email
+            var userEmail = User.Identity.Name;
+
+            // Find the student associated with this email
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == userEmail);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            // Find the grade associated with the student
+            var grade = await _context.Grades.FirstOrDefaultAsync(g => g.GradeId == gradeId && g.StudentId == student.StudentID);
+
+            if (grade == null)
+            {
+                return NotFound("Grade not found.");
+            }
+
+            // Find the enrollment entry for the student and course (if exists)
+            var enrollment = await _context.Enrollments
+                                           .FirstOrDefaultAsync(e => e.StudentId == student.StudentID && e.CourseId == grade.CourseId);
+
+            if (enrollment == null)
+            {
+                return NotFound("Enrollment not found.");
+            }
+
+            // Remove the grade
+            _context.Grades.Remove(grade);
+
+            // Remove the enrollment from the course
+            _context.Enrollments.Remove(enrollment);
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            // Redirect back to the transcript page
+            return RedirectToAction(nameof(MyTranscript));
+        }
+
+
+
+
         [AllowAnonymous]
         // GET: Students
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)

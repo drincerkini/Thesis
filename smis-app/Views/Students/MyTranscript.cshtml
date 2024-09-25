@@ -15,6 +15,7 @@ else
                 <th>Score</th>
                 <th>Graded By</th>
                 <th>Date Graded</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -24,9 +25,24 @@ else
                     <td>@grade.Course.CourseName</td>
                     <td>@grade.Score</td>
                     <td>@grade.Professor.Name @grade.Professor.Surname</td>
-                    <td>@grade.DateGraded?.ToString("dd-MM-yyyyy")</td> <!-- Assuming you add a DateGraded property -->
+                    <td>@grade.DateGraded?.ToString("dd-MM-yyyy")</td>
+                    <td>
+                        <form asp-action="RemoveGrade" method="post" style="display:inline-block;">
+                            <input type="hidden" name="gradeId" value="@grade.GradeId" />
+                            <button type="submit" class="btn btn-danger">Remove Grade</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 }
+
+<script>
+    document.querySelectorAll('form').forEach(form => {
+        form.onsubmit = function() {
+            return confirm('Are you sure you want to remove this grade? This action cannot be undone.');
+        };
+    });
+</script>
+
