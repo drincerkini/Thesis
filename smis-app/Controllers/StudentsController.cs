@@ -12,7 +12,7 @@ using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
 {
-    [Authorize(Roles = "Admin, Academic Staff, Professor ")]
+    [Authorize(Roles = "Admin, Academic Staff, Professor, Student ")]
 
     public class StudentsController : Controller
     {
@@ -23,6 +23,32 @@ namespace SchoolManagmentSystem.Controllers
         {
             _context = context;
             _userManager = userManager;
+        }
+
+        public async Task<IActionResult> MyTranscript()
+        {
+            // Get the current logged-in user email
+            var userEmail = User.Identity.Name;
+
+            // Find the student associated with this email
+            var student = await _context.Students
+                                        .FirstOrDefaultAsync(s => s.Email == userEmail);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            // Get the grades for the student
+            var grades = await _context.Grades
+                                       .Include(g => g.Course)
+                                       .Include(g => g.Professor)
+                                       .Where(g => g.StudentId == student.StudentID)
+                                       .ToListAsync();
+
+            // Pass the student's transcript to the view
+            ViewBag.StudentName = student.Name + " " + student.Surname;
+            return View(grades);
         }
 
         [AllowAnonymous]
@@ -92,6 +118,7 @@ namespace SchoolManagmentSystem.Controllers
             }
         }
 
+     
 
         // GET: Students/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -241,5 +268,9 @@ namespace SchoolManagmentSystem.Controllers
         {
             return _context.Students.Any(e => e.StudentID == id);
         }
+
+       
+
+
     }
 }

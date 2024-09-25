@@ -1,0 +1,32 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Grade>
+
+<h2>Transcript for @ViewBag.StudentName</h2>
+
+@if (!Model.Any())
+{
+    <p>You have no grades recorded yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Score</th>
+                <th>Graded By</th>
+                <th>Date Graded</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grade in Model)
+            {
+                <tr>
+                    <td>@grade.Course.CourseName</td>
+                    <td>@grade.Score</td>
+                    <td>@grade.Professor.Name @grade.Professor.Surname</td>
+                    @* <td>@grade.DateGraded?.ToString("yyyy-MM-dd")</td> *@ <!-- Assuming you add a DateGraded property -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}

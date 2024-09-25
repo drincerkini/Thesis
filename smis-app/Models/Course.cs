@@ -7,21 +7,22 @@ namespace SchoolManagmentSystem.Models
     public class Course
     {
         [Key]
-        [Display(Name = "Number")]
-        public int CourseID { get; set; }
+        public int CourseId { get; set; }
+
         [Required]
-        [StringLength(25, MinimumLength = 2, ErrorMessage = "Title cannot be shorter than 2 characters or longer than 25 characters.")]
-        public string? Title { get; set; }
-        [Required]
-        [Range(0, 12)]
-        public int ECTS { get; set; }
+        public string CourseName { get; set; }
 
         //relationship
-
         public int DepartmentID { get; set; }
         [ForeignKey("DepartmentID")]
         public Department? Department { get; set; }
-        public ICollection<Enrollment>? Enrollments { get; }
-        public ICollection<CourseAssignment>? CourseAssignments { get; }
+
+        // Foreign key to Professor (one professor teaches many courses)
+        public int ProfessorId { get; set; }
+        [ForeignKey("ProfessorId")]
+        public Professor? Professor { get; set; }
+
+        // Many-to-many relationship with Student through Enrollment
+        public ICollection<Enrollment>? Enrollments { get; set; }
     }
 }

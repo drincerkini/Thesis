@@ -1,0 +1,49 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Student>
+
+<h2>Students Enrolled in @ViewBag.CourseName</h2>
+
+@if (!Model.Any())
+{
+    <p>No students are enrolled in this course.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model)
+            {
+                <tr>
+                    <td>@student.Name @student.Surname</td>
+                    <td>@student.Email</td>
+                    <td>
+                        <!-- Form to assign a grade -->
+                        <form asp-action="GradeStudent" method="post">
+                            <input type="hidden" name="studentId" value="@student.StudentID" />
+                            <input type="hidden" name="courseId" value="@ViewBag.CourseId" />
+                            <div class="input-group">
+                                <!-- Dropdown for selecting a grade with smaller width -->
+                                <select class="form-control w-25" name="score" required>
+                                    <option value="" disabled selected>Select</option>
+                                    @for (int i = 5; i <= 10; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-success">Assign Grade</button>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

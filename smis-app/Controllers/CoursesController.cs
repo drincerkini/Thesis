@@ -1,19 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Data;
 using SchoolManagmentSystem.Models;
 
-namespace SchoolManagmentSystem.Controllers
+namespace smis_app.Controllers
 {
-    [Authorize(Roles = "Admin, Academic Staff, Professor ")]
-
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,71 +19,25 @@ namespace SchoolManagmentSystem.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
         // GET: Courses
-        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index()
         {
-            {
-                ViewData["CurrentSort"] = sortOrder;
-                ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" : "Title";
-                ViewData["CreditsSortParm"] = sortOrder == "Credits" ? "credits_desc" : "Credits";
-
-                if (searchString != null)
-                {
-                    pageNumber = 1;
-                }
-                else
-                {
-                    searchString = currentFilter;
-                }
-
-                ViewData["CurrentFilter"] = searchString;
-
-
-                var courses = from c in _context.Courses
-                              select c;
-
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    courses = courses.Where(c => c.Title.Contains(searchString));
-                }
-
-                switch (sortOrder)
-                {
-                    case "Title":
-                        courses = courses.OrderBy(c => c.Title);
-                        break;
-                    case "title_desc":
-                        courses = courses.OrderByDescending(c => c.Title);
-                        break;
-                    case "Credits":
-                        courses = courses.OrderBy(c => c.ECTS);
-                        break;
-                    case "credits_desc":
-                        courses = courses.OrderByDescending(c => c.ECTS);
-                        break;
-                    default:
-                        courses = courses.OrderBy(c => c.Title);
-                        break;
-                }
-
-                int pageSize = 5;
-                return View(await PaginatedList<Course>.CreateAsync(courses.Include(c => c.Department).AsNoTracking(), pageNumber ?? 1, pageSize));
-            }
+            var applicationDbContext = _context.Courses.Include(c => c.Department).Include(c => c.Professor);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Assistants/Details/5
+        // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Courses == null)
             {
                 return NotFound();
             }
 
             var course = await _context.Courses
                 .Include(c => c.Department)
-                .FirstOrDefaultAsync(m => m.CourseID == id);
-
+                .Include(c => c.Professor)
+                .FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {
                 return NotFound();
@@ -96,11 +46,11 @@ namespace SchoolManagmentSystem.Controllers
             return View(course);
         }
 
-
         // GET: Courses/Create
         public IActionResult Create()
         {
             ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name");
+            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email");
             return View();
         }
 
@@ -109,7 +59,7 @@ namespace SchoolManagmentSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID,Title,ECTS,DepartmentID")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseId,CourseName,DepartmentID,ProfessorId")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -118,6 +68,7 @@ namespace SchoolManagmentSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", course.DepartmentID);
+            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email", course.ProfessorId);
             return View(course);
         }
 
@@ -135,6 +86,7 @@ namespace SchoolManagmentSystem.Controllers
                 return NotFound();
             }
             ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", course.DepartmentID);
+            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email", course.ProfessorId);
             return View(course);
         }
 
@@ -143,9 +95,9 @@ namespace SchoolManagmentSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseID,Title,ECTS,DepartmentID")] Course course)
+        public async Task<IActionResult> Edit(int id, [Bind("CourseId,CourseName,DepartmentID,ProfessorId")] Course course)
         {
-            if (id != course.CourseID)
+            if (id != course.CourseId)
             {
                 return NotFound();
             }
@@ -159,7 +111,7 @@ namespace SchoolManagmentSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.CourseID))
+                    if (!CourseExists(course.CourseId))
                     {
                         return NotFound();
                     }
@@ -171,6 +123,7 @@ namespace SchoolManagmentSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", course.DepartmentID);
+            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email", course.ProfessorId);
             return View(course);
         }
 
@@ -184,7 +137,8 @@ namespace SchoolManagmentSystem.Controllers
 
             var course = await _context.Courses
                 .Include(c => c.Department)
-                .FirstOrDefaultAsync(m => m.CourseID == id);
+                .Include(c => c.Professor)
+                .FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {
                 return NotFound();
@@ -207,45 +161,14 @@ namespace SchoolManagmentSystem.Controllers
             {
                 _context.Courses.Remove(course);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CourseExists(int id)
         {
-            return (_context.Courses?.Any(e => e.CourseID == id)).GetValueOrDefault();
-        }
-        [AllowAnonymous]
-        public async Task<IActionResult> CourseStudentsList(int? id)
-        {
-            var course = await _context.Courses
-                .Include(c => c.Enrollments)
-                .ThenInclude(e => e.Student)
-                .FirstOrDefaultAsync(c => c.CourseID == id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> CourseProfessorsList(int? id)
-        {
-            var course = await _context.Courses
-                .Include(c => c.CourseAssignments)
-                .ThenInclude(e => e.Professor)
-                .FirstOrDefaultAsync(c => c.CourseID == id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
+          return (_context.Courses?.Any(e => e.CourseId == id)).GetValueOrDefault();
         }
     }
 }

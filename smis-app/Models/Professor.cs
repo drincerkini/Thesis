@@ -43,8 +43,6 @@ namespace SchoolManagmentSystem.Models
 
         //relationship
 
-        public ICollection<CourseAssignment>? CourseAssignments { get; set; }
-
         public int DepartmentID { get; set; }
 
         [ForeignKey("DepartmentID")]
@@ -52,7 +50,8 @@ namespace SchoolManagmentSystem.Models
 
         public ICollection<Assistant>? Assistants { get; set; }
 
-
+        // One-to-many relationship with Course
+        public ICollection<Course>? Courses { get; set; }
     }
 }
 

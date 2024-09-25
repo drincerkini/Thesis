@@ -1,12 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolManagmentSystem.Models
 {
-    public class Enrollment
+    public class Grade
     {
         [Key]
-        public int EnrollmentId { get; set; }
+        public int GradeId { get; set; }
+
+        [Required]
+        [Range(0, 100)] // Assuming grades are from 0 to 100
+        public int Score { get; set; }
 
         // Foreign key to Course
         [ForeignKey("Course")]
@@ -18,5 +22,9 @@ namespace SchoolManagmentSystem.Models
         public int StudentId { get; set; }
         public Student? Student { get; set; }
 
+        // Foreign key to Professor (who gave the grade)
+        [ForeignKey("Professor")]
+        public int ProfessorId { get; set; }
+        public Professor? Professor { get; set; }
     }
 }

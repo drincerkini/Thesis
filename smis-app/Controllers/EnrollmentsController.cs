@@ -1,37 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Data;
 using SchoolManagmentSystem.Models;
 
-namespace SchoolManagmentSystem.Controllers
+namespace smis_app.Controllers
 {
-    [Authorize(Roles = "Admin, Academic Staff, Professor ")]
-
     public class EnrollmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EnrollmentsController(ApplicationDbContext context, ILogger<EnrollmentsController> logger, UserManager<ApplicationUser> userManager)
+        public EnrollmentsController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
-
 
         // GET: Enrollments
         public async Task<IActionResult> Index()
         {
-            var userId = _userManager.GetUserId(this.User);
             var applicationDbContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -47,7 +37,7 @@ namespace SchoolManagmentSystem.Controllers
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)
                 .Include(e => e.Student)
-                .FirstOrDefaultAsync(m => m.EnrollmentID == id);
+                .FirstOrDefaultAsync(m => m.EnrollmentId == id);
             if (enrollment == null)
             {
                 return NotFound();
@@ -59,8 +49,8 @@ namespace SchoolManagmentSystem.Controllers
         // GET: Enrollments/Create
         public IActionResult Create()
         {
-            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "Title");
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "Email");
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName");
+            ViewData["StudentId"] = new SelectList(_context.Students, "StudentID", "Email");
             return View();
         }
 
@@ -69,7 +59,7 @@ namespace SchoolManagmentSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EnrollmentID,StudentID,CourseID,Grade")] Enrollment enrollment)
+        public async Task<IActionResult> Create([Bind("EnrollmentId,CourseId,StudentId")] Enrollment enrollment)
         {
             if (ModelState.IsValid)
             {
@@ -77,8 +67,8 @@ namespace SchoolManagmentSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "Title", enrollment.CourseID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "Email", enrollment.StudentID);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", enrollment.CourseId);
+            ViewData["StudentId"] = new SelectList(_context.Students, "StudentID", "Email", enrollment.StudentId);
             return View(enrollment);
         }
 
@@ -95,8 +85,8 @@ namespace SchoolManagmentSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "Title", enrollment.CourseID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "Email", enrollment.StudentID);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", enrollment.CourseId);
+            ViewData["StudentId"] = new SelectList(_context.Students, "StudentID", "Email", enrollment.StudentId);
             return View(enrollment);
         }
 
@@ -105,9 +95,9 @@ namespace SchoolManagmentSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentID,StudentID,CourseID,Grade")] Enrollment enrollment)
+        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentId,CourseId,StudentId")] Enrollment enrollment)
         {
-            if (id != enrollment.EnrollmentID)
+            if (id != enrollment.EnrollmentId)
             {
                 return NotFound();
             }
@@ -121,7 +111,7 @@ namespace SchoolManagmentSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EnrollmentExists(enrollment.EnrollmentID))
+                    if (!EnrollmentExists(enrollment.EnrollmentId))
                     {
                         return NotFound();
                     }
@@ -132,8 +122,8 @@ namespace SchoolManagmentSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "Title", enrollment.CourseID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "Email", enrollment.StudentID);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", enrollment.CourseId);
+            ViewData["StudentId"] = new SelectList(_context.Students, "StudentID", "Email", enrollment.StudentId);
             return View(enrollment);
         }
 
@@ -148,7 +138,7 @@ namespace SchoolManagmentSystem.Controllers
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)
                 .Include(e => e.Student)
-                .FirstOrDefaultAsync(m => m.EnrollmentID == id);
+                .FirstOrDefaultAsync(m => m.EnrollmentId == id);
             if (enrollment == null)
             {
                 return NotFound();
@@ -171,14 +161,14 @@ namespace SchoolManagmentSystem.Controllers
             {
                 _context.Enrollments.Remove(enrollment);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EnrollmentExists(int id)
         {
-            return _context.Enrollments.Any(e => e.EnrollmentID == id);
+          return (_context.Enrollments?.Any(e => e.EnrollmentId == id)).GetValueOrDefault();
         }
     }
 }

@@ -23,6 +23,8 @@ namespace SchoolManagmentSystem.Data
         public DbSet<Artikulli> Artikulli { get; set; }
         public DbSet<Komenti> Komenti { get; set; }
 
+        public DbSet<Grade> Grades { get; set; }
+
 
     }
 }

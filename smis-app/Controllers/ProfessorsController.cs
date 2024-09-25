@@ -250,5 +250,125 @@ namespace SchoolManagmentSystem.Controllers
             return View(assistants);
         }
 
+        [Authorize(Roles = "Professor")]
+        public async Task<IActionResult> MyCourses()
+        {
+            // Get the current logged-in user
+            var userEmail = User.Identity.Name;
+
+            // Find the professor associated with this email
+            var professor = await _context.Professors
+                                          .Include(p => p.Courses) // Include courses that the professor teaches
+                                          .FirstOrDefaultAsync(p => p.Email == userEmail);
+
+            if (professor == null)
+            {
+                return NotFound("Professor not found.");
+            }
+
+            // Get the courses taught by this professor
+            var courses = await _context.Courses
+                                        .Where(c => c.ProfessorId == professor.ProfessorID)
+                                        .Include(c => c.Department) // Include the department for more context
+                                        .ToListAsync();
+
+            // Pass the professor's courses to the view
+            return View(courses);
+        }
+
+
+        [Authorize(Roles = "Professor")]
+        public async Task<IActionResult> CourseStudents(int id)
+        {
+            // Get the current logged-in user
+            var userEmail = User.Identity.Name;
+
+            // Find the professor associated with this email
+            var professor = await _context.Professors
+                                          .FirstOrDefaultAsync(p => p.Email == userEmail);
+
+            if (professor == null)
+            {
+                return NotFound("Professor not found.");
+            }
+
+            // Verify the course belongs to the professor
+            var course = await _context.Courses
+                                       .Include(c => c.Enrollments)
+                                       .ThenInclude(e => e.Student)
+                                       .FirstOrDefaultAsync(c => c.CourseId == id && c.ProfessorId == professor.ProfessorID);
+
+            if (course == null)
+            {
+                return NotFound("Course not found or you do not teach this course.");
+            }
+
+            // Pass the list of students and course details to the view
+            ViewBag.CourseId = course.CourseId;
+            ViewBag.ProfessorId = professor.ProfessorID;
+
+            var students = course.Enrollments.Select(e => e.Student).ToList();
+            return View(students);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Professor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GradeStudent(int studentId, int courseId, int score)
+        {
+            // Get the current logged-in user
+            var userEmail = User.Identity.Name;
+
+            // Find the professor associated with this email
+            var professor = await _context.Professors
+                                          .FirstOrDefaultAsync(p => p.Email == userEmail);
+
+            if (professor == null)
+            {
+                return NotFound("Professor not found.");
+            }
+
+            // Ensure the professor teaches the course
+            var course = await _context.Courses
+                                       .FirstOrDefaultAsync(c => c.CourseId == courseId && c.ProfessorId == professor.ProfessorID);
+
+            if (course == null)
+            {
+                return NotFound("You are not teaching this course.");
+            }
+
+            // Check if a grade already exists for the student in this course
+            var existingGrade = await _context.Grades
+                                              .FirstOrDefaultAsync(g => g.StudentId == studentId && g.CourseId == courseId);
+
+            if (existingGrade != null)
+            {
+                // Update the existing grade
+                existingGrade.Score = score;
+                _context.Update(existingGrade);
+            }
+            else
+            {
+                // Assign a new grade
+                var grade = new Grade
+                {
+                    StudentId = studentId,
+                    CourseId = courseId,
+                    Score = score,
+                    ProfessorId = professor.ProfessorID
+                };
+
+                _context.Grades.Add(grade);
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Redirect back to the CourseStudents page
+            return RedirectToAction("CourseStudents", new { id = courseId });
+        }
+
+
     }
+
+
 }

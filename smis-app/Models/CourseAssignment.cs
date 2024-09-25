@@ -7,12 +7,5 @@ namespace SchoolManagmentSystem.Models
         [Key]
         public int CourseAssignmentID { get; set; }
 
-        public int ProfessorID { get; set; }
-
-        public int CourseID { get; set; }
-
-        public Professor? Professor { get; set; }
-
-        public Course? Course { get; set; }
     }
 }

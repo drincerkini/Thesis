@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Course>
+
+<h2>My Courses</h2>
+
+@if (!Model.Any())
+{
+    <p>You are not teaching any courses at the moment.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Department</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model)
+            {
+                <tr>
+                    <td>@course.CourseName</td>
+                    <td>@course.Department.Name</td>
+                    <td>
+                        <!-- Link to view students enrolled in this course -->
+                        <a asp-action="CourseStudents" asp-route-id="@course.CourseId" class="btn btn-info">
+                            View Enrolled Students
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

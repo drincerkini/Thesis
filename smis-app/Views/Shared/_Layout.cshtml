@@ -22,6 +22,14 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        <li>
+                            <a asp-controller="Professors" asp-action="MyCourses">My Courses</a>
+
+                        </li>
+                        <li>
+                            <a class="btn btn-primary" asp-controller="Students" asp-action="MyTranscript">View Transcript</a>
+
+                        </li>
 
                         @if (User.Identity.IsAuthenticated)
 

@@ -44,12 +44,16 @@ namespace SchoolManagmentSystem.Models
         }
 
         //relationship
-        public ICollection<Enrollment>? Enrollments { get; set; }
-        // public ICollection<Course> Courses { get; set; }
-
+        // Many-to-many relationship with Course through Enrollment
         public int DepartmentID { get; set; }
 
         [ForeignKey("DepartmentID")]
         public Department? Department { get; set; }
+
+        public ICollection<Enrollment>? Enrollments { get; set; }
+
+                
+        // One-to-many relationship with Grade
+        public ICollection<Grade>? Grades { get; set; }
     }
 }
