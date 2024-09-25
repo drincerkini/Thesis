@@ -1,0 +1,27 @@
+﻿@model SchoolManagmentSystem.ViewModels.EnrollmentViewModel
+
+@{
+    ViewData["Title"] = "Enroll in a Course";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Enroll" method="post">
+    <div class="form-group">
+        <label for="courseId">Select a Course:</label>
+        <select asp-for="CourseId" class="form-control" asp-items="ViewBag.Courses"></select>
+        <span asp-validation-for="CourseId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enroll</button>
+</form>
+
+<div>
+    <a asp-action="Index">Back to Dashboard</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

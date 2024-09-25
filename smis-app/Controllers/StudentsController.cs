@@ -98,6 +98,62 @@ namespace SchoolManagmentSystem.Controllers
 
 
 
+        public IActionResult Enroll()
+        {
+            var coursesWithProfessors = _context.Courses
+                .Include(c => c.Professor)
+                .Select(c => new
+                {
+                    c.CourseId,
+                    CourseAndProfessor = c.CourseName + " - " + c.Professor.FullName
+                })
+                .ToList();
+
+            ViewBag.Courses = new SelectList(coursesWithProfessors, "CourseId", "CourseAndProfessor");
+
+            return View();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Enroll(int courseId)
+        {
+            // Get the current logged-in user
+            var userEmail = User.Identity.Name;
+
+            // Find the student associated with this email
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == userEmail);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            // Check if the student is already enrolled in the course
+            var existingEnrollment = await _context.Enrollments
+                .FirstOrDefaultAsync(e => e.CourseId == courseId && e.StudentId == student.StudentID);
+
+            if (existingEnrollment != null)
+            {
+                ModelState.AddModelError(string.Empty, "You are already enrolled in this course.");
+                return RedirectToAction(nameof(Enroll));
+            }
+
+            // Create new enrollment
+            var enrollment = new Enrollment
+            {
+                CourseId = courseId,
+                StudentId = student.StudentID
+            };
+
+            _context.Enrollments.Add(enrollment);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index)); // Redirect to student's dashboard or course list
+        }
+
+
 
         [AllowAnonymous]
         // GET: Students
