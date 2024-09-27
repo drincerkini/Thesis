@@ -12,7 +12,7 @@ using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
 {
-    [Authorize(Roles = "Admin, Academic Staff, Professor, Student ")]
+    [Authorize(Roles = "Super Admin, Academic Staff, Student")]
 
     public class StudentsController : Controller
     {
@@ -51,7 +51,6 @@ namespace SchoolManagmentSystem.Controllers
             return View(grades);
         }
 
-        [Authorize(Roles = "Student")]
         [HttpPost]
         public async Task<IActionResult> RemoveGrade(int gradeId)
         {
@@ -97,7 +96,6 @@ namespace SchoolManagmentSystem.Controllers
         }
 
 
-
         public IActionResult Enroll()
         {
             var coursesWithProfessors = _context.Courses
@@ -113,7 +111,6 @@ namespace SchoolManagmentSystem.Controllers
 
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -253,31 +250,48 @@ namespace SchoolManagmentSystem.Controllers
         // POST: Students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentID,Name,Surname,Email,BirthDate,RegisterDate,Address, DepartmentID")] Student student)
-
+        public async Task<IActionResult> Create([Bind("StudentID,Name,Surname,Email,BirthDate,RegisterDate,Address,DepartmentID")] Student student)
         {
-            var user = new ApplicationUser { UserName = student.Email, FirstName = student.Name, LastName = student.Surname, Email = student.Email };
-            var result = await _userManager.CreateAsync(user, "Password.123");
+            // Create a new ApplicationUser for the student
+            var user = new ApplicationUser
+            {
+                UserName = student.Email,
+                FirstName = student.Name,
+                LastName = student.Surname,
+                Email = student.Email
+            };
 
+            // Create the user with a strong password
+            var result = await _userManager.CreateAsync(user, "Password.123"); // Stronger password policy recommended
 
             if (result.Succeeded)
             {
+                // Assign the student role to the user
                 await _userManager.AddToRoleAsync(user, "Student");
 
+                // Link the student with the newly created user
+                student.ApplicationUserId = user.Id; // Make sure you have this property in your Student model
+
+                // Save the student to the database
                 _context.Add(student);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // If there are errors, display them
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+
+            // Populate the DepartmentID dropdown for the view
+            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", student.DepartmentID);
             return View(student);
         }
+
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -356,17 +370,38 @@ namespace SchoolManagmentSystem.Controllers
         {
             if (_context.Students == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Students'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Students' is null.");
             }
+
+            // Find the student by ID
             var student = await _context.Students.FindAsync(id);
             if (student != null)
             {
+                // Retrieve the ApplicationUser linked to the student
+                var user = await _userManager.FindByIdAsync(student.ApplicationUserId);
+
+                // If the user exists, delete the ApplicationUser
+                if (user != null)
+                {
+                    var result = await _userManager.DeleteAsync(user);
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return View(student); // Return the view if user deletion fails
+                    }
+                }
+
+                // Remove the student from the context
                 _context.Students.Remove(student);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool StudentExists(int id)
         {

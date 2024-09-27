@@ -44,5 +44,11 @@ namespace SchoolManagmentSystem.Models
         public int BranchID { get; set; }
         [ForeignKey("BranchID")]
         public Branch? Branch { get; set; }
+
+
+        // New: Link with ApplicationUser
+        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
     }
 }

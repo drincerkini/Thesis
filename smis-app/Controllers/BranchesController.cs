@@ -11,7 +11,7 @@ using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Super Admin, Academic Staff")]
     public class BranchesController : Controller
     {
         private readonly ApplicationDbContext _context;

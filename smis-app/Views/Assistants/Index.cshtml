@@ -11,7 +11,7 @@
 
 
     <p>
-        @if (User.IsInRole("Admin") || User.IsInRole("Academic Staff"))
+        @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
         {
             <button class="btn btn btn-outline-light">
                 <a class="btn btn-outline-light text-primary" asp-action="Create">Create New Assistant</a>

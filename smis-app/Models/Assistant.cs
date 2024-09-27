@@ -35,15 +35,19 @@ namespace SchoolManagmentSystem.Models
         public string Address { get; set; }
 
         [Display(Name = "Full Name")]
-        public string FullName
-        {
-            get { return Name + " " + Surname; }
-        }
+        public string FullName => $"{Name} {Surname}";
 
         public int ProfessorID { get; set; }
         [ForeignKey("ProfessorID")]
         public Professor? Professor { get; set; }
 
+        // New: Link with ApplicationUser
+        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
     }
+
+
 }
+
 

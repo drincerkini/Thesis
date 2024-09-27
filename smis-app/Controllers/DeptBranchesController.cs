@@ -12,7 +12,7 @@ using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
 {
-    [Authorize(Roles = "Admin, Academic Staff, Professor ")]
+    [Authorize(Roles = "Super Admin, Academic Staff ")]
 
     public class DeptBranchesController : Controller
     {

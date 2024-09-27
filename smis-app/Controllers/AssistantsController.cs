@@ -9,7 +9,7 @@ using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
 {
-    [Authorize(Roles = "Admin, Academic Staff, Professor ")]
+    [Authorize(Roles = "Super Admin, Academic Staff, Professor ")]
     public class AssistantsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -122,28 +122,44 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AssistantID,Name,Surname,Email,BirthDate,HireDate,Address,ProfessorID")] Assistant assistant)
         {
-            var user = new ApplicationUser { UserName = assistant.Email, FirstName = assistant.Name, LastName = assistant.Surname, Email = assistant.Email };
-            var result = await _userManager.CreateAsync(user, "Password.123");
+            // Create a new ApplicationUser for the assistant
+            var user = new ApplicationUser
+            {
+                UserName = assistant.Email,
+                FirstName = assistant.Name,
+                LastName = assistant.Surname,
+                Email = assistant.Email
+            };
 
+            // Create the user with a strong password
+            var result = await _userManager.CreateAsync(user, "Password.123"); // Stronger password policy recommended
 
             if (result.Succeeded)
             {
-                //assign role to student
+                // Assign the assistant role to the user
                 await _userManager.AddToRoleAsync(user, "Assistant");
 
-                // Add the student to the database
+                // Link the assistant with the newly created user
+                assistant.ApplicationUserId = user.Id; // Make sure you have this property in your Assistant model
+
+                // Save the assistant to the database
                 _context.Add(assistant);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // If there are errors, display them
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+
+            // Populate the ProfessorID dropdown for the view
             ViewData["ProfessorID"] = new SelectList(_context.Professors, "ProfessorID", "FullName", assistant.ProfessorID);
             return View(assistant);
         }
+
 
 
         // GET: Assistants/Edit/5
@@ -225,17 +241,38 @@ namespace SchoolManagmentSystem.Controllers
         {
             if (_context.Assistants == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Assistants'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Assistants' is null.");
             }
+
+            // Find the assistant by ID
             var assistant = await _context.Assistants.FindAsync(id);
             if (assistant != null)
             {
+                // Retrieve the ApplicationUser linked to the assistant
+                var user = await _userManager.FindByIdAsync(assistant.ApplicationUserId);
+
+                // If the user exists, delete the ApplicationUser
+                if (user != null)
+                {
+                    var result = await _userManager.DeleteAsync(user);
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return View(assistant); // Return the view if user deletion fails
+                    }
+                }
+
+                // Remove the assistant from the context
                 _context.Assistants.Remove(assistant);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool AssistantExists(int id)
         {

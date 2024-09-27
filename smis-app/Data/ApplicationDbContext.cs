@@ -20,9 +20,6 @@ namespace SchoolManagmentSystem.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Professor> Professors { get; set; }
-        public DbSet<Artikulli> Artikulli { get; set; }
-        public DbSet<Komenti> Komenti { get; set; }
-
         public DbSet<Grade> Grades { get; set; }
 
 

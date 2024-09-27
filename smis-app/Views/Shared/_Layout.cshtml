@@ -22,19 +22,11 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li>
-                            <a asp-controller="Professors" asp-action="MyCourses">My Courses</a>
-
-                        </li>
-                        <li>
-                            <a class="btn btn-primary" asp-controller="Students" asp-action="MyTranscript">View Transcript</a>
-
-                        </li>
 
                         @if (User.Identity.IsAuthenticated)
 
                         {
-                            @if (User.IsInRole("Admin"))
+                            @if (User.IsInRole("Super Admin"))
                             {
                                 <li class="nav-item mx-10">
                                     <a class="nav-link text-dark" asp-area="Administrator" asp-controller="Adm" asp-action="Index">Dashboard</a>
@@ -53,35 +45,34 @@
                                     <li>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Branches" asp-action="Index">Branches</a>
                                     </li>
-                                    @if (!User.IsInRole("Student"))
-                                    {
-                                        <li>
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="DeptBranches" asp-action="Index">Deptartments & Branches</a>
-                                        </li>
-                                    }
+                                    
                                     <li>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Professors" asp-action="Index">Professors</a>
                                     </li>
-                                    @if (!User.IsInRole("Student") )
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Assistants" asp-action="Index">Assistants</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
+                                    </li>
+                                    @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                                     {
                                         <li>
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Students</a>
                                         </li>
-                                    }
-                                    <li>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Assistants" asp-action="Index">Assistants</a>
-                                    </li>
-                                    @if (!User.IsInRole("Student"))
-                                    {
+                                        <li>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Enrollments" asp-action="Index">Enrollments</a>
+                                        </li>
                                         <li>
                                             <a class="nav-link text-dark" asp-area="" asp-controller="AcStaffs" asp-action="Index">Academic Staff</a>
                                         </li>
                                     }
+                                    
                                 </ul>
                             </div>
 
                             <!-- Example single danger button -->
-                            <div class="btn-group">
+@*                             <div class="btn-group">
                                 <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                     Students Interests
                                 </button>
@@ -89,14 +80,25 @@
                                     <li>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
                                     </li>
-                                    @if (!User.IsInRole("Student"))
-                                    {
-                                        <li>
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Enrollments" asp-action="Index">Enrollments</a>
-                                        </li>
-                                    }
                                 </ul>
-                            </div>
+                            </div> *@
+
+                            @if (User.IsInRole("Student"))
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="MyTranscript">View Transcript</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Enroll">Enroll</a>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Professor"))
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Professors" asp-action="MyCourses">My Courses</a>
+                                </li>
+                            }
                         }
 
                     </ul>

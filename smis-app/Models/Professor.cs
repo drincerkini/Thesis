@@ -32,26 +32,26 @@ namespace SchoolManagmentSystem.Models
         [DisplayName("Hire Date")]
         public DateTime HireDate { get; set; } = DateTime.Today;
 
-
         public string Address { get; set; }
 
         [Display(Name = "Full Name")]
-        public string FullName
-        {
-            get { return Name + " " + Surname; }
-        }
+        public string FullName => $"{Name} {Surname}";
 
-        //relationship
-
+        // Relationship with Department
         public int DepartmentID { get; set; }
-
-        [ForeignKey("DepartmentID")]
         public Department? Department { get; set; }
 
+        // Relationship with Assistants
         public ICollection<Assistant>? Assistants { get; set; }
 
-        // One-to-many relationship with Course
+        // Relationship with Courses
         public ICollection<Course>? Courses { get; set; }
+
+        // New: Link with ApplicationUser
+        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
     }
+
 }
 

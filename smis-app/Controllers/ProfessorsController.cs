@@ -8,7 +8,7 @@ using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
 {
-    [Authorize(Roles = "Admin, Academic Staff, Professor ")]
+    [Authorize(Roles = "Super Admin, Academic Staff, Professor")]
 
     public class ProfessorsController : Controller
     {
@@ -123,26 +123,42 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProfessorID,Name,Surname,Email,BirthDate,HireDate,Address,DepartmentID")] Professor professor)
         {
-            var user = new ApplicationUser { UserName = professor.Email, FirstName = professor.Name, LastName = professor.Surname, Email = professor.Email };
-            var result = await _userManager.CreateAsync(user, "Password.123");
+            // Create a new ApplicationUser for the professor
+            var user = new ApplicationUser
+            {
+                UserName = professor.Email,
+                Email = professor.Email,
+                FirstName = professor.Name,
+                LastName = professor.Surname
+            };
 
+            var result = await _userManager.CreateAsync(user, "Password.123"); // Stronger password policy recommended
 
             if (result.Succeeded)
             {
+                // Assign the professor role to the user
                 await _userManager.AddToRoleAsync(user, "Professor");
 
+                // Link the professor with the newly created user
+                professor.ApplicationUserId = user.Id;
+
+                // Save the professor to the database
                 _context.Add(professor);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // If there are errors, display them
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+
             ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", professor.DepartmentID);
             return View(professor);
         }
+
 
 
         // GET: Professors/Edit/5
@@ -222,19 +238,37 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Professors == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Professors'  is null.");
-            }
             var professor = await _context.Professors.FindAsync(id);
+
             if (professor != null)
             {
+                // Find the associated ApplicationUser
+                var user = await _userManager.FindByIdAsync(professor.ApplicationUserId);
+
+                if (user != null)
+                {
+                    // Delete the ApplicationUser
+                    var result = await _userManager.DeleteAsync(user);
+
+                    if (!result.Succeeded)
+                    {
+                        // Handle the error if deletion fails
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return View(professor);
+                    }
+                }
+
+                // Delete the professor from the database
                 _context.Professors.Remove(professor);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool ProfessorExists(int id)
         {

@@ -55,5 +55,10 @@ namespace SchoolManagmentSystem.Models
                 
         // One-to-many relationship with Grade
         public ICollection<Grade>? Grades { get; set; }
+
+        // New: Link with ApplicationUser
+        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
     }
 }
