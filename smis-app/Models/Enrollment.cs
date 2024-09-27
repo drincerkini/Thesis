@@ -11,11 +11,13 @@ namespace SchoolManagmentSystem.Models
         // Foreign key to Course
         [ForeignKey("Course")]
         public int CourseId { get; set; }
+
         public Course? Course { get; set; }
 
         // Foreign key to Student
         [ForeignKey("Student")]
         public int StudentId { get; set; }
+
         public Student? Student { get; set; }
 
     }

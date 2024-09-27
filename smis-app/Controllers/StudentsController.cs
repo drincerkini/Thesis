@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -156,70 +152,68 @@ namespace SchoolManagmentSystem.Controllers
         // GET: Students
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
+            
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["SurnameSortParm"] = sortOrder == "Surname" ? "surname_desc" : "Surname";
+            ViewData["RegisterDateSortParm"] = sortOrder == "RegisterDate" ? "registerdate_desc" : "RegisterDate";
+            ViewData["BirthDateSortParm"] = sortOrder == "BirthDate" ? "birthdate_desc" : "BirthDate";
+
+            if (searchString != null)
             {
-                ViewData["CurrentSort"] = sortOrder;
-                ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
-                ViewData["SurnameSortParm"] = sortOrder == "Surname" ? "surname_desc" : "Surname";
-                ViewData["RegisterDateSortParm"] = sortOrder == "RegisterDate" ? "registerdate_desc" : "RegisterDate";
-                ViewData["BirthDateSortParm"] = sortOrder == "BirthDate" ? "birthdate_desc" : "BirthDate";
-
-                if (searchString != null)
-                {
-                    pageNumber = 1;
-                }
-                else
-                {
-                    searchString = currentFilter;
-                }
-
-                ViewData["CurrentFilter"] = searchString;
-
-                var students = from s in _context.Students
-                               select s;
-
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    students = students.Where(s => s.Name.Contains(searchString)
-                                           || s.Surname.Contains(searchString));
-                }
-
-                switch (sortOrder)
-                {
-                    case "Name":
-                        students = students.OrderBy(s => s.Name);
-                        break;
-                    case "name_desc":
-                        students = students.OrderByDescending(s => s.Name);
-                        break;
-                    case "Surname":
-                        students = students.OrderBy(s => s.Surname);
-                        break;
-                    case "surname_desc":
-                        students = students.OrderByDescending(s => s.Surname);
-                        break;
-                    case "RegisterDate":
-                        students = students.OrderBy(s => s.RegisterDate);
-                        break;
-                    case "registerdate_desc":
-                        students = students.OrderByDescending(s => s.RegisterDate);
-                        break;
-                    case "BirthDate":
-                        students = students.OrderBy(s => s.BirthDate);
-                        break;
-                    case "birthdate_desc":
-                        students = students.OrderByDescending(s => s.BirthDate);
-                        break;
-                    default:
-                        students = students.OrderBy(s => s.Name);
-                        break;
-                }
-
-                int pageSize = 5;
-                return View(await PaginatedList<Student>.CreateAsync(students.Include(s => s.Department).AsNoTracking(), pageNumber ?? 1, pageSize));
+                pageNumber = 1;
             }
-        }
+            else
+            {
+                searchString = currentFilter;
+            }
 
-     
+            ViewData["CurrentFilter"] = searchString;
+
+            var students = from s in _context.Students
+                            select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                students = students.Where(s => s.Name.Contains(searchString)
+                                        || s.Surname.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    students = students.OrderBy(s => s.Name);
+                    break;
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.Name);
+                    break;
+                case "Surname":
+                    students = students.OrderBy(s => s.Surname);
+                    break;
+                case "surname_desc":
+                    students = students.OrderByDescending(s => s.Surname);
+                    break;
+                case "RegisterDate":
+                    students = students.OrderBy(s => s.RegisterDate);
+                    break;
+                case "registerdate_desc":
+                    students = students.OrderByDescending(s => s.RegisterDate);
+                    break;
+                case "BirthDate":
+                    students = students.OrderBy(s => s.BirthDate);
+                    break;
+                case "birthdate_desc":
+                    students = students.OrderByDescending(s => s.BirthDate);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.Name);
+                    break;
+            }
+
+            int pageSize = 5;
+            return View(await PaginatedList<Student>.CreateAsync(students.Include(s => s.Department).AsNoTracking(), pageNumber ?? 1, pageSize));
+            
+        }
 
         // GET: Students/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -402,14 +396,10 @@ namespace SchoolManagmentSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         private bool StudentExists(int id)
         {
             return _context.Students.Any(e => e.StudentID == id);
         }
-
-       
-
 
     }
 }

@@ -23,12 +23,11 @@ namespace SchoolManagmentSystem.Models
 
         public ICollection<Professor>? Professors { get; set; }
 
+        public ICollection<Student>? Students { get; set; }
 
-        //M-M
         public ICollection<DeptBranch>? DeptBranches { get; set; }
         //  public ICollection<Branch> Branches { get; set; }
-
-        public ICollection<Student>? Students { get; set; }
+        
     }
 }
 

@@ -21,72 +21,69 @@ namespace SchoolManagmentSystem.Controllers
             _userManager = userManager;
         }
 
-        [AllowAnonymous]
-
         // GET: Assistants
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["SurnameSortParm"] = sortOrder == "Surname" ? "surname_desc" : "Surname";
+            ViewData["HireDateSortParm"] = sortOrder == "HireDate" ? "hiredate_desc" : "HireDate";
+            ViewData["BirthDateSortParm"] = sortOrder == "BirthDate" ? "birthdate_desc" : "BirthDate";
+
+            if (searchString != null)
             {
-                ViewData["CurrentSort"] = sortOrder;
-                ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
-                ViewData["SurnameSortParm"] = sortOrder == "Surname" ? "surname_desc" : "Surname";
-                ViewData["HireDateSortParm"] = sortOrder == "HireDate" ? "hiredate_desc" : "HireDate";
-                ViewData["BirthDateSortParm"] = sortOrder == "BirthDate" ? "birthdate_desc" : "BirthDate";
-
-                if (searchString != null)
-                {
-                    pageNumber = 1;
-                }
-                else
-                {
-                    searchString = currentFilter;
-                }
-
-                ViewData["CurrentFilter"] = searchString;
-
-
-                var assistants = from a in _context.Assistants
-                                 select a;
-
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    assistants = assistants.Where(p => p.Name.Contains(searchString)
-                                           || p.Surname.Contains(searchString));
-                }
-
-                switch (sortOrder)
-                {
-                    case "Name":
-                        assistants = assistants.OrderBy(p => p.Name);
-                        break;
-                    case "name_desc":
-                        assistants = assistants.OrderByDescending(p => p.Name);
-                        break;
-                    case "Surname":
-                        assistants = assistants.OrderBy(p => p.Surname);
-                        break;
-                    case "surname_desc":
-                        assistants = assistants.OrderByDescending(p => p.Surname);
-                        break;
-                    case "HireDate":
-                        assistants = assistants.OrderBy(p => p.HireDate);
-                        break;
-                    case "hiredate_desc":
-                        assistants = assistants.OrderByDescending(p => p.HireDate);
-                        break;
-                    case "BirthDate":
-                        assistants = assistants.OrderBy(p => p.BirthDate);
-                        break;
-                    case "birthdate_desc":
-                        assistants = assistants.OrderByDescending(p => p.BirthDate);
-                        break;
-                    default:
-                        assistants = assistants.OrderBy(p => p.Name);
-                        break;
-                }
-                int pageSize = 5;
-                return View(await PaginatedList<Assistant>.CreateAsync(assistants.Include(a => a.Professor).AsNoTracking(), pageNumber ?? 1, pageSize));
+                pageNumber = 1;
             }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+            var assistants = from a in _context.Assistants
+                                select a;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                assistants = assistants.Where(p => p.Name.Contains(searchString)
+                                        || p.Surname.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    assistants = assistants.OrderBy(p => p.Name);
+                    break;
+                case "name_desc":
+                    assistants = assistants.OrderByDescending(p => p.Name);
+                    break;
+                case "Surname":
+                    assistants = assistants.OrderBy(p => p.Surname);
+                    break;
+                case "surname_desc":
+                    assistants = assistants.OrderByDescending(p => p.Surname);
+                    break;
+                case "HireDate":
+                    assistants = assistants.OrderBy(p => p.HireDate);
+                    break;
+                case "hiredate_desc":
+                    assistants = assistants.OrderByDescending(p => p.HireDate);
+                    break;
+                case "BirthDate":
+                    assistants = assistants.OrderBy(p => p.BirthDate);
+                    break;
+                case "birthdate_desc":
+                    assistants = assistants.OrderByDescending(p => p.BirthDate);
+                    break;
+                default:
+                    assistants = assistants.OrderBy(p => p.Name);
+                    break;
+            }
+            int pageSize = 5;
+            return View(await PaginatedList<Assistant>.CreateAsync(assistants.Include(a => a.Professor).AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Assistants/Details/5
@@ -272,7 +269,6 @@ namespace SchoolManagmentSystem.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
         private bool AssistantExists(int id)
         {

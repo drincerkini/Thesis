@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using System.Xml.Linq;
 
 namespace SchoolManagmentSystem.Models
 {
@@ -40,15 +39,15 @@ namespace SchoolManagmentSystem.Models
             get { return Name + " " + Surname; }
         }
 
-        //relationship
+        //relationships
         public int BranchID { get; set; }
+
         [ForeignKey("BranchID")]
         public Branch? Branch { get; set; }
 
+        public string? ApplicationUserId { get; set; }
 
-        // New: Link with ApplicationUser
-        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
         [ForeignKey("ApplicationUserId")]
-        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 }

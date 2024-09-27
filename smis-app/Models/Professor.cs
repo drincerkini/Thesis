@@ -37,20 +37,20 @@ namespace SchoolManagmentSystem.Models
         [Display(Name = "Full Name")]
         public string FullName => $"{Name} {Surname}";
 
-        // Relationship with Department
+        // Relationships
+
         public int DepartmentID { get; set; }
+
         public Department? Department { get; set; }
 
-        // Relationship with Assistants
         public ICollection<Assistant>? Assistants { get; set; }
 
-        // Relationship with Courses
         public ICollection<Course>? Courses { get; set; }
 
-        // New: Link with ApplicationUser
-        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
+        public string? ApplicationUserId { get; set; }
+
         [ForeignKey("ApplicationUserId")]
-        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 
 }

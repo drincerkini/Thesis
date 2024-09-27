@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagmentSystem.Models
 {
@@ -27,11 +26,10 @@ namespace SchoolManagmentSystem.Models
 
         public Location? Location { get; set; }
 
-        //relationship
+        //relationships
 
         public ICollection<DeptBranch>? DeptBranches { get; set; }
         public ICollection<AcStaff>? AcStaffs { get; set; }
-        //public ICollection<Department> Departments { get; set; }
 
     }
 }

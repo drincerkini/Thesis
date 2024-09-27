@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -37,14 +36,17 @@ namespace SchoolManagmentSystem.Models
         [Display(Name = "Full Name")]
         public string FullName => $"{Name} {Surname}";
 
+        //Relationships
+
         public int ProfessorID { get; set; }
+
         [ForeignKey("ProfessorID")]
         public Professor? Professor { get; set; }
 
-        // New: Link with ApplicationUser
-        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
+        public string? ApplicationUserId { get; set; }
+
         [ForeignKey("ApplicationUserId")]
-        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 
 

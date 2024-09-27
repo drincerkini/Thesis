@@ -44,7 +44,7 @@ namespace SchoolManagmentSystem.Models
         }
 
         //relationship
-        // Many-to-many relationship with Course through Enrollment
+
         public int DepartmentID { get; set; }
 
         [ForeignKey("DepartmentID")]
@@ -52,13 +52,11 @@ namespace SchoolManagmentSystem.Models
 
         public ICollection<Enrollment>? Enrollments { get; set; }
 
-                
-        // One-to-many relationship with Grade
         public ICollection<Grade>? Grades { get; set; }
 
-        // New: Link with ApplicationUser
-        public string? ApplicationUserId { get; set; } // Store the ApplicationUser ID
+        public string? ApplicationUserId { get; set; }
+
         [ForeignKey("ApplicationUserId")]
-        public ApplicationUser? ApplicationUser { get; set; } // Navigation property
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 }

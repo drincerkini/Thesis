@@ -25,52 +25,50 @@ namespace SchoolManagmentSystem.Controllers
         // GET: Branches
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
+             ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
+
+            if (searchString != null)
             {
-                ViewData["CurrentSort"] = sortOrder;
-                ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
-                ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
-
-                if (searchString != null)
-                {
-                    pageNumber = 1;
-                }
-                else
-                {
-                    searchString = currentFilter;
-                }
-
-                ViewData["CurrentFilter"] = searchString;
-
-                var branches = from b in _context.Branches
-                               select b;
-
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    branches = branches.Where(b => b.Name.Contains(searchString));
-                }
-
-                switch (sortOrder)
-                {
-                    case "Name":
-                        branches = branches.OrderBy(b => b.Name);
-                        break;
-                    case "name_desc":
-                        branches = branches.OrderByDescending(b => b.Name);
-                        break;
-                    case "Location":
-                        branches = branches.OrderBy(b => b.Location);
-                        break;
-                    case "location_desc":
-                        branches = branches.OrderByDescending(b => b.Location);
-                        break;
-                    default:
-                        branches = branches.OrderBy(b => b.Name);
-                        break;
-                }
-
-                int pageSize = 5;
-                return View(await PaginatedList<Branch>.CreateAsync(branches.AsNoTracking(), pageNumber ?? 1, pageSize));
+                pageNumber = 1;
             }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var branches = from b in _context.Branches
+                            select b;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                branches = branches.Where(b => b.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    branches = branches.OrderBy(b => b.Name);
+                    break;
+                case "name_desc":
+                    branches = branches.OrderByDescending(b => b.Name);
+                    break;
+                case "Location":
+                    branches = branches.OrderBy(b => b.Location);
+                    break;
+                case "location_desc":
+                    branches = branches.OrderByDescending(b => b.Location);
+                    break;
+                default:
+                    branches = branches.OrderBy(b => b.Name);
+                    break;
+            }
+
+            int pageSize = 5;
+            return View(await PaginatedList<Branch>.CreateAsync(branches.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Branches/Details/5
@@ -101,39 +99,38 @@ namespace SchoolManagmentSystem.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create([Bind("BranchID,SMIAL,Name,Location")] Branch branch)
-{
-    var depList = await _context.Departments.ToListAsync();
-    
-    if (ModelState.IsValid)
-    {
-        // First, save the branch to get the generated BranchID
-        _context.Add(branch);
-        await _context.SaveChangesAsync();  // Save first so BranchID is generated
-
-        // Now, associate the departments with the newly created branch
-        if (depList != null)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("BranchID,SMIAL,Name,Location")] Branch branch)
         {
-            foreach (var item in depList)
-            {
-                var depBranch = new DeptBranch
-                {
-                    BranchID = branch.BranchID,  // This now has the correct BranchID
-                    DepartmentID = item.DepartmentID
-                };
-                _context.Add(depBranch);
-            }
-
-            // Save changes after adding all DeptBranch entries
-            await _context.SaveChangesAsync();
-        }
-        
-        return RedirectToAction(nameof(Index));
-    }
+            var depList = await _context.Departments.ToListAsync();
     
-    return View(branch);
-}
+            if (ModelState.IsValid)
+            {
+                // First, save the branch to get the generated BranchID
+                _context.Add(branch);
+                await _context.SaveChangesAsync();  // Save first so BranchID is generated
+
+                // Now, associate the departments with the newly created branch
+                if (depList != null)
+                {
+                    foreach (var item in depList)
+                    {
+                        var depBranch = new DeptBranch
+                        {
+                            BranchID = branch.BranchID,  // This now has the correct BranchID
+                            DepartmentID = item.DepartmentID
+                        };
+                        _context.Add(depBranch);
+                    }
+
+                    // Save changes after adding all DeptBranch entries
+                    await _context.SaveChangesAsync();
+                }
+        
+                return RedirectToAction(nameof(Index));
+            }
+            return View(branch);
+        }
 
         // GET: Branches/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -227,6 +224,8 @@ public async Task<IActionResult> Create([Bind("BranchID,SMIAL,Name,Location")] B
         {
             return _context.Branches.Any(e => e.BranchID == id);
         }
+
+
         [AllowAnonymous]
         public async Task<IActionResult> BranchDeptList(int? id)
         {
