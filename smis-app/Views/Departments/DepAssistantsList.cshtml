@@ -1,0 +1,36 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Assistant>
+
+<h2>Assistants in Department @ViewBag.DepartmentName</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        There are no assistants recorded in this department.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Assistant Name</th>
+                <th>Email</th> <!-- Add any other relevant fields -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assistant in Model)
+            {
+                <tr>
+                    <td>@assistant.Name @assistant.Surname</td>
+                    <td>@assistant.Email</td> <!-- Adjust according to your properties -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    <button class="btn btn btn-light">
+        <a class="btn btn-ligt text-secondary" asp-action="Index">Back to List</a>
+    </button>
+</div>

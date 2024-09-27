@@ -63,6 +63,7 @@
                 <td>
                     <a class="btn btn-ligt text-secondary" asp-action="DepProfessorsList" asp-route-id="@item.DepartmentID">Show Professors</a>
                     <a class="btn btn-ligt text-secondary" asp-action="DepCoursesList" asp-route-id="@item.DepartmentID">Show Courses</a>
+                    <a class="btn btn-ligt text-secondary" asp-action="DepAssistantsList" asp-route-id="@item.DepartmentID">Show Assistants</a>
                     @if (User.IsInRole("Admin") || User.IsInRole("Academic Staff"))
                     {
                         <a class="btn btn-ligt text-secondary" asp-action="Edit" asp-route-id="@item.DepartmentID">Edit</a>

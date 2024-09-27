@@ -229,5 +229,16 @@ namespace SchoolManagmentSystem.Controllers
         }
 
 
+        [AllowAnonymous]
+        public async Task<IActionResult> DepAssistantsList(int? id)
+        {
+            var assistants = await _context.Professors
+                                    .Where(p => p.DepartmentID == id)
+                                    .SelectMany(p => p.Assistants)
+                                    .ToListAsync();
+
+            return View(assistants);
+        }
+
     }
 }
