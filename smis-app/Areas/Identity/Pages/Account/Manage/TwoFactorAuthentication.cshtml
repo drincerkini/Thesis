@@ -6,65 +6,80 @@
     ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
 }
 
-<partial name="_StatusMessage" for="StatusMessage" />
-<h3>@ViewData["Title"]</h3>
-@{
-    var consentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
-    @if (consentFeature?.CanTrack ?? true)
-    {
-        @if (Model.Is2faEnabled)
-        {
-            if (Model.RecoveryCodesLeft == 0)
-            {
-                <div class="alert alert-danger">
-                    <strong>You have no recovery codes left.</strong>
-                    <p>You must <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
-                </div>
-            }
-            else if (Model.RecoveryCodesLeft == 1)
-            {
-                <div class="alert alert-danger">
-                    <strong>You have 1 recovery code left.</strong>
-                    <p>You can <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
-                </div>
-            }
-            else if (Model.RecoveryCodesLeft <= 3)
-            {
-                <div class="alert alert-warning">
-                    <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
-                    <p>You should <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
-                </div>
-            }
+<div class="container mt-5">
+    <h3 class="text-center mb-4">@ViewData["Title"]</h3>
 
-            if (Model.IsMachineRemembered)
-            {
-                <form method="post" style="display: inline-block">
-                    <button type="submit" class="btn btn-primary">Forget this browser</button>
-                </form>
-            }
-            <a asp-page="./Disable2fa" class="btn btn-primary">Disable 2FA</a>
-            <a asp-page="./GenerateRecoveryCodes" class="btn btn-primary">Reset recovery codes</a>
-        }
+    <div class="row justify-content-center">
+        <div class="col-md-8 p-4 rounded shadow-sm bg-light">
+            <partial name="_StatusMessage" for="StatusMessage" />
 
-        <h4>Authenticator app</h4>
-        @if (!Model.HasAuthenticator)
-        {
-            <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary">Add authenticator app</a>
-        }
-        else
-        {
-            <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary">Set up authenticator app</a>
-            <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-primary">Reset authenticator app</a>
-        }
-    }
-    else
-    {
-        <div class="alert alert-danger">
-            <strong>Privacy and cookie policy have not been accepted.</strong>
-            <p>You must accept the policy before you can enable two factor authentication.</p>
+            @* Recovery Code Warnings *@
+            @{
+                var consentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
+                if (consentFeature?.CanTrack ?? true)
+                {
+                    if (Model.Is2faEnabled)
+                    {
+                        if (Model.RecoveryCodesLeft == 0)
+                        {
+                            <div class="alert alert-danger">
+                                <strong>No recovery codes left!</strong>
+                                <p>You must <a asp-page="./GenerateRecoveryCodes" class="alert-link">generate a new set of recovery codes</a> to log in with a recovery code.</p>
+                            </div>
+                        }
+                        else if (Model.RecoveryCodesLeft == 1)
+                        {
+                            <div class="alert alert-danger">
+                                <strong>1 recovery code left!</strong>
+                                <p>It's recommended to <a asp-page="./GenerateRecoveryCodes" class="alert-link">generate a new set of recovery codes</a>.</p>
+                            </div>
+                        }
+                        else if (Model.RecoveryCodesLeft <= 3)
+                        {
+                            <div class="alert alert-warning">
+                                <strong>@Model.RecoveryCodesLeft recovery codes left.</strong>
+                                <p>Consider <a asp-page="./GenerateRecoveryCodes" class="alert-link">generating new recovery codes</a> soon.</p>
+                            </div>
+                        }
+
+                        @* Buttons for forgetting the browser and managing 2FA *@
+                        <div class="mb-4">
+                            @if (Model.IsMachineRemembered)
+                            {
+                                <form method="post" class="d-inline-block">
+                                    <button type="submit" class="btn btn-primary mb-2">Forget this browser</button>
+                                </form>
+                            }
+                            <a asp-page="./Disable2fa" class="btn btn-danger mb-2">Disable 2FA</a>
+                            <a asp-page="./GenerateRecoveryCodes" class="btn btn-secondary mb-2">Reset recovery codes</a>
+                        </div>
+                    }
+
+                    @* Authenticator App Section *@
+                    <h4 class="mb-3">Authenticator app</h4>
+                    @if (!Model.HasAuthenticator)
+                    {
+                        <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary mb-3">Add authenticator app</a>
+                    }
+                    else
+                    {
+                        <div class="mb-4">
+                            <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary mb-2">Set up authenticator app</a>
+                            <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-secondary mb-2">Reset authenticator app</a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-danger">
+                        <strong>Privacy and cookie policy not accepted!</strong>
+                        <p>Please accept the policy before enabling two-factor authentication.</p>
+                    </div>
+                }
+            }
         </div>
-    }
-}
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
