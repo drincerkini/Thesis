@@ -13,6 +13,8 @@ import authStore from "./stores/authStore";
 import AddNews from "./components/AddNews";
 import NewsDetail from "./components/NewsDetail";
 import Spinner from "./components/Spinner"; // Import Spinner component
+import Services from "./components/Services";
+import { AboutPage } from "./components/AboutPage";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); // Add loading state
@@ -47,6 +49,8 @@ const App: React.FC = () => {
             <Route path="/add-news" element={<AddNews />} />
             <Route path="/news/:id" element={<NewsDetail />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/about" element={<AboutPage />} />
             {/* Protect the dashboard route */}
             <Route
               path="/dashboard"
