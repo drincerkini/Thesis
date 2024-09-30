@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import newsStore from "../stores/newsStore"; // Import the news store
 
-const NewsDetail: React.FC = () => {
+const NewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get the ID from the URL
   const navigate = useNavigate(); // Use navigate for programmatic navigation
 
@@ -58,4 +58,4 @@ const NewsDetail: React.FC = () => {
   );
 };
 
-export default observer(NewsDetail);
+export default observer(NewsDetailPage);

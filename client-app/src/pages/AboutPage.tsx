@@ -1,6 +1,6 @@
 import React from "react";
-import AboutUsSection from "./About/AboutUsSection";
-import AboutUniSection from "./About/AboutUniSection";
+import AboutUsSection from "../components/About/AboutUsSection";
+import AboutUniSection from "../components/About/AboutUniSection";
 
 export const AboutPage: React.FC = () => {
   return (

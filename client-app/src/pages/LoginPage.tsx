@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import authStore from "../stores/authStore"; // Import authStore
 import { AxiosError } from "axios"; // Import AxiosError type
-import Spinner from "./Spinner"; // Import your reusable Spinner component
+import Spinner from "../components/Spinner"; // Import your reusable Spinner component
 
-const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -100,6 +100,6 @@ const Login: React.FC = () => {
 };
 
 // Wrap the component with observer, then export it
-const ObservedLogin = observer(Login);
+const ObservedLogin = observer(LoginPage);
 
 export default ObservedLogin;

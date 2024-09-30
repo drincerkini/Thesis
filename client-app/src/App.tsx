@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./components/Home";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import authStore from "./stores/authStore";
-import AddNews from "./components/AddNews";
-import NewsDetail from "./components/NewsDetail";
-import Spinner from "./components/Spinner"; // Import Spinner component
-import Services from "./components/Services";
-import { AboutPage } from "./components/AboutPage";
+import Spinner from "./components/Spinner";
+import { AboutPage } from "./pages/AboutPage";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import ServicesPage from "./pages/ServicesPage";
+import DashboardPage from "./pages/DashboardPage";
+import AddNewsPage from "./pages/AddNewsPage";
+import NewsDetailPage from "./pages/NewsDetailPage";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); // Add loading state
@@ -34,7 +34,7 @@ const App: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Spinner /> {/* Display the spinner while loading */}
+        <Spinner />
       </div>
     );
   }
@@ -45,18 +45,19 @@ const App: React.FC = () => {
         <Header />
         <main className="flex-grow container mx-auto p-4">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/add-news" element={<AddNews />} />
-            <Route path="/news/:id" element={<NewsDetail />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/services" element={<Services />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/add-news" element={<AddNewsPage />} />
+            <Route path="/news/:id" element={<NewsDetailPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/services" element={<ServicesPage />} />
             <Route path="/about" element={<AboutPage />} />
+
             {/* Protect the dashboard route */}
             <Route
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <DashboardPage />
                 </ProtectedRoute>
               }
             />

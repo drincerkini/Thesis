@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import studentsImage from "../assets/student.jpg";
 
-const Services: React.FC = () => {
+const ServicesPage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Array of slides with image imports
@@ -199,4 +199,4 @@ const Services: React.FC = () => {
   );
 };
 
-export default Services;
+export default ServicesPage;

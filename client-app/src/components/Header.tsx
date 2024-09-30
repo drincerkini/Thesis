@@ -11,6 +11,7 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     authStore.logout();
     navigate("/login");
+    setShowDropdown(false); // Close the user dropdown after logout
   };
 
   const toggleUserDropdown = () => {
@@ -21,6 +22,16 @@ const Header: React.FC = () => {
     setShowMenuDropdown(!showMenuDropdown);
   };
 
+  // Function to close the user dropdown
+  const closeUserDropdown = () => {
+    setShowDropdown(false);
+  };
+
+  // Function to close the menu dropdown
+  const closeMenuDropdown = () => {
+    setShowMenuDropdown(false);
+  };
+
   return (
     <header className="p-4 bg-white shadow-md border-b border-gray-200">
       <nav className="container mx-auto flex justify-between items-center">
@@ -29,8 +40,9 @@ const Header: React.FC = () => {
           <Link
             to="/"
             className="text-2xl font-semibold text-gray-800 hover:text-gray-600 transition duration-200"
+            onClick={closeMenuDropdown} // Close dropdown on link click
           >
-            Home
+            Drin's University
           </Link>
           {/* New Dropdown Next to Home */}
           <div className="relative">
@@ -47,20 +59,23 @@ const Header: React.FC = () => {
                   target="_blank" // Opens the link in a new tab
                   rel="noopener noreferrer" // Security best practice
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                  onClick={closeMenuDropdown} // Close dropdown on link click
                 >
                   Smis
                 </a>
                 <Link
                   to="/services"
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                  onClick={closeMenuDropdown} // Close dropdown on link click
                 >
                   Services
                 </Link>
                 <Link
-                  to="/contact"
+                  to="/about"
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                  onClick={closeMenuDropdown} // Close dropdown on link click
                 >
-                  Contact
+                  About Us
                 </Link>
               </div>
             )}
@@ -74,6 +89,7 @@ const Header: React.FC = () => {
               <Link
                 to="/dashboard"
                 className="text-gray-800 hover:text-gray-600 transition duration-200"
+                onClick={closeUserDropdown} // Close dropdown on link click
               >
                 Dashboard
               </Link>

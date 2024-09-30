@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Assuming you are using react-router for navigation
-import campusImage from "../../assets/img/abuu.jpeg"; // Adjust this path based on your setup
-import { FaFacebook, FaInstagram, FaPinterest } from "react-icons/fa"; // Import specific icons
+import { Link } from "react-router-dom";
+import campusImage from "../../assets/img/abuu.jpeg";
+import { FaFacebook, FaInstagram, FaPinterest } from "react-icons/fa";
 
 const AboutSection: React.FC = () => {
   return (

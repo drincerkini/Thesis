@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import newsStore from "../stores/newsStore"; // Import your news store
-import authStore from "../stores/authStore"; // Import authStore to check login status
+
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Spinner from "./Spinner"; // Import the Spinner component
+import Spinner from "../Spinner";
+import newsStore from "../../stores/newsStore";
+import authStore from "../../stores/authStore";
 
-const NewsList: React.FC = () => {
+const NewsListComponent: React.FC = () => {
   useEffect(() => {
     newsStore.fetchNews(); // Fetch the news on component mount
   }, []);
@@ -88,4 +89,4 @@ const NewsList: React.FC = () => {
   );
 };
 
-export default observer(NewsList);
+export default observer(NewsListComponent);

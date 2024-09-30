@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import authStore from "../stores/authStore";
 
-const Dashboard: React.FC = () => {
+const DashboardPage: React.FC = () => {
   return (
     <div>
       <h1>Welcome, {authStore.user?.username || "Guest"}!</h1>
@@ -9,4 +9,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default observer(Dashboard);
+export default observer(DashboardPage);

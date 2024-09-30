@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
-import newsStore from "../stores/newsStore"; // Import the MobX store for news
+import newsStore from "../stores/newsStore";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const AddNews: React.FC = () => {
+const AddNewsPage: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
@@ -24,12 +26,19 @@ const AddNews: React.FC = () => {
     formData.append("title", title);
     formData.append("content", content);
     if (image) {
-      formData.append("image", image); // Append the image file
+      formData.append("image", image);
     }
 
     try {
       await newsStore.addNews(formData); // Call MobX store to add news
-      navigate("/"); // Redirect to the news list page after successful submission
+
+      // Navigate to home page
+      navigate("/");
+
+      // Show success toast after a short delay
+      setTimeout(() => {
+        toast.success("News added successfully!"); // Display success toast
+      }, 100); // Adjust the time as necessary
     } catch (err) {
       setError("Failed to add news. Please try again.");
       console.error(err);
@@ -111,9 +120,12 @@ const AddNews: React.FC = () => {
             Submit News
           </button>
         </form>
+
+        {/* Add ToastContainer to display the toast notifications */}
+        <ToastContainer />
       </div>
     </div>
   );
 };
 
-export default observer(AddNews);
+export default observer(AddNewsPage);
