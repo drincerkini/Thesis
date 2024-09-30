@@ -13,21 +13,21 @@ const AboutSection: React.FC = () => {
             <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-md">
               <div className="text-center lg:text-left">
                 <h3 className="text-3xl font-bold mb-4">
-                  About DFT University
+                  About Drin's University
                 </h3>
                 <p className="text-gray-700 mb-4">
                   The University of DFT has an international reputation for
                   outstanding achievements in research and teaching. Founded in
-                  1460, the University of DFT is the oldest university in
+                  1460, the University of DRIN is the oldest university in
                   Switzerland and has a history of success spanning over 550
                   years.
                 </p>
                 <p className="text-gray-700 mb-4">
                   As a comprehensive university offering a wide range of
-                  high-quality educational opportunities, the University of
-                  Basel attracts students from Switzerland and the entire world.
-                  Today, the University of DFT has around 13,000 students from
-                  over a hundred nations, including 3,000 PhD students.
+                  high-quality educational opportunities, the University of Drin
+                  attracts students from Kosovo and the entire world. Today, the
+                  University of Drin has around 13,000 students from over a
+                  hundred nations, including 3,000 PhD students.
                 </p>
                 <p className="text-gray-700">
                   The goal of medical aesthetic clinics is to help patients

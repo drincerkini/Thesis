@@ -27,9 +27,9 @@ const AboutUniSection: React.FC = () => {
                 The university opened with a mass held at Basel Minster on 4
                 April 1460. It has undergone dynamic development ever since its
                 inception. During the first year following its founding, the
-                University Register in Basel listed 226 students and lecturers.
-                Today, the seven faculties at the University of DFT have around
-                13,000 students and over 350 professors...
+                University Register in Prishtina listed 226 students and
+                lecturers. Today, the seven faculties at the University of Drin
+                have around 13,000 students and over 350 professors...
                 {/* Add the rest of the content here */}
               </p>
             </div>
