@@ -1,54 +1,52 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import authStore from "../stores/authStore"; // Import authStore
-import { AxiosError } from "axios"; // Import AxiosError type
-import Spinner from "../components/Spinner"; // Import your reusable Spinner component
+import authStore from "../stores/authStore";
+import { AxiosError } from "axios";
+import Spinner from "../components/Spinner";
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // Track the loading state
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
     if (!username || !password) {
       setError("Both username and password are required.");
       return;
     }
 
-    setLoading(true); // Start the loading spinner
+    setLoading(true);
 
     try {
-      // Introduce a 1-second delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      await authStore.login(username, password); // Use the authStore to login
-      navigate("/dashboard"); // Navigate to dashboard on successful login
-      setError(null); // Clear error message on successful login
+      await authStore.login(username, password);
+      navigate("/dashboard");
+      setError(null);
     } catch (error) {
       console.error("Login failed:", error);
 
       if (error instanceof AxiosError) {
         const errorMessage =
           error.response?.data?.message || "Invalid username or password.";
-        setError(errorMessage); // Set error message from API
+        setError(errorMessage);
       } else {
-        setError("An unexpected error occurred."); // Show a general error message
+        setError("An unexpected error occurred.");
       }
     } finally {
-      setLoading(false); // Stop the spinner after the login process finishes
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      {loading ? ( // Conditionally render the spinner when loading is true
-        <Spinner /> // Show Spinner when loading
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
+      {loading ? (
+        <Spinner />
       ) : (
         <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-semibold mb-6 text-gray-800">Login</h2>

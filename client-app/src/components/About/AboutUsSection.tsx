@@ -19,8 +19,7 @@ const AboutSection: React.FC = () => {
                   The University of DFT has an international reputation for
                   outstanding achievements in research and teaching. Founded in
                   1460, the University of DRIN is the oldest university in
-                  Switzerland and has a history of success spanning over 550
-                  years.
+                  Kosovo and has a history of success spanning over 550 years.
                 </p>
                 <p className="text-gray-700 mb-4">
                   As a comprehensive university offering a wide range of

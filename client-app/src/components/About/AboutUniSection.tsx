@@ -24,7 +24,7 @@ const AboutUniSection: React.FC = () => {
               <h2 className="text-2xl font-bold mb-4">ABOUT OUR COLLEGE</h2>
               <p className="text-lg mb-4">We've been serving for ages!</p>
               <p className="text-gray-700">
-                The university opened with a mass held at Basel Minster on 4
+                The university opened with a mass held at Prishtina Minster on 4
                 April 1460. It has undergone dynamic development ever since its
                 inception. During the first year following its founding, the
                 University Register in Prishtina listed 226 students and
