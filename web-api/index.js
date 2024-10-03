@@ -8,6 +8,7 @@ const multer = require("multer");
 const AuthRouter = require("./Routes/AuthRouter");
 const ActivityRouter = require("./Routes/ActivityRouter");
 const NewsRouter = require("./Routes/NewsRouter");
+const ContactRouter = require("./Routes/ContactRouter");
 
 dotenv.config();
 
@@ -44,11 +45,14 @@ mongoose
     const upload = multer({ storage });
 
     // API Routes...
+    app.use("/api/auth", AuthRouter);
+
     app.use("/api/activities", upload.single("image"), ActivityRouter);
 
     app.use("/api/news", upload.single("image"), NewsRouter);
 
-    app.use("/api/auth", AuthRouter);
+    app.use("/api/contacts", ContactRouter);
+
     // Server running port
     app.listen(API_PORT, () => {
       console.log(`Server is listening on port ${API_PORT} ....`);

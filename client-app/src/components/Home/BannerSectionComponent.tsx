@@ -1,5 +1,6 @@
 import React from "react";
 import universityImage from "../../assets/uni.jpg";
+import { Link } from "react-router-dom";
 
 const BannerSectionComponent: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const BannerSectionComponent: React.FC = () => {
           Discover and manage departments, students, and more with ease.
         </p>
         <button className="bg-yellow-500 text-gray-800 px-6 py-2 rounded-full text-lg font-semibold hover:bg-yellow-600 transition duration-300 shadow-md hover:shadow-lg">
-          Get Started
+          <Link to="/application">APPLY NOW</Link>
         </button>
       </div>
     </section>
