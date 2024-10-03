@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import authStore from "../stores/authStore";
 import contactsStore from "../stores/contactsStore"; // Import contactsStore
 import applicationsStore from "../stores/applicationsStore"; // Import applicationsStore
@@ -8,6 +9,11 @@ import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 
 const DashboardPage: React.FC = () => {
   const username = authStore.user?.username || "Guest";
+
+  useEffect(() => {
+    contactsStore.fetchContacts();
+    applicationsStore.fetchApplications();
+  }, []);
 
   // Get the current number of applications and contacts from the store
   const numberOfApplications = applicationsStore.applicationList.length; // Adjust if needed

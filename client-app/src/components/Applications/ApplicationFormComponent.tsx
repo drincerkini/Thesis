@@ -45,8 +45,8 @@ const ApplicationFormComponent = () => {
         phoneNumber: "",
         department: "",
       });
-      toast.success("Contact form submitted successfully");
       navigate("/");
+      toast.success("Contact form submitted successfully");
     } catch (err) {
       setError("Failed to submit application. Please try again."); // Set error message
       toast.error("Failed to submit the contact form");
