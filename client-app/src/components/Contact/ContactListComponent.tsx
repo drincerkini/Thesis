@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import applicationsStore from "../../stores/applicationsStore";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import contactsStore from "../../stores/contactsStore";
 
-const ApplicationListComponent: React.FC = () => {
+const ContactListComponent: React.FC = () => {
   useEffect(() => {
     // Fetch applications when the component mounts
     const fetchApplications = async () => {
       try {
-        await applicationsStore.fetchApplications();
+        await contactsStore.fetchContacts();
       } catch (error) {
         toast.error("Failed to fetch applications");
       }
@@ -18,12 +18,12 @@ const ApplicationListComponent: React.FC = () => {
     fetchApplications();
   }, []);
 
-  if (applicationsStore.loading) {
+  if (contactsStore.loading) {
     return <div>Loading applications...</div>;
   }
 
-  if (applicationsStore.error) {
-    return <div>Error: {applicationsStore.error}</div>;
+  if (contactsStore.error) {
+    return <div>Error: {contactsStore.error}</div>;
   }
 
   return (
@@ -39,29 +39,26 @@ const ApplicationListComponent: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {applicationsStore.applicationList.length === 0 ? (
+          {contactsStore.contactList.length === 0 ? (
             <tr>
               <td colSpan={5} className="text-center px-4 py-2">
                 No applications found
               </td>
             </tr>
           ) : (
-            applicationsStore.applicationList.map((application) => (
-              <tr key={application._id}>
+            contactsStore.contactList.map((contact) => (
+              <tr key={contact._id}>
                 <td className="px-4 py-2 border border-gray-200">
-                  {application.name}
+                  {contact.name}
                 </td>
                 <td className="px-4 py-2 border border-gray-200">
-                  {application.surname}
+                  {contact.surname}
                 </td>
                 <td className="px-4 py-2 border border-gray-200">
-                  {application.email}
-                </td>
-                <td className="px-4 py-2 border border-gray-200">
-                  {application.department}
+                  {contact.email}
                 </td>
                 <td className="px-4 py-2 border border-gray-200 text-center">
-                  <Link to={`/application/${application._id}`}>
+                  <Link to={`/contact/${contact._id}`}>
                     <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300">
                       View
                     </button>
@@ -76,4 +73,4 @@ const ApplicationListComponent: React.FC = () => {
   );
 };
 
-export default observer(ApplicationListComponent);
+export default observer(ContactListComponent);

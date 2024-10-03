@@ -1,12 +1,17 @@
 import { observer } from "mobx-react-lite";
 import authStore from "../stores/authStore";
+import contactsStore from "../stores/contactsStore"; // Import contactsStore
+import applicationsStore from "../stores/applicationsStore"; // Import applicationsStore
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 
 const DashboardPage: React.FC = () => {
   const username = authStore.user?.username || "Guest";
-  const numberOfContacts = 10;
+
+  // Get the current number of applications and contacts from the store
+  const numberOfApplications = applicationsStore.applicationList.length; // Adjust if needed
+  const numberOfContacts = contactsStore.contactList.length; // Adjust if needed
 
   return (
     <>
@@ -37,7 +42,20 @@ const DashboardPage: React.FC = () => {
               <small>Number of Contacts</small>
             </Link>
           </div>
-          {/* Additional cards can be added here */}
+
+          {/* Applications Section */}
+          <div className="bg-orange-600 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <Link to="/application-list" className="text-white">
+              <p className="text-sm uppercase">Applications</p>
+              <FontAwesomeIcon
+                icon={faClipboardList}
+                className="text-5xl mb-3"
+              />
+              <hr className="my-3" />
+              <p className="text-3xl font-bold">{numberOfApplications}</p>
+              <small>Number of Applications</small>
+            </Link>
+          </div>
         </div>
       </div>
     </>
