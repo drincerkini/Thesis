@@ -2,13 +2,13 @@ import { makeAutoObservable, runInAction } from "mobx";
 import axios from "axios";
 
 interface IContact {
-  _id: string;
+  _id?: string;
   name: string;
   surname: string;
   email: string;
   phoneNumber?: string;
   message: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 class ContactStore {

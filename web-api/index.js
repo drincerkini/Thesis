@@ -9,6 +9,7 @@ const AuthRouter = require("./Routes/AuthRouter");
 const ActivityRouter = require("./Routes/ActivityRouter");
 const NewsRouter = require("./Routes/NewsRouter");
 const ContactRouter = require("./Routes/ContactRouter");
+const ApplicationRouter = require("./Routes/ApplicationRouter");
 
 dotenv.config();
 
@@ -52,6 +53,8 @@ mongoose
     app.use("/api/news", upload.single("image"), NewsRouter);
 
     app.use("/api/contacts", ContactRouter);
+
+    app.use("/api/applications", ApplicationRouter);
 
     // Server running port
     app.listen(API_PORT, () => {

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { observer } from "mobx-react-lite";
+import contactStore from "../../stores/contactsStore"; // Import your contact store
 import { toast } from "react-toastify";
 
-const ContactFormComponent = () => {
+const ContactFormComponent: React.FC = () => {
   // State to hold form input values
   const [formData, setFormData] = useState({
     name: "",
@@ -27,8 +28,11 @@ const ContactFormComponent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5001/api/contacts", formData);
+      // Using contactStore to add the contact
+      await contactStore.addContact(formData);
+
       toast.success("Contact form submitted successfully");
+
       // Reset form
       setFormData({
         name: "",
@@ -156,4 +160,4 @@ const ContactFormComponent = () => {
   );
 };
 
-export default ContactFormComponent;
+export default observer(ContactFormComponent);
