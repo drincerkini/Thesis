@@ -1,5 +1,5 @@
-import { makeAutoObservable } from "mobx";
-import axiosInstance from "../services/axiosConfig"; // Your axios instance with interceptors
+import { makeAutoObservable, runInAction } from "mobx";
+import axiosInstance from "../services/axiosConfig";
 import { loginApi } from "../services/authApi";
 
 class AuthStore {
@@ -17,38 +17,51 @@ class AuthStore {
 
   async login(username: string, password: string) {
     try {
-      const response = await loginApi(username, password);
-      const { token, user } = response;
-      this.user = user;
-      this.token = token;
+      const { token, user } = await loginApi(username, password);
+
+      // Use runInAction to modify observable state
+      runInAction(() => {
+        this.user = user;
+        this.token = token;
+      });
+
       localStorage.setItem("token", token);
     } catch (error) {
       console.error("Login failed:", error);
-      throw error;
     }
   }
 
   async loadUserFromToken() {
     const token = localStorage.getItem("token");
     if (token) {
-      this.token = token;
+      runInAction(() => {
+        this.token = token;
+      });
+
       try {
         const response = await axiosInstance.get("/auth/me", {
           headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the request
+            Authorization: `Bearer ${token}`,
           },
         });
-        this.user = response.data;
+
+        runInAction(() => {
+          this.user = response.data;
+        });
       } catch (error) {
         console.error("Failed to load user from token:", error);
-        this.user = null;
+        runInAction(() => {
+          this.user = null;
+        });
       }
     }
   }
 
   logout() {
-    this.user = null;
-    this.token = null;
+    runInAction(() => {
+      this.user = null;
+      this.token = null;
+    });
     localStorage.removeItem("token");
   }
 }

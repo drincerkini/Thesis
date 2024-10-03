@@ -25,7 +25,9 @@ const LoginPage: React.FC = () => {
 
     try {
       await authStore.login(username, password);
+
       navigate("/dashboard");
+      window.location.reload();
     } catch (error) {
       console.error("Login failed:", error);
 

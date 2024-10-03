@@ -34,7 +34,6 @@ const ContactListComponent: React.FC = () => {
             <th className="px-4 py-2 border border-gray-200">Name</th>
             <th className="px-4 py-2 border border-gray-200">Surname</th>
             <th className="px-4 py-2 border border-gray-200">Email</th>
-            <th className="px-4 py-2 border border-gray-200">Department</th>
             <th className="px-4 py-2 border border-gray-200">Actions</th>
           </tr>
         </thead>
