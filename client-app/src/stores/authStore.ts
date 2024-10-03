@@ -17,12 +17,14 @@ class AuthStore {
 
   async login(username: string, password: string) {
     try {
-      const { token, user } = await loginApi(username, password);
+      const response = await loginApi(username, password);
+      const { token, user } = response;
       this.user = user;
       this.token = token;
-      localStorage.setItem("token", token); // Store token in local storage
+      localStorage.setItem("token", token);
     } catch (error) {
       console.error("Login failed:", error);
+      throw error;
     }
   }
 

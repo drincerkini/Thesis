@@ -21,19 +21,20 @@ const LoginPage: React.FC = () => {
     }
 
     setLoading(true);
+    setError(null); // Reset error message before trying to log in
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      // Remove the artificial delay for the actual login
       await authStore.login(username, password);
+
+      // Navigate to dashboard only after successful login
       navigate("/dashboard");
-      setError(null);
     } catch (error) {
       console.error("Login failed:", error);
 
       if (error instanceof AxiosError) {
         const errorMessage =
-          error.response?.data?.message || "Invalid username or password.";
+          error.response?.data?.message || "Invalid username or password."; // Customize this based on your API
         setError(errorMessage);
       } else {
         setError("An unexpected error occurred.");
