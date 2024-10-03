@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import newsStore from "../stores/newsStore"; // Import the news store
+import newsStore from "../../stores/newsStore"; // Import the news store
 
 const NewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get the ID from the URL

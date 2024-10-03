@@ -13,11 +13,12 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ServicesPage from "./pages/ServicesPage";
 import DashboardPage from "./pages/DashboardPage";
-import AddNewsPage from "./pages/AddNewsPage";
-import NewsDetailPage from "./pages/NewsDetailPage";
-import ContactUsPage from "./pages/ContactUsPage";
+import AddNewsPage from "./pages/News/AddNewsPage";
+import NewsDetailPage from "./pages/News/NewsDetailPage";
+import ContactUsPage from "./pages/Contact/ContactUsPage";
 import ApplicationPage from "./pages/ApplicationPage";
-import ContactDetailsPage from "./pages/ContactDetailsPage";
+import ContactDetailsPage from "./pages/Contact/ContactDetailsPage";
+import ContactListPage from "./pages/Contact/ContactListPage";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); // Add loading state
@@ -55,6 +56,7 @@ const App: React.FC = () => {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
+            <Route path="/contact-list" element={<ContactListPage />} />
             <Route path="/contact/:id" element={<ContactDetailsPage />} />
             <Route path="/application" element={<ApplicationPage />} />
 

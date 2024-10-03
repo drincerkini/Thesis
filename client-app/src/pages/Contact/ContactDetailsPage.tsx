@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import contactsStore from "../stores/contactsStore";
+import contactsStore from "../../stores/contactsStore";
 
 const ContactDetailsComponent: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +26,19 @@ const ContactDetailsComponent: React.FC = () => {
   // Handle 'Go Back' action
   const handleGoBack = () => {
     navigate(-1); // Navigate back to the previous page
+  };
+
+  // Handle 'Delete Contact' action
+  const handleDeleteContact = async () => {
+    if (id) {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this contact?"
+      );
+      if (confirmDelete) {
+        await contactsStore.deleteContact(id);
+        navigate("/contacts"); // Redirect to the contacts list after deletion
+      }
+    }
   };
 
   return (
@@ -62,12 +75,18 @@ const ContactDetailsComponent: React.FC = () => {
           <strong>Message:</strong>
           <p className="mt-2 text-gray-700">{contact.message}</p>
         </div>
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-between mt-6">
           <button
             onClick={handleGoBack}
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
           >
             Go Back
+          </button>
+          <button
+            onClick={handleDeleteContact}
+            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+          >
+            Delete Contact
           </button>
         </div>
       </div>
