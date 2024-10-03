@@ -21,20 +21,17 @@ const LoginPage: React.FC = () => {
     }
 
     setLoading(true);
-    setError(null); // Reset error message before trying to log in
+    setError(null);
 
     try {
-      // Remove the artificial delay for the actual login
       await authStore.login(username, password);
-
-      // Navigate to dashboard only after successful login
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
 
       if (error instanceof AxiosError) {
         const errorMessage =
-          error.response?.data?.message || "Invalid username or password."; // Customize this based on your API
+          error.response?.data?.message || "Invalid username or password.";
         setError(errorMessage);
       } else {
         setError("An unexpected error occurred.");
@@ -45,12 +42,14 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 -mt-16">
       {loading ? (
         <Spinner />
       ) : (
         <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800">Login</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
+            Login
+          </h2>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label

@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import authStore from "../stores/authStore";
 import { useState } from "react";
 
-import gmailImage from "../assets/img/gmail.png";
+import outlook from "../assets/img/outlook.png";
 import ubtImage from "../assets/img/ubt.png";
 import moodleImage from "../assets/img/moodle.png";
 
@@ -99,7 +99,7 @@ const Header: React.FC = () => {
                       onClick={closeEservicesDropdown}
                     >
                       <img
-                        src={gmailImage}
+                        src={outlook}
                         alt="Mail"
                         className="w-8 h-8 rounded-full"
                       />
@@ -158,7 +158,9 @@ const Header: React.FC = () => {
                     <hr className="dropdown-divider" />
                   </li>
                   <li className="my-2 ml-12">
-                    <span className="text-gray-800 text-lg">Staff</span>
+                    <span className="text-gray-800 text-lg font-bold">
+                      Staff
+                    </span>
                   </li>
                   <li>
                     {authStore.isAuthenticated ? (
