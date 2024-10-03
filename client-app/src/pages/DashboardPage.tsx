@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import authStore from "../stores/authStore";
+import ContactListComponent from "../components/Contact/ContactListComponent";
 
 const DashboardPage: React.FC = () => {
   const username = authStore.user?.username || "Guest";
@@ -16,6 +17,8 @@ const DashboardPage: React.FC = () => {
           web."
         </p>
       </div>
+
+      <ContactListComponent />
     </div>
   );
 };

@@ -17,6 +17,7 @@ import AddNewsPage from "./pages/AddNewsPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import ApplicationPage from "./pages/ApplicationPage";
+import ContactDetailsPage from "./pages/ContactDetailsPage";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); // Add loading state
@@ -54,6 +55,7 @@ const App: React.FC = () => {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactUsPage />} />
+            <Route path="/contact/:id" element={<ContactDetailsPage />} />
             <Route path="/application" element={<ApplicationPage />} />
 
             {/* Protect the dashboard route */}
