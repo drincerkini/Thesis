@@ -1,5 +1,5 @@
 import React from "react";
-import ContactListComponent from "../../components/Contact/ContactListComponent";
+import ContactListComponent from "../../components/Contacts/ContactListComponent";
 
 const ContactListPage = () => {
   return (

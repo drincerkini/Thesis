@@ -6,6 +6,7 @@ import applicationsStore from "../stores/applicationsStore"; // Import applicati
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import newsStore from "../stores/newsStore";
 
 const DashboardPage: React.FC = () => {
   const username = authStore.user?.username || "Guest";
@@ -13,11 +14,13 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     contactsStore.fetchContacts();
     applicationsStore.fetchApplications();
+    newsStore.fetchNews();
   }, []);
 
   // Get the current number of applications and contacts from the store
-  const numberOfApplications = applicationsStore.applicationList.length; // Adjust if needed
-  const numberOfContacts = contactsStore.contactList.length; // Adjust if needed
+  const numberOfApplications = applicationsStore.applicationList.length;
+  const numberOfContacts = contactsStore.contactList.length;
+  const numberOfNews = newsStore.newsList.length;
 
   return (
     <>
@@ -60,6 +63,20 @@ const DashboardPage: React.FC = () => {
               <hr className="my-3" />
               <p className="text-3xl font-bold">{numberOfApplications}</p>
               <small>Number of Applications</small>
+            </Link>
+          </div>
+
+          {/* News Section */}
+          <div className="bg-green-600 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <Link to="/application-list" className="text-white">
+              <p className="text-sm uppercase">News</p>
+              <FontAwesomeIcon
+                icon={faClipboardList}
+                className="text-5xl mb-3"
+              />
+              <hr className="my-3" />
+              <p className="text-3xl font-bold">{numberOfNews}</p>
+              <small>Number of News</small>
             </Link>
           </div>
         </div>

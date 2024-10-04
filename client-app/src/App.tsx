@@ -15,12 +15,13 @@ import ServicesPage from "./pages/ServicesPage";
 import DashboardPage from "./pages/DashboardPage";
 import AddNewsPage from "./pages/News/AddNewsPage";
 import NewsDetailPage from "./pages/News/NewsDetailPage";
-import ContactUsPage from "./pages/Contact/ContactUsPage";
-import ApplicationPage from "./pages/Application/ApplicationPage";
-import ContactDetailsPage from "./pages/Contact/ContactDetailsPage";
-import ContactListPage from "./pages/Contact/ContactListPage";
-import ApplicationListPage from "./pages/Application/ApplicationListPage";
-import ApplicationDetailsPage from "./pages/Application/ApplicationDetailsPage";
+import ContactUsPage from "./pages/Contacts/ContactUsPage";
+import ApplicationPage from "./pages/Applications/ApplicationPage";
+import ContactDetailsPage from "./pages/Contacts/ContactDetailsPage";
+import ContactListPage from "./pages/Contacts/ContactListPage";
+import ApplicationListPage from "./pages/Applications/ApplicationListPage";
+import ApplicationDetailsPage from "./pages/Applications/ApplicationDetailsPage";
+import ActivitiesPage from "./pages/Activities/ActivitiesPage";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); // Add loading state
@@ -62,6 +63,7 @@ const App: React.FC = () => {
             <Route path="/contact/:id" element={<ContactDetailsPage />} />
             <Route path="/application" element={<ApplicationPage />} />
             <Route path="/application-list" element={<ApplicationListPage />} />
+            <Route path="/activity-list" element={<ActivitiesPage />} />
             <Route
               path="/application/:id"
               element={<ApplicationDetailsPage />}

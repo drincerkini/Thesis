@@ -6,6 +6,7 @@ import { useState } from "react";
 // Importing images
 import drinLogo from "../../assets/img/drinLogo.jpg";
 import EsherbimetDropdownComponent from "./EsherbimetDropdownComponent";
+import ApplySectionComponent from "./ApplySectionComponent";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -23,26 +24,12 @@ const Header: React.FC = () => {
 
   return (
     <>
-      {/* Fixed Top Section */}
-      {/* <section
-        className="navbar navbar-expand-lg p-2 w-full fixed top-0 left-0 z-50"
-        style={{ backgroundColor: "#060832" }}
-      >
-        <div className="container flex items-center justify-center space-x-4">
-          <h3 className="text-white mr-40">ACADEMIC YEAR 2024/2025</h3>
-          <Link
-            to="/application"
-            className="nav-item nav-link bg-white text-black-600 px-4 py-2 rounded shadow hover:bg-gray-100"
-          >
-            APPLY NOW
-          </Link>
-        </div>
-      </section> */}
+      <ApplySectionComponent />
 
-      <header className="p-4 bg-white shadow-md border-b border-gray-200 fixed w-full  z-40">
+      {/* Sticky Header */}
+      <header className="sticky top-0 p-4 bg-white shadow-md border-b border-gray-200 z-40">
         <nav className="container mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            {/* Replace text with logo image */}
             <Link to="/">
               <img
                 src={drinLogo}
@@ -78,10 +65,8 @@ const Header: React.FC = () => {
 
           {/* User Links */}
           <div className="flex items-center space-x-2">
-            {/* E-Shërbimet Dropdown */}
             <EsherbimetDropdownComponent />
 
-            {/* Additional User Links */}
             {authStore.isAuthenticated && (
               <>
                 <Link
@@ -117,7 +102,7 @@ const Header: React.FC = () => {
         </nav>
       </header>
 
-      <div className="mt-[8rem]"></div>
+      <div className="mt-8"></div>
     </>
   );
 };
