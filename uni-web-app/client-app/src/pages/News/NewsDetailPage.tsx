@@ -46,7 +46,7 @@ const NewsDetailPage: React.FC = () => {
               <p className="text-gray-700 mb-6">{newsItem.content}</p>
               <button
                 onClick={handleGoBack}
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 transition duration-300"
+                className="w-full bg-gray-900 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 transition duration-300"
               >
                 Go Back
               </button>

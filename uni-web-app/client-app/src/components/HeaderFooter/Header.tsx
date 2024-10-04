@@ -97,6 +97,7 @@ const Header: React.FC = () => {
                         onClick={handleLogout}
                         className="block w-full py-2 text-left px-4 text-gray-800 hover:bg-gray-100"
                       >
+                        <i className="fas fa-sign-out-alt mr-2 text-red-500"></i>
                         Logout
                       </button>
                     </div>
