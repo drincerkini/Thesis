@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import authStore from "../stores/authStore";
 import { AxiosError } from "axios";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/others/Spinner";
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");

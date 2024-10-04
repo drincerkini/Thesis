@@ -5,26 +5,36 @@ const FeaturesSectionComponent: React.FC = () => {
     <>
       <section className="w-full py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-semibold text-center mb-8">Features</h2>
+          <h2 className="text-3xl font-semibold text-center mb-8">
+            Why Choose Our University?
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-blue-50 p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-xl font-semibold mb-4">Manage Departments</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                World-Class Education
+              </h3>
               <p className="text-gray-600">
-                Easily add, edit, or delete departments from the university.
-              </p>
-            </div>
-            <div className="bg-blue-50 p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-xl font-semibold mb-4">Student Directory</h3>
-              <p className="text-gray-600">
-                Access a comprehensive list of students with filtering options.
+                Our university offers top-tier academic programs, taught by
+                highly qualified professors who are leaders in their fields.
               </p>
             </div>
             <div className="bg-blue-50 p-6 rounded-lg shadow-lg text-center">
               <h3 className="text-xl font-semibold mb-4">
-                User Authentication
+                State-of-the-Art Facilities
               </h3>
               <p className="text-gray-600">
-                Secure login and registration system to manage user access.
+                From modern labs to extensive libraries and cutting-edge
+                technology, our facilities provide the tools you need to excel.
+              </p>
+            </div>
+            <div className="bg-blue-50 p-6 rounded-lg shadow-lg text-center">
+              <h3 className="text-xl font-semibold mb-4">
+                Global Opportunities
+              </h3>
+              <p className="text-gray-600">
+                With exchange programs, internships, and partnerships with
+                leading universities worldwide, we prepare you for a global
+                career.
               </p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import universityImage from "../../assets/uni.jpg";
+import universityImage from "../../assets/backimg.jpg";
 import { Link } from "react-router-dom";
 
 const BannerSectionComponent: React.FC = () => {
@@ -8,7 +8,7 @@ const BannerSectionComponent: React.FC = () => {
       className="w-full bg-cover bg-center py-20 text-white text-center"
       style={{ backgroundImage: `url(${universityImage})` }}
     >
-      <div className="bg-gray-800 bg-opacity-70 p-10 rounded-lg shadow-xl max-w-xl mx-auto">
+      <div className="bg-gray-800 bg-opacity-70 p-10 rounded-lg shadow-xl ">
         <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">
           Welcome to Drini's University
         </h1>

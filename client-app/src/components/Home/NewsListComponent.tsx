@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Spinner from "../Spinner";
+import Spinner from "../others/Spinner";
 import newsStore from "../../stores/newsStore";
 import authStore from "../../stores/authStore";
 
