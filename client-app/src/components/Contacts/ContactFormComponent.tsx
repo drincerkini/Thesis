@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
-import contactStore from "../../stores/contactsStore"; // Import your contact store
+import contactStore from "../../stores/contactsStore";
 import { toast } from "react-toastify";
 
 const ContactFormComponent: React.FC = () => {
-  // State to hold form input values
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -13,7 +12,6 @@ const ContactFormComponent: React.FC = () => {
     message: "",
   });
 
-  // Handle form input change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -24,16 +22,11 @@ const ContactFormComponent: React.FC = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Using contactStore to add the contact
       await contactStore.addContact(formData);
-
       toast.success("Contact form submitted successfully");
-
-      // Reset form
       setFormData({
         name: "",
         surname: "",
@@ -51,7 +44,6 @@ const ContactFormComponent: React.FC = () => {
     <>
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Name Field */}
           <div>
             <label
               htmlFor="name"
@@ -70,7 +62,6 @@ const ContactFormComponent: React.FC = () => {
             />
           </div>
 
-          {/* Surname Field */}
           <div>
             <label
               htmlFor="surname"
@@ -89,7 +80,6 @@ const ContactFormComponent: React.FC = () => {
             />
           </div>
 
-          {/* Email Field */}
           <div>
             <label
               htmlFor="email"
@@ -108,7 +98,6 @@ const ContactFormComponent: React.FC = () => {
             />
           </div>
 
-          {/* Phone Field */}
           <div>
             <label
               htmlFor="phoneNumber"
@@ -127,7 +116,6 @@ const ContactFormComponent: React.FC = () => {
           </div>
         </div>
 
-        {/* Message Field */}
         <div>
           <label
             htmlFor="message"
@@ -146,7 +134,6 @@ const ContactFormComponent: React.FC = () => {
           ></textarea>
         </div>
 
-        {/* Submit Button */}
         <div className="flex justify-center">
           <button
             type="submit"

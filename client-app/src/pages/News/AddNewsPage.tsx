@@ -14,14 +14,13 @@ const AddNewsPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Clear any previous error
+    setError(null);
 
     if (!title || !content || !image) {
       setError("All fields are required.");
       return;
     }
 
-    // Create a FormData object and append the fields
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
@@ -30,15 +29,13 @@ const AddNewsPage: React.FC = () => {
     }
 
     try {
-      await newsStore.addNews(formData); // Call MobX store to add news
+      await newsStore.addNews(formData);
 
-      // Navigate to home page
       navigate("/");
 
-      // Show success toast after a short delay
       setTimeout(() => {
-        toast.success("News added successfully!"); // Display success toast
-      }, 100); // Adjust the time as necessary
+        toast.success("News added successfully!");
+      }, 100);
     } catch (err) {
       setError("Failed to add news. Please try again.");
       console.error(err);

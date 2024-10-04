@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import newsStore from "../../stores/newsStore"; // Import the news store
+import newsStore from "../../stores/newsStore";
 
 const NewsDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Get the ID from the URL
-  const navigate = useNavigate(); // Use navigate for programmatic navigation
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNewsDetail = async () => {
       if (id) {
-        await newsStore.fetchNewsById(id); // Fetch news by ID
+        await newsStore.fetchNewsById(id);
       }
     };
 
@@ -18,7 +18,7 @@ const NewsDetailPage: React.FC = () => {
   }, [id]);
 
   const handleGoBack = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
 
   if (newsStore.loading)

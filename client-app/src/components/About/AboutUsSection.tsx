@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import campusImage from "../../assets/img/abuu.jpeg";
+import campusImage from "../../assets/abuu.jpeg";
 import { FaFacebook, FaInstagram, FaPinterest } from "react-icons/fa";
 
 const AboutSection: React.FC = () => {

@@ -6,7 +6,6 @@ import contactsStore from "../../stores/contactsStore";
 
 const ContactListComponent: React.FC = () => {
   useEffect(() => {
-    // Fetch applications when the component mounts
     const fetchApplications = async () => {
       try {
         await contactsStore.fetchContacts();

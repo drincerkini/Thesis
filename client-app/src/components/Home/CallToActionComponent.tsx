@@ -1,5 +1,5 @@
 import React from "react";
-import backgroundImage from "../../assets/img/banner1.jpg";
+import backgroundImage from "../../assets/banner1.jpg";
 import { Link } from "react-router-dom";
 
 const CallToActionComponent: React.FC = () => {

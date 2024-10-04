@@ -19,7 +19,6 @@ const DashboardPage: React.FC = () => {
     activityStore.fetchActivities();
   }, []);
 
-  // Get the current number of applications and contacts from the store
   const numberOfApplications = applicationsStore.applicationList.length;
   const numberOfContacts = contactsStore.contactList.length;
   const numberOfNews = newsStore.newsList.length;

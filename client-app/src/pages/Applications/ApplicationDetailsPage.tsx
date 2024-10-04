@@ -30,12 +30,10 @@ const ApplicationDetailsComponent: React.FC = () => {
     );
   }
 
-  // Handle 'Go Back' action
   const handleGoBack = () => {
-    navigate(-1); // Navigate back to the previous page
+    navigate(-1);
   };
 
-  // Handle 'Delete Application' action
   const handleDeleteApplication = async () => {
     if (id) {
       const confirmDelete = window.confirm(
@@ -45,7 +43,7 @@ const ApplicationDetailsComponent: React.FC = () => {
         try {
           await applicationsStore.deleteApplication(id);
           toast.success("Application deleted successfully");
-          navigate("/applications"); // Redirect to the applications list after deletion
+          navigate("/applications");
         } catch (error) {
           toast.error("Failed to delete application");
         }

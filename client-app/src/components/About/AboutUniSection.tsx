@@ -1,5 +1,5 @@
 import React from "react";
-import slide1 from "../../assets/img/abu.jpeg"; // Use your image here
+import slide1 from "../../assets/abu.jpeg";
 
 const AboutUniSection: React.FC = () => {
   return (
@@ -30,7 +30,6 @@ const AboutUniSection: React.FC = () => {
                 University Register in Prishtina listed 226 students and
                 lecturers. Today, the seven faculties at the University of Drin
                 have around 13,000 students and over 350 professors...
-                {/* Add the rest of the content here */}
               </p>
             </div>
           </div>

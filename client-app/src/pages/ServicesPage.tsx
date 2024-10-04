@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import banner3 from "../assets/img/banner3.jpg";
-import banner4 from "../assets/img/banner4.jpg";
-import banner5 from "../assets/img/banner5.jpg";
-import banner6 from "../assets/img/banner6.jpg";
+import banner3 from "../assets/banner3.jpg";
+import banner4 from "../assets/banner4.jpg";
+import banner5 from "../assets/banner5.jpg";
+import banner6 from "../assets/banner6.jpg";
 import { Link } from "react-router-dom";
 
 const ServicesPage: React.FC = () => {

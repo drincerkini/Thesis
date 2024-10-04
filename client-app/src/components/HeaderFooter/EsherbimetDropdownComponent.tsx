@@ -1,7 +1,6 @@
-// Importing images
-import outlook from "../../assets/img/outlook.png";
-import ubtImage from "../../assets/img/ubt.png";
-import moodleImage from "../../assets/img/moodle.png";
+import outlook from "../../assets/outlook.png";
+import ubtImage from "../../assets/ubt.png";
+import moodleImage from "../../assets/moodle.png";
 import { useState } from "react";
 import authStore from "../../stores/authStore";
 import { Link } from "react-router-dom";

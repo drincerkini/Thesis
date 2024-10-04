@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import axios from "axios";
 
-// Define the interface for activity items
 interface IActivity {
   _id: string;
   title: string;

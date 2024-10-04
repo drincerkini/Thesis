@@ -23,12 +23,10 @@ const ContactDetailsComponent: React.FC = () => {
     return <div className="text-center mt-6">Loading contact details...</div>;
   }
 
-  // Handle 'Go Back' action
   const handleGoBack = () => {
-    navigate(-1); // Navigate back to the previous page
+    navigate(-1);
   };
 
-  // Handle 'Delete Contact' action
   const handleDeleteContact = async () => {
     if (id) {
       const confirmDelete = window.confirm(
@@ -36,7 +34,7 @@ const ContactDetailsComponent: React.FC = () => {
       );
       if (confirmDelete) {
         await contactsStore.deleteContact(id);
-        navigate("/contacts"); // Redirect to the contacts list after deletion
+        navigate("/contacts");
       }
     }
   };

@@ -99,7 +99,6 @@ const LoginPage: React.FC = () => {
   );
 };
 
-// Wrap the component with observer, then export it
 const ObservedLogin = observer(LoginPage);
 
 export default ObservedLogin;

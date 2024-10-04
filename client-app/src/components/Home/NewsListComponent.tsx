@@ -69,7 +69,7 @@ const NewsListComponent: React.FC = () => {
                     >
                       Read More
                     </Link>
-                    {authStore.isAuthenticated && ( // Show delete button only if the user is authenticated
+                    {authStore.isAuthenticated && (
                       <button
                         onClick={() => handleDelete(newsItem._id)}
                         className="text-red-500 hover:text-red-700"

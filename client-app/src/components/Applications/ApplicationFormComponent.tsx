@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { observer } from "mobx-react-lite"; // Import observer for MobX
-import applicationStore from "../../stores/applicationsStore"; // Adjust the import path as needed
+import { observer } from "mobx-react-lite";
+import applicationStore from "../../stores/applicationsStore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const ApplicationFormComponent = () => {
   const navigate = useNavigate();
-  // State to hold form input values
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -17,10 +16,8 @@ const ApplicationFormComponent = () => {
     department: "",
   });
 
-  // State to handle form submission error
   const [error, setError] = useState<string | null>(null);
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -29,13 +26,12 @@ const ApplicationFormComponent = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null); // Clear previous errors
+    setError(null);
 
     try {
-      await applicationStore.addApplication(formData); // Call MobX store method
+      await applicationStore.addApplication(formData);
       setFormData({
         name: "",
         surname: "",
@@ -48,7 +44,7 @@ const ApplicationFormComponent = () => {
       navigate("/");
       toast.success("Contact form submitted successfully");
     } catch (err) {
-      setError("Failed to submit application. Please try again."); // Set error message
+      setError("Failed to submit application. Please try again.");
       toast.error("Failed to submit the contact form");
     }
   };

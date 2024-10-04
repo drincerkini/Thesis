@@ -10,7 +10,6 @@ class AuthStore {
     makeAutoObservable(this);
   }
 
-  // Computed property to check if the user is authenticated
   get isAuthenticated() {
     return this.token !== null;
   }
@@ -19,7 +18,6 @@ class AuthStore {
     try {
       const { token, user } = await loginApi(username, password);
 
-      // Use runInAction to modify observable state
       runInAction(() => {
         this.user = user;
         this.token = token;

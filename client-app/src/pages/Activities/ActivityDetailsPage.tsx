@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import activityStore from "../../stores/activityStore"; // Import the activity store
+import activityStore from "../../stores/activityStore";
 
 const ActivityDetailPage: React.FC = observer(() => {
-  const { id } = useParams<{ id: string }>(); // Get the ID from the URL
-  const navigate = useNavigate(); // Use navigate for programmatic navigation
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchActivityDetail = async () => {
       if (id) {
-        await activityStore.fetchActivityById(id); // Fetch activity by ID
+        await activityStore.fetchActivityById(id);
       }
     };
 
@@ -18,7 +18,7 @@ const ActivityDetailPage: React.FC = observer(() => {
   }, [id]);
 
   const handleGoBack = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
 
   if (activityStore.loading) {
@@ -47,11 +47,11 @@ const ActivityDetailPage: React.FC = observer(() => {
               alt={activityItem.title}
               className="w-full h-64 object-cover rounded-t-lg"
             />
-            {/* Date display positioned absolutely */}
+            {/* Date display at the top left */}
             <span className="absolute top-2 left-2 text-white bg-black bg-opacity-70 px-2 py-1 rounded-md">
               {new Date(activityItem.createdAt).toLocaleDateString()}
             </span>
-            {/* Category display positioned absolutely with red text */}
+            {/* Category display positioned at the top right */}
             <div className="absolute top-2 right-2 text-sm text-red-500 bg-opacity-70 px-2 py-1 rounded-md">
               <span className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700">
                 {activityItem.category}

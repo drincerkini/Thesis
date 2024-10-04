@@ -4,7 +4,7 @@ import authStore from "../../stores/authStore";
 import { useState } from "react";
 
 // Importing images
-import drinLogo from "../../assets/img/drinLogo.jpg";
+import drinLogo from "../../assets/uniLogo.jpg";
 import EsherbimetDropdownComponent from "./EsherbimetDropdownComponent";
 import ApplySectionComponent from "./ApplySectionComponent";
 

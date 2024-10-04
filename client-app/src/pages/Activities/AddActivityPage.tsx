@@ -18,29 +18,23 @@ const AddActivityPage: React.FC = () => {
     e.preventDefault();
     setError(null);
 
-    // Validate input fields
     if (!title || !category || !description || !image || !createdAt) {
       setError("All fields are required.");
       return;
     }
 
-    // Create a FormData object and append the fields
     const formData = new FormData();
     formData.append("title", title);
     formData.append("category", category);
-    formData.append("description", description); // Append description
-    formData.append("createdAt", createdAt); // Append createdAt
+    formData.append("description", description);
+    formData.append("createdAt", createdAt);
     if (image) {
       formData.append("image", image);
     }
 
     try {
-      await activityStore.addActivity(formData); // Call MobX store to add activity
-
-      // Navigate to activities list page
+      await activityStore.addActivity(formData);
       navigate("/activities");
-
-      // Show success toast after a short delay
       setTimeout(() => {
         toast.success("Activity added successfully!");
       }, 100);
@@ -115,7 +109,7 @@ const AddActivityPage: React.FC = () => {
               onChange={(e) => setDescription(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="Enter activity description"
-              rows={4} // Set the number of rows for the textarea
+              rows={4}
             />
           </div>
 
