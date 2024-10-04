@@ -1,5 +1,5 @@
 import React from "react";
-import universityImage from "../../assets/backimg.jpg";
+import universityImage from "../../assets/img/banner2.jpg";
 import { Link } from "react-router-dom";
 
 const BannerSectionComponent: React.FC = () => {

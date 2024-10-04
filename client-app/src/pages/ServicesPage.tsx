@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import studentsImage from "../assets/student.jpg";
+import banner3 from "../assets/img/banner3.jpg";
+import banner4 from "../assets/img/banner4.jpg";
+import banner5 from "../assets/img/banner5.jpg";
+import banner6 from "../assets/img/banner6.jpg";
+import { Link } from "react-router-dom";
 
 const ServicesPage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -10,20 +14,18 @@ const ServicesPage: React.FC = () => {
       title: "Welcome to Our University",
       description:
         "Providing quality education and state-of-the-art facilities.",
-      imageUrl:
-        "https://img.freepik.com/premium-photo/modern-architecture-indoor-space-clean-office-public-building-interior-abstract-empty-room-concept_674594-66188.jpg?w=826", // Image from assets folder
+      imageUrl: banner5,
     },
     {
       title: "Explore Our Campus",
       description: "Experience a vibrant and inclusive campus community.",
-      imageUrl:
-        "https://img.freepik.com/premium-photo/graduation-cap-with-tassel-it-sits-table-with-cup-coffee_1044943-186521.jpg?w=826", // Image from assets folder
+      imageUrl: banner4,
     },
     {
       title: "Shape Your Future",
       description:
         "Join us and embark on a journey of personal and academic growth.",
-      imageUrl: studentsImage, // Image from assets folder
+      imageUrl: banner3,
     },
   ];
 
@@ -192,6 +194,24 @@ const ServicesPage: React.FC = () => {
                 and campus life.
               </p>
             </div>
+          </div>
+        </section>
+
+        <section
+          className="w-full py-16 text-white text-center bg-cover bg-center"
+          style={{ backgroundImage: `url(${banner6})` }}
+        >
+          <div className="bg-gray-800 bg-opacity-70 p-10 rounded-lg shadow-lg inline-block">
+            <h2 className="text-4xl font-bold mb-4 drop-shadow-lg">
+              Ready to get started?
+            </h2>
+            <p className="text-lg mb-6 drop-shadow-md">
+              Join our community and start managing your university data
+              efficiently.
+            </p>
+            <button className="bg-yellow-500 text-gray-800 px-6 py-2 rounded-full text-lg font-semibold hover:bg-yellow-600 transition duration-300 shadow-md hover:shadow-lg">
+              <Link to="/application">APPLY NOW</Link>
+            </button>
           </div>
         </section>
       </div>

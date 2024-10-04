@@ -65,7 +65,7 @@ const NewsListComponent: React.FC = () => {
                   <div className="flex justify-between items-center mt-4">
                     <Link
                       to={`/news/${newsItem._id}`}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
+                      className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-300"
                     >
                       Read More
                     </Link>
