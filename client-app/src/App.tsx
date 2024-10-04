@@ -22,6 +22,8 @@ import ContactListPage from "./pages/Contacts/ContactListPage";
 import ApplicationListPage from "./pages/Applications/ApplicationListPage";
 import ApplicationDetailsPage from "./pages/Applications/ApplicationDetailsPage";
 import ActivitiesPage from "./pages/Activities/ActivitiesPage";
+import AddActivityPage from "./pages/Activities/AddActivityPage";
+import ActivityDetailsPage from "./pages/Activities/ActivityDetailsPage";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true); // Add loading state
@@ -63,7 +65,9 @@ const App: React.FC = () => {
             <Route path="/contact/:id" element={<ContactDetailsPage />} />
             <Route path="/application" element={<ApplicationPage />} />
             <Route path="/application-list" element={<ApplicationListPage />} />
-            <Route path="/activity-list" element={<ActivitiesPage />} />
+            <Route path="/activities" element={<ActivitiesPage />} />
+            <Route path="/activities/:id" element={<ActivityDetailsPage />} />
+            <Route path="/add-activity" element={<AddActivityPage />} />
             <Route
               path="/application/:id"
               element={<ApplicationDetailsPage />}

@@ -1,58 +1,79 @@
-const ActivityModel = require("../Models/ActivityModel");
+const Activity = require("../Models/ActivityModel");
 const moment = require("moment");
 
 const ActivityController = {
+  // Get all activities
   get: async (req, res) => {
     try {
-      const list = await ActivityModel.find();
-      const formattedList = list.map((Activity) => ({
-        ...Activity.toObject(),
-        createdAt: moment(Activity.createdAt).format("MMM D, YYYY"),
+      const activities = await Activity.find();
+      const formattedActivities = activities.map((activity) => ({
+        ...activity.toObject(),
+        createdAt: moment(activity.createdAt).format("MMM D, YYYY"),
       }));
-      return res.json(formattedList);
+      res.json(formattedActivities);
     } catch (err) {
-      console.log("error -- ", err);
+      console.error("Error fetching activities:", err);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 
-  getbyid: async (req, res) => {
+  // Get a single activity by ID
+  getById: async (req, res) => {
     try {
-      const info = await ActivityModel.findOne({ _id: req.params.id });
+      const activity = await Activity.findById(req.params.id);
 
-      if (!info) throw Error("Product not Found!");
+      if (!activity) {
+        return res.status(404).json({ error: "Activity not found" });
+      }
 
-      return res.json(info);
+      res.json(activity);
     } catch (err) {
+      console.error("Error fetching activity:", err);
       res.status(404).json({ error: err.message });
     }
   },
 
+  // Create a new activity
   post: async (req, res) => {
-    const info = new ActivityModel({
-      title: req.body.title,
-      category: req.body.category,
-      image: {
-        filename: req.file.filename,
-        mimetype: req.file.mimetype,
-        size: req.file.size,
-        url: req.file.path,
-      },
-    });
     try {
-      const newInfo = await info.save();
-      res.status(200).json(newInfo);
+      const activity = new Activity({
+        title: req.body.title,
+        category: req.body.category,
+        description: req.body.description,
+        createdAt: req.body.createdAt
+          ? new Date(req.body.createdAt)
+          : Date.now(),
+        image: req.file
+          ? {
+              filename: req.file.filename,
+              mimetype: req.file.mimetype,
+              size: req.file.size,
+              url: req.file.path,
+            }
+          : undefined,
+      });
+
+      const newActivity = await activity.save();
+      res.status(201).json(newActivity);
     } catch (err) {
+      console.error("Error creating activity:", err);
       res.status(400).json({ error: err.message });
     }
   },
 
+  // Delete an activity
   delete: async (req, res) => {
     try {
-      const removeInfo = await ActivityModel.remove({ _id: req.params.id });
-      removeInfo.save();
-      res.json(removeInfo);
+      const removeInfo = await Activity.findByIdAndDelete(req.params.id);
+
+      if (!removeInfo) {
+        return res.status(404).json({ error: "Activity not found" });
+      }
+
+      res.json({ message: "Activity deleted successfully" });
     } catch (err) {
-      res.json({ msg: true });
+      console.error("Error deleting activity:", err);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 };

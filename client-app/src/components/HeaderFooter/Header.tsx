@@ -44,6 +44,12 @@ const Header: React.FC = () => {
               Home
             </Link>
             <Link
+              to="/activities"
+              className="text-gray-800 hover:text-gray-600 transition duration-200"
+            >
+              Activities
+            </Link>
+            <Link
               to="/services"
               className="text-gray-800 hover:text-gray-600 transition duration-200"
             >

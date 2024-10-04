@@ -10,7 +10,7 @@ import authStore from "../../stores/authStore";
 
 const NewsListComponent: React.FC = () => {
   useEffect(() => {
-    newsStore.fetchNews(); // Fetch the news on component mount
+    newsStore.fetchNews();
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -29,7 +29,7 @@ const NewsListComponent: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-semibold mx-auto">Latest News</h2>
-          {authStore.isAuthenticated && ( // Check if the user is authenticated
+          {authStore.isAuthenticated && (
             <Link
               to="/add-news"
               className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"

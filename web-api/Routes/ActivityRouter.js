@@ -5,10 +5,10 @@ const router = express.Router({ mergeParams: true });
 
 router.get("/", activityController.get);
 
-router.get("/:id", activityController.getbyid);
+router.get("/:id", activityController.getById);
 
 router.post("/", activityController.post);
 
-router.delete("/", activityController.delete);
+router.delete("/:id", activityController.delete);
 
 module.exports = router;
