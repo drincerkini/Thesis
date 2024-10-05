@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Data;
 using SchoolManagmentSystem.Models;
+using System.Text;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -439,6 +440,48 @@ namespace SchoolManagmentSystem.Controllers
 
             return Ok(); 
         }
+
+        public async Task<IActionResult> DownloadTranscript()
+        {
+            // Get the current logged-in user email
+            var userEmail = User.Identity.Name;
+
+            // Find the student associated with this email
+            var student = await _context.Students
+                                        .FirstOrDefaultAsync(s => s.Email == userEmail);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            // Get the grades for the student
+            var grades = await _context.Grades
+                                       .Include(g => g.Course)
+                                       .Include(g => g.Professor)
+                                       .Where(g => g.StudentId == student.StudentID)
+                                       .ToListAsync();
+
+            // Build the content of the transcript as plain text
+            var transcriptContent = new StringBuilder();
+            transcriptContent.AppendLine($"Transcript for {student.Name} {student.Surname}");
+            transcriptContent.AppendLine("------------------------------------------------");
+
+            foreach (var grade in grades)
+            {
+                transcriptContent.AppendLine($"Course: {grade.Course.CourseName} - " +
+                                             $"Grade: {grade.Score} - " +
+                                             $"Graded By: {grade.Professor.Name} {grade.Professor.Surname} - " +
+                                             $"Date Graded: {grade.DateGraded?.ToString("dd-MM-yyyy") ?? "N/A"}");
+            }
+
+            // Convert the transcript content to a byte array for download
+            var fileContent = Encoding.UTF8.GetBytes(transcriptContent.ToString());
+
+            // Return the plain text file as a download
+            return File(fileContent, "text/plain", "Transcript.txt");
+        }
+
 
 
     }

@@ -360,10 +360,8 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GradeStudent(int studentId, int courseId, int score)
         {
-            // Get the current logged-in user
             var userEmail = User.Identity.Name;
 
-            // Find the professor associated with this email
             var professor = await _context.Professors
                                           .FirstOrDefaultAsync(p => p.Email == userEmail);
 
@@ -372,7 +370,6 @@ namespace SchoolManagmentSystem.Controllers
                 return NotFound("Professor not found.");
             }
 
-            // Ensure the professor teaches the course
             var course = await _context.Courses
                                        .FirstOrDefaultAsync(c => c.CourseId == courseId && c.ProfessorId == professor.ProfessorID);
 
@@ -381,19 +378,16 @@ namespace SchoolManagmentSystem.Controllers
                 return NotFound("You are not teaching this course.");
             }
 
-            // Check if a grade already exists for the student in this course
             var existingGrade = await _context.Grades
                                               .FirstOrDefaultAsync(g => g.StudentId == studentId && g.CourseId == courseId);
 
             if (existingGrade != null)
             {
-                // Update the existing grade
                 existingGrade.Score = score;
                 _context.Update(existingGrade);
             }
             else
             {
-                // Assign a new grade
                 var grade = new Grade
                 {
                     StudentId = studentId,
@@ -408,7 +402,6 @@ namespace SchoolManagmentSystem.Controllers
 
             await _context.SaveChangesAsync();
 
-            //create a new notification for the student
             var notification = new Notification
             {
                 StudentId = studentId,
@@ -420,9 +413,21 @@ namespace SchoolManagmentSystem.Controllers
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            // Redirect to the GradedStudents page
-            return RedirectToAction("GradedStudents");
+            // Fetch students enrolled in this course
+            var studentsInCourse = await _context.Enrollments
+                                                 .Where(e => e.CourseId == courseId)
+                                                 .Select(e => e.Student) // Get the associated students
+                                                 .ToListAsync();
+
+            ViewBag.CourseName = course.CourseName;
+            ViewBag.CourseId = courseId;
+
+            // Redirect back to the CourseStudents page
+            return RedirectToAction("CourseStudents", new { id = courseId });
+
         }
+
+
 
         [Authorize(Roles = "Professor")]
         public async Task<IActionResult> GradedStudents()
