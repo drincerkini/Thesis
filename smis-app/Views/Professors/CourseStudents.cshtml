@@ -28,7 +28,6 @@ else
                             <input type="hidden" name="studentId" value="@student.StudentID" />
                             <input type="hidden" name="courseId" value="@ViewBag.CourseId" />
                             <div class="input-group">
-                                <!-- Dropdown for selecting a grade with smaller width -->
                                 <select class="form-control w-25" name="score" required>
                                     <option value="" disabled selected>Select</option>
                                     @for (int i = 5; i <= 10; i++)
@@ -37,7 +36,7 @@ else
                                     }
                                 </select>
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-success">Assign Grade</button>
+                                    <button type="submit" class="btn btn-success">Assign Grade</button> 
                                 </div>
                             </div>
                         </form>

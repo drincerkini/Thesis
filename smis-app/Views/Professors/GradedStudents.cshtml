@@ -15,6 +15,7 @@ else
                 <th>Email</th>
                 <th>Course Name</th>
                 <th>Grade</th>
+                <th>Action</th> <!-- Added Action column -->
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,13 @@ else
                     <td>@grade.Student.Email</td>
                     <td>@grade.Course.CourseName</td>
                     <td>@grade.Score</td>
+                    <td>
+                        <!-- Form to remove the grade -->
+                        <form asp-action="RemoveGrade" method="post" class="d-inline">
+                            <input type="hidden" name="gradeId" value="@grade.GradeId" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this grade?');">Remove Grade</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>

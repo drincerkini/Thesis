@@ -328,7 +328,7 @@ namespace SchoolManagmentSystem.Controllers
             // Verify the course belongs to the professor
             var course = await _context.Courses
                                        .Include(c => c.Enrollments)
-                                       .ThenInclude(e => e.Student)
+                                           .ThenInclude(e => e.Student)
                                        .FirstOrDefaultAsync(c => c.CourseId == id && c.ProfessorId == professor.ProfessorID);
 
             if (course == null)
@@ -336,11 +336,22 @@ namespace SchoolManagmentSystem.Controllers
                 return NotFound("Course not found or you do not teach this course.");
             }
 
-            // Pass the list of students and course details to the view
+            // Get the list of graded student IDs for this course
+            var gradedStudentIds = await _context.Grades
+                .Where(g => g.CourseId == id)
+                .Select(g => g.StudentId)
+                .ToListAsync();
+
+            // Get the list of students who are enrolled but have not been graded
+            var students = course.Enrollments
+                                 .Where(e => !gradedStudentIds.Contains(e.StudentId)) // Filter out graded students
+                                 .Select(e => e.Student)
+                                 .ToList();
+
+            // Pass the course details to the view
             ViewBag.CourseId = course.CourseId;
             ViewBag.ProfessorId = professor.ProfessorID;
 
-            var students = course.Enrollments.Select(e => e.Student).ToList();
             return View(students);
         }
 
@@ -438,6 +449,26 @@ namespace SchoolManagmentSystem.Controllers
             // Pass the graded students to the view
             return View(gradedStudents);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Professor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveGrade(int gradeId)
+        {
+            // Find the grade to remove
+            var grade = await _context.Grades.FindAsync(gradeId);
+            if (grade == null)
+            {
+                return NotFound("Grade not found.");
+            }
+
+            // Remove the grade from the database
+            _context.Grades.Remove(grade);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("GradedStudents");
+        }
+
 
 
     }
