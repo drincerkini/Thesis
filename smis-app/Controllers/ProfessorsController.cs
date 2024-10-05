@@ -409,9 +409,36 @@ namespace SchoolManagmentSystem.Controllers
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            // Redirect back to the CourseStudents page
-            return RedirectToAction("CourseStudents", new { id = courseId });
+            // Redirect to the GradedStudents page
+            return RedirectToAction("GradedStudents");
         }
+
+        [Authorize(Roles = "Professor")]
+        public async Task<IActionResult> GradedStudents()
+        {
+            // Get the current logged-in user
+            var userEmail = User.Identity.Name;
+
+            // Find the professor associated with this email
+            var professor = await _context.Professors
+                                           .FirstOrDefaultAsync(p => p.Email == userEmail);
+
+            if (professor == null)
+            {
+                return NotFound("Professor not found.");
+            }
+
+            // Retrieve all grades assigned by this professor
+            var gradedStudents = await _context.Grades
+                                               .Include(g => g.Student)
+                                               .Include(g => g.Course)
+                                               .Where(g => g.ProfessorId == professor.ProfessorID)
+                                               .ToListAsync();
+
+            // Pass the graded students to the view
+            return View(gradedStudents);
+        }
+
 
     }
 }

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Grade>
+
+<h2>Graded Students</h2>
+
+@if (!Model.Any())
+{
+    <p>No students have been graded yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Course Name</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grade in Model)
+            {
+                <tr>
+                    <td>@grade.Student.Name @grade.Student.Surname</td>
+                    <td>@grade.Student.Email</td>
+                    <td>@grade.Course.CourseName</td>
+                    <td>@grade.Score</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
