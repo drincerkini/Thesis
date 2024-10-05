@@ -21,7 +21,7 @@ namespace SchoolManagmentSystem.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Professor> Professors { get; set; }
         public DbSet<Grade> Grades { get; set; }
-
+        public DbSet<Notification> Notifications { get; set; }
 
     }
 }

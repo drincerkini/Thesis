@@ -44,8 +44,16 @@ namespace SchoolManagmentSystem.Controllers
 
             // Pass the student's transcript to the view
             ViewBag.StudentName = student.Name + " " + student.Surname;
+
+            // Get unread notifications for the student
+            var notifications = await _context.Notifications
+                                               .Where(n => n.StudentId == student.StudentID && !n.IsRead)
+                                               .ToListAsync();
+            ViewBag.Notifications = notifications;
+
             return View(grades);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> RemoveGrade(int gradeId)
@@ -400,6 +408,38 @@ namespace SchoolManagmentSystem.Controllers
         {
             return _context.Students.Any(e => e.StudentID == id);
         }
+
+        public async Task<IActionResult> Notifications()
+        {
+            var userEmail = User.Identity.Name;
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == userEmail);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            var notifications = await _context.Notifications
+                                              .Where(n => n.StudentId == student.StudentID && !n.IsRead)
+                                              .ToListAsync();
+
+            return View(notifications);
+        }
+        [HttpPost]
+        public IActionResult MarkAsRead(int id)
+        {
+            var notification = _context.Notifications.Find(id);
+            if (notification == null)
+            {
+                return NotFound();
+            }
+
+            notification.IsRead = true;
+            _context.SaveChanges();
+
+            return Ok(); 
+        }
+
 
     }
 }

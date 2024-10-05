@@ -1,0 +1,85 @@
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Notification>
+
+<div class="container mt-4">
+    <h2 class="mb-3">Notifications</h2>
+
+    @if (Model.Any())
+    {
+        <ul class="list-group" id="notifications-list">
+            @foreach (var notification in Model.OrderBy(n => n.IsRead)) // Unread first
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center notification-item
+            @(notification.IsRead ? "list-group-item-secondary" : "")"
+                    id="notification-@notification.NotificationId"
+                    data-notification-id="@notification.NotificationId"
+                    style="transition: background-color 0.3s ease;">
+
+                    <span class="message-content @(notification.IsRead ? "text-muted" : "")">
+                        @{
+                            // Extract CourseName and Score from the message
+                            var parts = notification.Message.Split(new[] { "Your new grade is " }, StringSplitOptions.None);
+                            var courseInfo = parts[0].Replace("You have been graded for the course ", "").Trim().ToUpper(); // Convert course name to uppercase
+                            var gradeInfo = parts.Length > 1 ? parts[1] : ""; // This will contain the score info
+                        }
+                        You have been graded for the course <span style="font-weight: bold; color: black;">@courseInfo</span> Your new grade is <span style="font-weight: bold; color: black;">@gradeInfo</span>
+                        <small class="text-muted">(Date: @notification.DateCreated)</small>
+                    </span>
+
+                    <div>
+                        @if (!notification.IsRead)
+                        {
+                            <button class="btn btn-outline-primary btn-sm mark-as-read-btn">Delete</button>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Deleted</span>
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+
+
+
+
+    }
+    else
+    {
+            <div class="alert alert-info">
+                You have no new notifications.
+            </div>
+    }
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Event listener for mark as read button
+        $('.mark-as-read-btn').on('click', function () {
+            var notificationItem = $(this).closest('.notification-item');
+            var notificationId = notificationItem.data('notification-id');
+
+            // AJAX request to mark the notification as read
+            $.ajax({
+                url: '@Url.Action("MarkAsRead")', // Controller action URL
+                method: 'POST',
+                data: { id: notificationId },
+                success: function () {
+                    // Update the UI for the read notification
+                    notificationItem.addClass('list-group-item-secondary');
+                    notificationItem.find('.message-content').addClass('text-muted');
+                    notificationItem.find('.mark-as-read-btn').replaceWith('<span class="badge bg-success">Read</span>');
+
+                    // Move the read notification to the bottom of the list
+                    var notificationList = $('#notifications-list');
+                    notificationItem.fadeOut(function () {
+                        notificationItem.appendTo(notificationList).fadeIn();
+                    });
+                },
+                error: function () {
+                    alert('Error marking notification as read.');
+                }
+            });
+        });
+    });
+</script>

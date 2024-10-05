@@ -397,6 +397,18 @@ namespace SchoolManagmentSystem.Controllers
 
             await _context.SaveChangesAsync();
 
+            //create a new notification for the student
+            var notification = new Notification
+            {
+                StudentId = studentId,
+                Message = $"You have been graded for the course {course.CourseName}. Your new grade is {score}.",
+                IsRead = false,
+                DateCreated = DateTime.Now
+            };
+
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+
             // Redirect back to the CourseStudents page
             return RedirectToAction("CourseStudents", new { id = courseId });
         }
