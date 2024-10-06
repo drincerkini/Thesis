@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Branch.Name)
             </td>
 
-                @if (User.IsInRole("Admin") || User.IsInRole("Academic Staff"))
+                @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                 {
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.DeptBranchID">Edit</a> |

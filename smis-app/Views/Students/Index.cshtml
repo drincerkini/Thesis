@@ -86,7 +86,7 @@
                     @Html.DisplayFor(modelItem => item.Department.Name)
                 </th>
                 <td>
-                    @if (User.IsInRole("Admin") || User.IsInRole("Academic Staff"))
+                    @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                     {
                         <a class="btn btn-ligt text-secondary" asp-action="Edit" asp-route-id="@item.StudentID">Edit</a>
                         <a class="btn btn-ligt text-secondary" asp-action="Details" asp-route-id="@item.StudentID">Details</a>

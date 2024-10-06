@@ -1,46 +1,65 @@
 ﻿@model IEnumerable<SchoolManagmentSystem.Models.Enrollment>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Enrollments";
 }
 
-<h1>Index</h1>
+<h1 class="text-center">Enrollments</h1>
 
-<p>
-    @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
-    {
-        <button class="btn btn btn-outline-light">
-            <a class="btn btn-outline-light text-primary" asp-action="Create">Create New Department</a>
+<div class="container d-flex justify-content-between">
+
+    <p>
+        @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
+        {
+            <button class="btn btn-outline-light">
+                <a class="btn btn-outline-light text-primary" asp-action="Create">Create New Enrollment</a>
+            </button>
+        }
+    </p>
+
+    <form asp-action="Index" method="get">
+        <div class="input-group">
+            <div class="form-outline">
+                <input type="search" id="form1" class="form-control" name="SearchString" placeholder="Search Enrollments" />
+            </div>
+            <button type="submit" class="btn btn-light">
+                Search
+            </button>
+        </div>
+        <button class="btn btn-light ms-3">
+            <a class="btn btn-light text-secondary" asp-action="Index">Back to List</a>
         </button>
-    }
-</p>
-<table class="table">
+    </form>
+</div>
+
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Course)
+                @Html.DisplayNameFor(model => model.First().Course.CourseName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Student)
+                @Html.DisplayNameFor(model => model.First().Student.Email)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EnrollmentId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EnrollmentId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.CourseName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.Email)
+                </td>
+                <td>
+                    <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a>
+                    <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.EnrollmentId">Details</a>
+                    <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.EnrollmentId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

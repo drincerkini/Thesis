@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using System.IO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Data;
 using SchoolManagmentSystem.Models;
 using System.Text;
+using iText.Kernel.Pdf.Canvas.Draw;
+using iText.Kernel.Colors;
 
 namespace SchoolManagmentSystem.Controllers
 {
@@ -422,6 +429,7 @@ namespace SchoolManagmentSystem.Controllers
 
             var notifications = await _context.Notifications
                                               .Where(n => n.StudentId == student.StudentID && !n.IsRead)
+                                              .OrderByDescending(n => n.DateCreated)
                                               .ToListAsync();
 
             return View(notifications);
@@ -447,8 +455,7 @@ namespace SchoolManagmentSystem.Controllers
             var userEmail = User.Identity.Name;
 
             // Find the student associated with this email
-            var student = await _context.Students
-                                        .FirstOrDefaultAsync(s => s.Email == userEmail);
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == userEmail);
 
             if (student == null)
             {
@@ -458,28 +465,60 @@ namespace SchoolManagmentSystem.Controllers
             // Get the grades for the student
             var grades = await _context.Grades
                                        .Include(g => g.Course)
-                                       .Include(g => g.Professor)
                                        .Where(g => g.StudentId == student.StudentID)
                                        .ToListAsync();
 
-            // Build the content of the transcript as plain text
-            var transcriptContent = new StringBuilder();
-            transcriptContent.AppendLine($"Transcript for {student.Name} {student.Surname}");
-            transcriptContent.AppendLine("------------------------------------------------");
-
-            foreach (var grade in grades)
+            // Create a memory stream to hold the PDF data
+            using (var memoryStream = new MemoryStream())
             {
-                transcriptContent.AppendLine($"Course: {grade.Course.CourseName} - " +
-                                             $"Grade: {grade.Score} - " +
-                                             $"Graded By: {grade.Professor.Name} {grade.Professor.Surname} - " +
-                                             $"Date Graded: {grade.DateGraded?.ToString("dd-MM-yyyy") ?? "N/A"}");
+                // Initialize the PDF writer and document
+                PdfWriter writer = new PdfWriter(memoryStream);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf);
+
+                // Add the title to the PDF document
+                document.Add(new Paragraph($"Transcript for {student.Name} {student.Surname}")
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(18));
+
+                // Add a line separator using SolidLine
+                LineSeparator ls = new LineSeparator(new SolidLine());
+                document.Add(ls);
+
+                // Create a table with 2 columns: "Course Name" and "Grade"
+                Table table = new Table(2); // 2 columns
+
+                // Set table width to 100% of the page width
+                table.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Add table headers
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Course Name"))
+                                              .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                                              .SetTextAlignment(TextAlignment.CENTER)
+                                              .SetBold());
+
+                table.AddHeaderCell(new Cell().Add(new Paragraph("Grade"))
+                                              .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                                              .SetTextAlignment(TextAlignment.CENTER)
+                                              .SetBold());
+
+                // Add data rows (Course Name and Grade)
+                foreach (var grade in grades)
+                {
+                    table.AddCell(new Cell().Add(new Paragraph(grade.Course.CourseName)));
+                    table.AddCell(new Cell().Add(new Paragraph(grade.Score.ToString())));
+                }
+
+                // Add the table to the document
+                document.Add(table);
+
+                // Close the document
+                document.Close();
+
+                // Return the PDF as a downloadable file
+                byte[] fileBytes = memoryStream.ToArray();
+                return File(fileBytes, "application/pdf", "Transcript.pdf");
             }
-
-            // Convert the transcript content to a byte array for download
-            var fileContent = Encoding.UTF8.GetBytes(transcriptContent.ToString());
-
-            // Return the plain text file as a download
-            return File(fileContent, "text/plain", "Transcript.txt");
         }
 
 
