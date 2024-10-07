@@ -1,31 +1,26 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Data;
+using SchoolManagmentSystem.Interfaces;
 using SchoolManagmentSystem.Models;
+using SchoolManagmentSystem.Repositories;
 
 namespace SchoolManagmentSystem.Controllers
 {
-    [Authorize(Roles = "Super Admin, Academic Staff ")]
-
+    [Authorize(Roles = "Super Admin, Academic Staff")]
     public class DepartmentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDepartmentRepository _departmentRepository;
 
-        public DepartmentsController(ApplicationDbContext context)
+        public DepartmentsController(IDepartmentRepository departmentRepository)
         {
-            _context = context;
+            _departmentRepository = departmentRepository;
         }
 
         // GET: Departments
-
         [AllowAnonymous]
-        // GET: Departments
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -43,47 +38,21 @@ namespace SchoolManagmentSystem.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var departments = from d in _context.Departments
-                                select d;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                departments = departments.Where(d => d.Name.Contains(searchString));
-            }
-
-            switch (sortOrder)
-            {
-                case "Name":
-                    departments = departments.OrderBy(d => d.Name);
-                    break;
-                case "name_desc":
-                    departments = departments.OrderByDescending(d => d.Name);
-                    break;
-                case "CreatedDate":
-                    departments = departments.OrderBy(d => d.CreatedDate);
-                    break;
-                case "createddate_desc":
-                    departments = departments.OrderByDescending(d => d.CreatedDate);
-                    break;
-                default:
-                    departments = departments.OrderBy(d => d.Name);
-                    break;
-            }
-
+            var departments = await _departmentRepository.GetAllDepartmentsAsync(searchString, sortOrder);
             int pageSize = 5;
-            return View(await PaginatedList<Department>.CreateAsync(departments.AsNoTracking(), pageNumber ?? 1, pageSize));
+
+            return View(await PaginatedList<Department>.CreateAsync(departments, pageNumber ?? 1, pageSize)); // Use directly without AsQueryable
         }
 
         // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Departments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+            var department = await _departmentRepository.GetDepartmentByIdAsync(id.Value);
             if (department == null)
             {
                 return NotFound();
@@ -99,16 +68,13 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         // POST: Departments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DepartmentID,Name,CreatedDate")] Department department)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
+                await _departmentRepository.AddDepartmentAsync(department);
                 return RedirectToAction(nameof(Index));
             }
             return View(department);
@@ -117,12 +83,12 @@ namespace SchoolManagmentSystem.Controllers
         // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Departments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments.FindAsync(id);
+            var department = await _departmentRepository.GetDepartmentByIdAsync(id.Value);
             if (department == null)
             {
                 return NotFound();
@@ -131,8 +97,6 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         // POST: Departments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("DepartmentID,Name,CreatedDate")] Department department)
@@ -146,19 +110,15 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
+                    await _departmentRepository.UpdateDepartmentAsync(department);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartmentExists(department.DepartmentID))
+                    if (!await DepartmentExists(department.DepartmentID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -168,13 +128,12 @@ namespace SchoolManagmentSystem.Controllers
         // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Departments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+            var department = await _departmentRepository.GetDepartmentByIdAsync(id.Value);
             if (department == null)
             {
                 return NotFound();
@@ -188,57 +147,34 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Departments == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Departments'  is null.");
-            }
-            var department = await _context.Departments.FindAsync(id);
-            if (department != null)
-            {
-                _context.Departments.Remove(department);
-            }
-
-            await _context.SaveChangesAsync();
+            await _departmentRepository.DeleteDepartmentAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DepartmentExists(int id)
+        private async Task<bool> DepartmentExists(int id)
         {
-            return (_context.Departments?.Any(e => e.DepartmentID == id)).GetValueOrDefault();
+            return await _departmentRepository.GetDepartmentByIdAsync(id) != null;
         }
 
         [AllowAnonymous]
         public async Task<IActionResult> DepProfessorsList(int? id)
         {
-            var professors = await _context.Professors
-                .Where(p => p.DepartmentID == id)
-                .ToListAsync();
-
+            var professors = await _departmentRepository.GetProfessorsByDepartmentIdAsync(id);
             return View(professors);
         }
 
         [AllowAnonymous]
         public async Task<IActionResult> DepCoursesList(int? id)
         {
-            var courses = await _context.Courses
-                .Include(c => c.Professor) // Eagerly load the associated Professor
-                .Where(c => c.DepartmentID == id)
-                .ToListAsync();
-
+            var courses = await _departmentRepository.GetCoursesByDepartmentIdAsync(id);
             return View(courses);
         }
-
 
         [AllowAnonymous]
         public async Task<IActionResult> DepAssistantsList(int? id)
         {
-            var assistants = await _context.Professors
-                                    .Where(p => p.DepartmentID == id)
-                                    .SelectMany(p => p.Assistants)
-                                    .ToListAsync();
-
+            var assistants = await _departmentRepository.GetAssistantsByDepartmentIdAsync(id);
             return View(assistants);
         }
-
     }
 }
