@@ -1,10 +1,12 @@
 ﻿using System.Data;
+using iText.Commons.Actions.Contexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Data;
+using SchoolManagmentSystem.Interfaces;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
@@ -12,12 +14,12 @@ namespace SchoolManagmentSystem.Controllers
     [Authorize(Roles = "Super Admin, Academic Staff, Professor ")]
     public class AssistantsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAssistantRepository _assistantRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AssistantsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public AssistantsController(IAssistantRepository assistantRepository, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _assistantRepository = assistantRepository;
             _userManager = userManager;
         }
 
@@ -42,61 +44,21 @@ namespace SchoolManagmentSystem.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-
-            var assistants = from a in _context.Assistants
-                                select a;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                assistants = assistants.Where(p => p.Name.Contains(searchString)
-                                        || p.Surname.Contains(searchString));
-            }
-
-            switch (sortOrder)
-            {
-                case "Name":
-                    assistants = assistants.OrderBy(p => p.Name);
-                    break;
-                case "name_desc":
-                    assistants = assistants.OrderByDescending(p => p.Name);
-                    break;
-                case "Surname":
-                    assistants = assistants.OrderBy(p => p.Surname);
-                    break;
-                case "surname_desc":
-                    assistants = assistants.OrderByDescending(p => p.Surname);
-                    break;
-                case "HireDate":
-                    assistants = assistants.OrderBy(p => p.HireDate);
-                    break;
-                case "hiredate_desc":
-                    assistants = assistants.OrderByDescending(p => p.HireDate);
-                    break;
-                case "BirthDate":
-                    assistants = assistants.OrderBy(p => p.BirthDate);
-                    break;
-                case "birthdate_desc":
-                    assistants = assistants.OrderByDescending(p => p.BirthDate);
-                    break;
-                default:
-                    assistants = assistants.OrderBy(p => p.Name);
-                    break;
-            }
             int pageSize = 5;
-            return View(await PaginatedList<Assistant>.CreateAsync(assistants.Include(a => a.Professor).AsNoTracking(), pageNumber ?? 1, pageSize));
+            var assistants = await _assistantRepository.GetAssistantsAsync(sortOrder, searchString, pageNumber ?? 1, pageSize);
+
+            return View(assistants);
         }
 
         // GET: Assistants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Assistants == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var assistant = await _context.Assistants
-                .Include(a => a.Professor)
-                .FirstOrDefaultAsync(m => m.AssistantID == id);
+            var assistant = await _assistantRepository.GetAssistantByIdAsync(id.Value);
             if (assistant == null)
             {
                 return NotFound();
@@ -106,20 +68,18 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         // GET: Assistants/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["ProfessorID"] = new SelectList(_context.Professors, "ProfessorID", "FullName");
+            var professors = await _assistantRepository.GetAllProfessorsAsync();
+            ViewData["ProfessorID"] = new SelectList(professors, "ProfessorID", "FullName");
             return View();
         }
 
         // POST: Assistants/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AssistantID,Name,Surname,Email,BirthDate,HireDate,Address,ProfessorID")] Assistant assistant)
         {
-            // Create a new ApplicationUser for the assistant
             var user = new ApplicationUser
             {
                 UserName = assistant.Email,
@@ -128,21 +88,10 @@ namespace SchoolManagmentSystem.Controllers
                 Email = assistant.Email
             };
 
-            // Create the user with a strong password
-            var result = await _userManager.CreateAsync(user, "Password.123"); // Stronger password policy recommended
+            var result = await _assistantRepository.CreateAssistantAsync(assistant, user);
 
             if (result.Succeeded)
             {
-                // Assign the assistant role to the user
-                await _userManager.AddToRoleAsync(user, "Assistant");
-
-                // Link the assistant with the newly created user
-                assistant.ApplicationUserId = user.Id; // Make sure you have this property in your Assistant model
-
-                // Save the assistant to the database
-                _context.Add(assistant);
-                await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
 
@@ -153,7 +102,8 @@ namespace SchoolManagmentSystem.Controllers
             }
 
             // Populate the ProfessorID dropdown for the view
-            ViewData["ProfessorID"] = new SelectList(_context.Professors, "ProfessorID", "FullName", assistant.ProfessorID);
+            var professors = await _assistantRepository.GetAllProfessorsAsync();
+            ViewData["ProfessorID"] = new SelectList(professors, "ProfessorID", "FullName", assistant.ProfessorID);
             return View(assistant);
         }
 
@@ -162,23 +112,24 @@ namespace SchoolManagmentSystem.Controllers
         // GET: Assistants/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Assistants == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var assistant = await _context.Assistants.FindAsync(id);
+            var assistant = await _assistantRepository.GetAssistantByIdAsync(id.Value);
             if (assistant == null)
             {
                 return NotFound();
             }
-            ViewData["ProfessorID"] = new SelectList(_context.Professors, "ProfessorID", "FullName", assistant.ProfessorID);
+
+            // Populate the ProfessorID dropdown
+            var professors = await _assistantRepository.GetAllProfessorsAsync();
+            ViewData["ProfessorID"] = new SelectList(professors, "ProfessorID", "FullName", assistant.ProfessorID);
             return View(assistant);
         }
 
         // POST: Assistants/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AssistantID,Name,Surname,Email,BirthDate,HireDate,Address,ProfessorID")] Assistant assistant)
@@ -192,12 +143,11 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
-                    _context.Update(assistant);
-                    await _context.SaveChangesAsync();
+                    await _assistantRepository.UpdateAssistantAsync(assistant);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AssistantExists(assistant.AssistantID))
+                    if (!await AssistantExists(assistant.AssistantID))
                     {
                         return NotFound();
                     }
@@ -208,21 +158,22 @@ namespace SchoolManagmentSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProfessorID"] = new SelectList(_context.Professors, "ProfessorID", "FullName", assistant.ProfessorID);
+
+            // Populate the ProfessorID dropdown if the model state is invalid
+            var professors = await _assistantRepository.GetAllProfessorsAsync();
+            ViewData["ProfessorID"] = new SelectList(professors, "ProfessorID", "FullName", assistant.ProfessorID);
             return View(assistant);
         }
 
         // GET: Assistants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Assistants == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var assistant = await _context.Assistants
-                .Include(a => a.Professor)
-                .FirstOrDefaultAsync(m => m.AssistantID == id);
+            var assistant = await _assistantRepository.GetAssistantByIdAsync(id.Value);
             if (assistant == null)
             {
                 return NotFound();
@@ -236,13 +187,7 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Assistants == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Assistants' is null.");
-            }
-
-            // Find the assistant by ID
-            var assistant = await _context.Assistants.FindAsync(id);
+            var assistant = await _assistantRepository.GetAssistantByIdAsync(id);
             if (assistant != null)
             {
                 // Retrieve the ApplicationUser linked to the assistant
@@ -262,17 +207,16 @@ namespace SchoolManagmentSystem.Controllers
                     }
                 }
 
-                // Remove the assistant from the context
-                _context.Assistants.Remove(assistant);
-                await _context.SaveChangesAsync();
+                // Remove the assistant using the repository
+                await _assistantRepository.DeleteAssistantAsync(id);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AssistantExists(int id)
+        private async Task<bool> AssistantExists(int id)
         {
-            return _context.Assistants.Any(e => e.AssistantID == id);
+            return await _assistantRepository.AssistantExistsAsync(id);
         }
     }
 }
