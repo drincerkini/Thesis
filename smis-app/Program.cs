@@ -22,6 +22,8 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IAssistantRepository, AssistantRepository>();
+builder.Services.AddScoped<IAcStaffRepository, AcStaffRepository>();
+builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 
 var app = builder.Build();
 

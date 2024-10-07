@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Data;
+using SchoolManagmentSystem.Interfaces;
 using SchoolManagmentSystem.Models;
 
-namespace SchoolManagmentSystem.Controllers
-{
+namespace SchoolManagmentSystem.Controllers {
+
     [Authorize(Roles = "Super Admin, Academic Staff ")]
     public class AcStaffsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAcStaffRepository _acStaffRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AcStaffsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public AcStaffsController(IAcStaffRepository acStaffRepository, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _acStaffRepository = acStaffRepository;
             _userManager = userManager;
         }
 
@@ -29,78 +24,21 @@ namespace SchoolManagmentSystem.Controllers
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
-            ViewData["SurnameSortParm"] = sortOrder == "Surname" ? "surname_desc" : "Surname";
-            ViewData["HireDateSortParm"] = sortOrder == "HireDate" ? "hiredate_desc" : "HireDate";
-            ViewData["BirthDateSortParm"] = sortOrder == "BirthDate" ? "birthdate_desc" : "BirthDate";
+            ViewData["CurrentFilter"] = searchString ?? currentFilter;
 
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewData["CurrentFilter"] = searchString;
-
-            var applicationDbContext = _context.AcStaffs.Include(a => a.Branch);
-
-            var acstaff = from a in _context.AcStaffs
-                          select a;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                acstaff = acstaff.Where(a => a.Name.Contains(searchString)
-                                       || a.Surname.Contains(searchString));
-            }
-
-            switch (sortOrder)
-            {
-                case "Name":
-                    acstaff = acstaff.OrderBy(p => p.Name);
-                    break;
-                case "name_desc":
-                    acstaff = acstaff.OrderByDescending(p => p.Name);
-                    break;
-                case "Surname":
-                    acstaff = acstaff.OrderBy(p => p.Surname);
-                    break;
-                case "surname_desc":
-                    acstaff = acstaff.OrderByDescending(p => p.Surname);
-                    break;
-                case "HireDate":
-                    acstaff = acstaff.OrderBy(p => p.HireDate);
-                    break;
-                case "hiredate_desc":
-                    acstaff = acstaff.OrderByDescending(p => p.HireDate);
-                    break;
-                case "BirthDate":
-                    acstaff = acstaff.OrderBy(p => p.BirthDate);
-                    break;
-                case "birthdate_desc":
-                    acstaff = acstaff.OrderByDescending(p => p.BirthDate);
-                    break;
-                default:
-                    acstaff = acstaff.OrderBy(p => p.Name);
-                    break;
-            }
-            int pageSize = 5;
-            return View(await PaginatedList<AcStaff>.CreateAsync(acstaff.Include(p => p.Branch).AsNoTracking(), pageNumber ?? 1, pageSize));
+            var acStaffList = await _acStaffRepository.GetAllAsync(sortOrder, searchString);
+            return View(acStaffList);
         }
 
         // GET: AcStaffs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.AcStaffs == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var acStaff = await _context.AcStaffs
-                .Include(a => a.Branch)
-                .FirstOrDefaultAsync(m => m.AcStaffID == id);
+            var acStaff = await _acStaffRepository.GetByIdAsync(id.Value);
             if (acStaff == null)
             {
                 return NotFound();
@@ -110,15 +48,14 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         // GET: AcStaffs/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["BranchID"] = new SelectList(_context.Branches, "BranchID", "Name");
+            var branches = await _acStaffRepository.GetBranchesAsync();
+            ViewData["BranchID"] = new SelectList(branches, "BranchID", "Name");
             return View();
         }
 
         // POST: AcStaffs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AcStaffID,Name,Surname,Email,BirthDate,HireDate,Address,BranchID")] AcStaff acStaff)
@@ -126,16 +63,14 @@ namespace SchoolManagmentSystem.Controllers
             var user = new ApplicationUser { UserName = acStaff.Email, FirstName = acStaff.Name, LastName = acStaff.Surname, Email = acStaff.Email };
             var result = await _userManager.CreateAsync(user, "Password.123");
 
-
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "Academic Staff");
-
-                _context.Add(acStaff);
-                await _context.SaveChangesAsync();
-
+                await _acStaffRepository.CreateAsync(acStaff);
+                await _acStaffRepository.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -147,23 +82,23 @@ namespace SchoolManagmentSystem.Controllers
         // GET: AcStaffs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.AcStaffs == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var acStaff = await _context.AcStaffs.FindAsync(id);
+            var acStaff = await _acStaffRepository.GetByIdAsync(id.Value);
             if (acStaff == null)
             {
                 return NotFound();
             }
-            ViewData["BranchID"] = new SelectList(_context.Branches, "BranchID", "Name", acStaff.BranchID);
+
+            var branches = await _acStaffRepository.GetBranchesAsync();
+            ViewData["BranchID"] = new SelectList(branches, "BranchID", "Name", acStaff.BranchID);
             return View(acStaff);
         }
 
         // POST: AcStaffs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AcStaffID,Name,Surname,Email,BirthDate,HireDate,Address,BranchID")] AcStaff acStaff)
@@ -177,37 +112,34 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
-                    _context.Update(acStaff);
-                    await _context.SaveChangesAsync();
+                    await _acStaffRepository.UpdateAsync(acStaff);
+                    await _acStaffRepository.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AcStaffExists(acStaff.AcStaffID))
+                    if (!await _acStaffRepository.ExistsAsync(acStaff.AcStaffID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BranchID"] = new SelectList(_context.Branches, "BranchID", "Name", acStaff.BranchID);
+
+            var branches = await _acStaffRepository.GetBranchesAsync();
+            ViewData["BranchID"] = new SelectList(branches, "BranchID", "Name", acStaff.BranchID);
             return View(acStaff);
         }
 
         // GET: AcStaffs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.AcStaffs == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var acStaff = await _context.AcStaffs
-                .Include(a => a.Branch)
-                .FirstOrDefaultAsync(m => m.AcStaffID == id);
+            var acStaff = await _acStaffRepository.GetByIdAsync(id.Value);
             if (acStaff == null)
             {
                 return NotFound();
@@ -221,23 +153,10 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.AcStaffs == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.AcStaffs'  is null.");
-            }
-            var acStaff = await _context.AcStaffs.FindAsync(id);
-            if (acStaff != null)
-            {
-                _context.AcStaffs.Remove(acStaff);
-            }
-
-            await _context.SaveChangesAsync();
+            await _acStaffRepository.DeleteAsync(id);
+            await _acStaffRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool AcStaffExists(int id)
-        {
-            return _context.AcStaffs.Any(e => e.AcStaffID == id);
-        }
     }
+
 }
