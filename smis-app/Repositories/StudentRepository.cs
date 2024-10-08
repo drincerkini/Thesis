@@ -47,7 +47,7 @@ namespace SchoolManagmentSystem.Repositories
                 _ => students.OrderBy(s => s.Name),
             };
 
-            return await PaginatedList<Student>.CreateAsync(students.AsNoTracking(), pageNumber, pageSize);
+            return await PaginatedList<Student>.CreateAsync(students.Include(s => s.Department).AsNoTracking(), pageNumber, pageSize);
         }
 
         public async Task AddStudentAsync(Student student)

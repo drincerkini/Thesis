@@ -36,10 +36,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().Course.CourseName)
+                @Html.DisplayNameFor(model => model.First().Course)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Student.Name)
+                @Html.DisplayNameFor(model => model.First().Student)
             </th>
             <th></th>
         </tr>
@@ -54,9 +54,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Student.FullName)
                 </td>
-                <td>
-                    <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a>
-                    <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.EnrollmentId">Details</a>
+                <td class="text-end">
+                    <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a> <span> | </span>
+                    <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.EnrollmentId">Details</a> <span> | </span>
                     <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.EnrollmentId">Delete</a>
                 </td>
             </tr>

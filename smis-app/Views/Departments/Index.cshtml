@@ -17,13 +17,6 @@
     </p>
 
     <form asp-action="Index" method="get">
-        @*<div class="form-actions no-color">
-        <p>
-        Find Departments: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-        <input type="submit" value="Search" class="btn btn-default" /> |
-        <a asp-action="Index">Back to Full List</a>
-        </p>
-        </div>*@
         <div class="input-group">
             <div class="form-outline">
                 <input type="search" id="form1" class="form-control" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Search Departments" />
@@ -55,20 +48,20 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
-                <td>
-                    <a class="btn btn-ligt text-secondary" asp-action="DepProfessorsList" asp-route-id="@item.DepartmentID">Show Professors</a>
-                    <a class="btn btn-ligt text-secondary" asp-action="DepCoursesList" asp-route-id="@item.DepartmentID">Show Courses</a>
-                    <a class="btn btn-ligt text-secondary" asp-action="DepAssistantsList" asp-route-id="@item.DepartmentID">Show Assistants</a>
+                <td class="text-end">
+                    <a class="btn btn-light text-secondary" asp-action="DepProfessorsList" asp-route-id="@item.DepartmentID">Show Professors</a> <span> | </span>
+                    <a class="btn btn-light text-secondary" asp-action="DepCoursesList" asp-route-id="@item.DepartmentID">Show Courses</a> <span> | </span>
+                    <a class="btn btn-light text-secondary" asp-action="DepAssistantsList" asp-route-id="@item.DepartmentID">Show Assistants</a> <span> | </span>
                     @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                     {
-                        <a class="btn btn-ligt text-secondary" asp-action="Edit" asp-route-id="@item.DepartmentID">Edit</a>
-                        <a class="btn btn-ligt text-secondary" asp-action="Details" asp-route-id="@item.DepartmentID">Details</a>
-                        <a class="btn btn-ligt text-danger" asp-action="Delete" asp-route-id="@item.DepartmentID">Delete</a>
+                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.DepartmentID">Edit</a> <span> | </span>
+                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.DepartmentID">Details</a> <span> | </span>
+                        <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.DepartmentID">Delete</a>
                     }
                 </td>
             </tr>

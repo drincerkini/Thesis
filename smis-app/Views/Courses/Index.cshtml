@@ -39,10 +39,10 @@
                 @Html.DisplayNameFor(model => model.First().CourseName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Department.Name)
+                @Html.DisplayNameFor(model => model.First().Department)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Professor.Name)
+                @Html.DisplayNameFor(model => model.First().Professor)
             </th>
             <th></th>
         </tr>
@@ -52,7 +52,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourseName)
+                    <strong>@Html.DisplayFor(modelItem => item.CourseName)</strong>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Department.Name)
@@ -60,11 +60,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Professor.FullName)
                 </td>
-                <td>
+                <td class="text-end">
                     @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                     {
-                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.CourseId">Edit</a>
-                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.CourseId">Details</a>
+                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.CourseId">Edit</a> <span> | </span>
+                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.CourseId">Details</a> <span> | </span>
                         <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.CourseId">Delete</a>
                     }
                 </td>

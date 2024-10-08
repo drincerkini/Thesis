@@ -7,9 +7,6 @@
 <h1 class="text-center">Professors</h1>
 
 <div class="container d-flex justify-content-between">
-
-
-
     <p>
         @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff")){
         <button class="btn btn btn-outline-light">
@@ -51,21 +48,21 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
+                    <strong>@Html.DisplayFor(modelItem => item.Surname) </strong>
                 </td>
                 <th>
                     @Html.DisplayFor(modelItem => item.Department.Name)
                 </th>
-                <td>
-                    <a class="btn btn-light text-secondary" asp-action="ProfAssistList" asp-route-id="@item.ProfessorID">Assistants</a>|
-                    <a class="btn btn-light text-secondary" asp-action="Courses" asp-route-id="@item.ProfessorID">Courses</a>
+                <td class="text-end">
+                    <a class="btn btn-light text-secondary" asp-action="ProfAssistList" asp-route-id="@item.ProfessorID">Assistants</a> |
+                    <a class="btn btn-light text-secondary" asp-action="Courses" asp-route-id="@item.ProfessorID">Courses</a> | 
                     @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                     {
-                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.ProfessorID">Edit</a>
-                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.ProfessorID">Details</a>
+                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.ProfessorID">Edit</a> <span> | </span>
+                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.ProfessorID">Details</a> <span> | </span>
                         <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.ProfessorID">Delete</a>
                     }
                 </td>

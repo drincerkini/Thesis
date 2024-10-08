@@ -65,10 +65,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
+                    <strong>@Html.DisplayFor(modelItem => item.Surname)</strong>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)
@@ -85,12 +85,12 @@
                 <th>
                     @Html.DisplayFor(modelItem => item.Department.Name)
                 </th>
-                <td>
+                <td class="text-end">
                     @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                     {
-                        <a class="btn btn-ligt text-secondary" asp-action="Edit" asp-route-id="@item.StudentID">Edit</a>
-                        <a class="btn btn-ligt text-secondary" asp-action="Details" asp-route-id="@item.StudentID">Details</a>
-                        <a class="btn btn-ligt text-danger" asp-action="Delete" asp-route-id="@item.StudentID">Delete</a>
+                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.StudentID">Edit</a> <span> | </span>
+                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.StudentID">Details</a> <span> | </span>
+                        <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.StudentID">Delete</a>
                     }
                 </td>
             </tr>

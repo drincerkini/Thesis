@@ -40,18 +40,6 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["SurnameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].Surname)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model[0].Email)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BirthDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].BirthDate)</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["HireDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model[0].HireDate)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].Address)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model[0].Branch)
             </th>
             <th></th>
@@ -62,38 +50,22 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BirthDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HireDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
+                    <strong>@Html.DisplayFor(modelItem => item.Surname)</strong>
                 </td>
                 <th>
                     @Html.DisplayFor(modelItem => item.Branch.Name)
                 </th>
-                <td>
+                <td class="text-end">
                     @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                     {
-                        <a class="btn btn-ligt text-secondary" asp-action="Edit" asp-route-id="@item.AcStaffID">Edit</a>
-                        <a class="btn btn-ligt text-secondary" asp-action="Details" asp-route-id="@item.AcStaffID">Details</a>
-                        <a class="btn btn-ligt text-danger" asp-action="Delete" asp-route-id="@item.AcStaffID">Delete</a>
+                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.AcStaffID">Edit</a> <span> | </span>
+                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.AcStaffID">Details</a> <span> | </span>
+                        <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.AcStaffID">Delete</a>
                     }
                 </td>
-                @*<a href="@Url.Action("Courses", new { professorId = item.ProfessorID })">@item.Name</a>*@
-                @*<a class="btn btn-ligt text-secondary" asp-action="Courses" asp-route-id="@item.ProfessorID">Courses</a>|*@
-
-
             </tr>
         }
     </tbody>
