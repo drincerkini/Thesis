@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SchoolManagmentSystem.Data;
+using SchoolManagmentSystem.Interfaces;
 using SchoolManagmentSystem.Models;
 
 namespace SchoolManagmentSystem.Controllers
@@ -14,73 +9,51 @@ namespace SchoolManagmentSystem.Controllers
     [Authorize(Roles = "Super Admin, Academic Staff")]
     public class BranchesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IBranchRepository _branchRepository;
 
-        public BranchesController(ApplicationDbContext context)
+        public BranchesController(IBranchRepository branchRepository)
         {
-            _context = context;
+            _branchRepository = branchRepository;
         }
 
         [AllowAnonymous]
         // GET: Branches
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-             ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
             ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
 
             if (searchString != null)
             {
-                pageNumber = 1;
+                pageNumber = 1; // Reset page number if searching
             }
             else
             {
-                searchString = currentFilter;
+                searchString = currentFilter; // Maintain current filter
             }
 
             ViewData["CurrentFilter"] = searchString;
 
-            var branches = from b in _context.Branches
-                            select b;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                branches = branches.Where(b => b.Name.Contains(searchString));
-            }
-
-            switch (sortOrder)
-            {
-                case "Name":
-                    branches = branches.OrderBy(b => b.Name);
-                    break;
-                case "name_desc":
-                    branches = branches.OrderByDescending(b => b.Name);
-                    break;
-                case "Location":
-                    branches = branches.OrderBy(b => b.Location);
-                    break;
-                case "location_desc":
-                    branches = branches.OrderByDescending(b => b.Location);
-                    break;
-                default:
-                    branches = branches.OrderBy(b => b.Name);
-                    break;
-            }
-
             int pageSize = 5;
-            return View(await PaginatedList<Branch>.CreateAsync(branches.AsNoTracking(), pageNumber ?? 1, pageSize));
+            // Get branches from the repository as IEnumerable
+            var branches = await _branchRepository.GetAllAsync(sortOrder, searchString, pageNumber ?? 1, pageSize);
+            
+
+            // Use PaginatedList to create the paginated result
+            return View(branches);
         }
+
 
         // GET: Branches/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Branches == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var branch = await _context.Branches
-                .FirstOrDefaultAsync(m => m.BranchID == id);
+            var branch = await _branchRepository.GetByIdAsync(id.Value);
             if (branch == null)
             {
                 return NotFound();
@@ -96,19 +69,16 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         // POST: Branches/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BranchID,SMIAL,Name,Location")] Branch branch)
         {
-            var depList = await _context.Departments.ToListAsync();
-    
+            var depList = await _branchRepository.GetDepartmentsAsync();
+
             if (ModelState.IsValid)
             {
                 // First, save the branch to get the generated BranchID
-                _context.Add(branch);
-                await _context.SaveChangesAsync();  // Save first so BranchID is generated
+                await _branchRepository.CreateAsync(branch);
 
                 // Now, associate the departments with the newly created branch
                 if (depList != null)
@@ -120,27 +90,25 @@ namespace SchoolManagmentSystem.Controllers
                             BranchID = branch.BranchID,  // This now has the correct BranchID
                             DepartmentID = item.DepartmentID
                         };
-                        _context.Add(depBranch);
+                        await _branchRepository.CreateDeptBranchAsync(depBranch); // Use the new method here
                     }
-
-                    // Save changes after adding all DeptBranch entries
-                    await _context.SaveChangesAsync();
                 }
-        
+
                 return RedirectToAction(nameof(Index));
             }
             return View(branch);
         }
 
+
         // GET: Branches/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Branches == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var branch = await _context.Branches.FindAsync(id);
+            var branch = await _branchRepository.GetByIdAsync(id.Value);
             if (branch == null)
             {
                 return NotFound();
@@ -149,8 +117,6 @@ namespace SchoolManagmentSystem.Controllers
         }
 
         // POST: Branches/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BranchID,SMIAL,Name,Location")] Branch branch)
@@ -164,19 +130,15 @@ namespace SchoolManagmentSystem.Controllers
             {
                 try
                 {
-                    _context.Update(branch);
-                    await _context.SaveChangesAsync();
+                    await _branchRepository.UpdateAsync(branch);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BranchExists(branch.BranchID))
+                    if (!await BranchExists(branch.BranchID))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -186,13 +148,12 @@ namespace SchoolManagmentSystem.Controllers
         // GET: Branches/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Branches == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var branch = await _context.Branches
-                .FirstOrDefaultAsync(m => m.BranchID == id);
+            var branch = await _branchRepository.GetByIdAsync(id.Value);
             if (branch == null)
             {
                 return NotFound();
@@ -206,40 +167,30 @@ namespace SchoolManagmentSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Branches == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Branches'  is null.");
-            }
-            var branch = await _context.Branches.FindAsync(id);
-            if (branch != null)
-            {
-                _context.Branches.Remove(branch);
-            }
-
-            await _context.SaveChangesAsync();
+            await _branchRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BranchExists(int id)
+        private async Task<bool> BranchExists(int id)
         {
-            return _context.Branches.Any(e => e.BranchID == id);
+            return await _branchRepository.BranchExistsAsync(id);
         }
-
 
         [AllowAnonymous]
         public async Task<IActionResult> BranchDeptList(int? id)
         {
-            var course = await _context.Branches
-                .Include(c => c.DeptBranches)
-                .ThenInclude(e => e.Department)
-                .FirstOrDefaultAsync(c => c.BranchID == id);
-
-            if (course == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            return View(course);
+            var branch = await _branchRepository.GetByIdAsync(id.Value);
+            if (branch == null)
+            {
+                return NotFound();
+            }
+
+            return View(branch);
         }
     }
 }
