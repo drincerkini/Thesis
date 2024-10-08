@@ -86,6 +86,27 @@ namespace SchoolManagmentSystem.Repositories
                                  .FirstOrDefaultAsync(e => e.StudentId == studentId && e.CourseId == courseId);
         }
 
+        public async Task<IEnumerable<Enrollment>> GetEnrolledCoursesAsync(int studentId)
+        {
+            return await _context.Enrollments
+                .Include(e => e.Course) // Load the Course navigation property
+                .ThenInclude(c => c.Professor) // Load the Professor navigation property
+                .Where(e => e.StudentId == studentId)
+                .ToListAsync();
+        }
+
+        public async Task RemoveEnrollmentAsync(int studentId, int courseId)
+        {
+            var enrollment = await _context.Enrollments
+                .FirstOrDefaultAsync(e => e.StudentId == studentId && e.CourseId == courseId);
+
+            if (enrollment != null)
+            {
+                _context.Enrollments.Remove(enrollment);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task AddEnrollmentAsync(Enrollment enrollment)
         {
             _context.Enrollments.Add(enrollment);

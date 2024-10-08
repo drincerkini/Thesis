@@ -1,25 +1,25 @@
-﻿@model SchoolManagmentSystem.ViewModels.EnrollmentViewModel
+﻿@model IEnumerable<SchoolManagmentSystem.Models.Enrollment>
 
 @{
-    ViewData["Title"] = "Enroll in a Course";
+    ViewData["Title"] = "My Enrolled Courses";
 }
 
 <div class="container mt-5">
     <h2 class="mb-4">@ViewData["Title"]</h2>
 
     <div class="p-4 shadow-sm bg-light rounded">
-        @if (ViewBag.AvailableCourses != null && ViewBag.AvailableCourses.Count > 0)
+        @if (Model != null && Model.Any())
         {
             <ul class="list-group">
-                @foreach (var course in ViewBag.AvailableCourses)
+                @foreach (var enrollment in Model)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
-                            <strong>@course.CourseAndProfessor</strong>
+                            <strong>@enrollment.Course.CourseName</strong> - @enrollment.Course.Professor.FullName
                         </div>
-                        <form asp-action="Enroll" method="post" class="mb-0">
-                            <input type="hidden" name="courseId" value="@course.CourseId" />
-                            <button type="submit" class="btn btn-primary">Enroll</button>
+                        <form asp-action="RemoveEnrollment" method="post" class="mb-0">
+                            <input type="hidden" name="courseId" value="@enrollment.CourseId" />
+                            <button type="submit" class="btn btn-danger">Remove</button>
                         </form>
                     </li>
                 }
@@ -27,7 +27,7 @@
         }
         else
         {
-            <p class="text-danger">No available courses to enroll in.</p>
+            <p class="text-danger">You are not enrolled in any courses.</p>
         }
     </div>
 
@@ -35,7 +35,6 @@
         <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Back to Dashboard</a>
     </div>
 </div>
-
 
 @section Scripts {
     @{

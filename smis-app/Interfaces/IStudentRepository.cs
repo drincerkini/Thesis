@@ -22,5 +22,8 @@ namespace SchoolManagmentSystem.Interfaces
         Task DeleteGradeAsync(Grade grade);
         Task<List<Notification>> GetUnreadNotificationsAsync(int studentId);
         Task<Notification> GetNotificationByIdAsync(int id);
+        Task<IEnumerable<Enrollment>> GetEnrolledCoursesAsync(int studentId);
+        Task RemoveEnrollmentAsync(int studentId, int courseId);
+
     }
 }

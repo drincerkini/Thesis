@@ -82,13 +82,27 @@ namespace SchoolManagmentSystem.Controllers
 
         public async Task<IActionResult> Enroll()
         {
-            var coursesWithProfessors = await _studentRepository.GetCoursesWithProfessorsAsync();
+            var userEmail = User.Identity.Name;
+            var student = await _studentRepository.GetStudentByEmailAsync(userEmail);
 
-            ViewBag.Courses = new SelectList(coursesWithProfessors, "CourseId", "CourseAndProfessor");
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            // Get all courses and filter out the ones the student is already enrolled in
+            var coursesWithProfessors = await _studentRepository.GetCoursesWithProfessorsAsync();
+            var enrolledCourses = await _studentRepository.GetEnrolledCoursesAsync(student.StudentID); // This line should now work
+
+            // Create a list of courses that are not already enrolled
+            var availableCourses = coursesWithProfessors
+                .Where(course => !enrolledCourses.Any(ec => ec.CourseId == course.CourseId))
+                .ToList();
+
+            ViewBag.AvailableCourses = availableCourses;
 
             return View();
         }
-
 
 
         [HttpPost]
@@ -118,8 +132,42 @@ namespace SchoolManagmentSystem.Controllers
 
             await _studentRepository.AddEnrollmentAsync(enrollment);
 
-            return RedirectToAction(nameof(Index)); // Redirect to student's dashboard or course list
+            return RedirectToAction(nameof(Enroll));
         }
+
+        public async Task<IActionResult> EnrolledCourses()
+        {
+            var userEmail = User.Identity.Name;
+            var student = await _studentRepository.GetStudentByEmailAsync(userEmail);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            var enrolledCourses = await _studentRepository.GetEnrolledCoursesAsync(student.StudentID);
+            return View(enrolledCourses);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveEnrollment(int courseId)
+        {
+            var userEmail = User.Identity.Name;
+            var student = await _studentRepository.GetStudentByEmailAsync(userEmail);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            await _studentRepository.RemoveEnrollmentAsync(student.StudentID, courseId);
+
+            // Optionally, you can redirect to the same page or a confirmation page
+            return RedirectToAction(nameof(EnrolledCourses));
+        }
+
+
 
         [AllowAnonymous]
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
