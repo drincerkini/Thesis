@@ -3,39 +3,37 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagmentSystem.Data;
+using SchoolManagmentSystem.Interfaces;
 using SchoolManagmentSystem.Models;
 
-namespace smis_app.Controllers
+namespace SchoolManagmentSystem.Controllers
 {
     [Authorize(Roles = "Super Admin, Academic Staff, Professor")]
     public class CoursesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICourseRepository _courseRepository;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ICourseRepository courseRepository)
         {
-            _context = context;
+            _courseRepository = courseRepository;
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Courses.Include(c => c.Department).Include(c => c.Professor);
-            return View(await applicationDbContext.ToListAsync());
+            var courses = await _courseRepository.GetAllAsync();
+            return View(courses);
         }
 
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Courses == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .Include(c => c.Department)
-                .Include(c => c.Professor)
-                .FirstOrDefaultAsync(m => m.CourseId == id);
+            var course = await _courseRepository.GetByIdAsync(id.Value);
             if (course == null)
             {
                 return NotFound();
@@ -45,52 +43,61 @@ namespace smis_app.Controllers
         }
 
         // GET: Courses/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name");
-            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email");
+            var departments = await _courseRepository.GetAllDepartmentsAsync();
+            var professors = await _courseRepository.GetAllProfessorsAsync();
+
+            ViewData["DepartmentID"] = new SelectList(departments, "DepartmentID", "Name");
+            ViewData["ProfessorId"] = new SelectList(professors, "ProfessorID", "Email");
+
             return View();
         }
 
         // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseId,CourseName,DepartmentID,ProfessorId")] Course course)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                await _courseRepository.AddAsync(course);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", course.DepartmentID);
-            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email", course.ProfessorId);
+
+            var departments = await _courseRepository.GetAllDepartmentsAsync();
+            var professors = await _courseRepository.GetAllProfessorsAsync();
+
+            ViewData["DepartmentID"] = new SelectList(departments, "DepartmentID", "Name", course.DepartmentID);
+            ViewData["ProfessorId"] = new SelectList(professors, "ProfessorID", "Email", course.ProfessorId);
+
             return View(course);
         }
 
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Courses == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _courseRepository.GetByIdAsync(id.Value);
             if (course == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", course.DepartmentID);
-            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email", course.ProfessorId);
+
+            var departments = await _courseRepository.GetAllDepartmentsAsync();
+            var professors = await _courseRepository.GetAllProfessorsAsync();
+
+            ViewData["DepartmentID"] = new SelectList(departments, "DepartmentID", "Name", course.DepartmentID);
+            ViewData["ProfessorId"] = new SelectList(professors, "ProfessorID", "Email", course.ProfessorId);
+
             return View(course);
         }
 
         // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CourseId,CourseName,DepartmentID,ProfessorId")] Course course)
@@ -104,12 +111,11 @@ namespace smis_app.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    await _courseRepository.UpdateAsync(course);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.CourseId))
+                    if (!await _courseRepository.CourseExistsAsync(course.CourseId))
                     {
                         return NotFound();
                     }
@@ -120,23 +126,26 @@ namespace smis_app.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "Name", course.DepartmentID);
-            ViewData["ProfessorId"] = new SelectList(_context.Professors, "ProfessorID", "Email", course.ProfessorId);
+
+            var departments = await _courseRepository.GetAllDepartmentsAsync();
+            var professors = await _courseRepository.GetAllProfessorsAsync();
+
+            ViewData["DepartmentID"] = new SelectList(departments, "DepartmentID", "Name", course.DepartmentID);
+            ViewData["ProfessorId"] = new SelectList(professors, "ProfessorID", "Email", course.ProfessorId);
+
             return View(course);
         }
+
 
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Courses == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .Include(c => c.Department)
-                .Include(c => c.Professor)
-                .FirstOrDefaultAsync(m => m.CourseId == id);
+            var course = await _courseRepository.GetByIdAsync(id.Value);
             if (course == null)
             {
                 return NotFound();
@@ -150,23 +159,8 @@ namespace smis_app.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Courses == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Courses'  is null.");
-            }
-            var course = await _context.Courses.FindAsync(id);
-            if (course != null)
-            {
-                _context.Courses.Remove(course);
-            }
-            
-            await _context.SaveChangesAsync();
+            await _courseRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CourseExists(int id)
-        {
-          return (_context.Courses?.Any(e => e.CourseId == id)).GetValueOrDefault();
         }
     }
 }

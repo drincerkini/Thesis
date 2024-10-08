@@ -39,7 +39,7 @@
                 @Html.DisplayNameFor(model => model.First().Course.CourseName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Student.Email)
+                @Html.DisplayNameFor(model => model.First().Student.Name)
             </th>
             <th></th>
         </tr>
@@ -52,7 +52,7 @@
                     @Html.DisplayFor(modelItem => item.Course.CourseName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Student.Email)
+                    @Html.DisplayFor(modelItem => item.Student.FullName)
                 </td>
                 <td>
                     <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a>

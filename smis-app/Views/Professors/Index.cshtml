@@ -64,9 +64,9 @@
                     <a class="btn btn-light text-secondary" asp-action="Courses" asp-route-id="@item.ProfessorID">Courses</a>
                     @if (User.IsInRole("Super Admin") || User.IsInRole("Academic Staff"))
                     {
-                        <a class="btn btn-ligt text-secondary" asp-action="Edit" asp-route-id="@item.ProfessorID">Edit</a>
-                        <a class="btn btn-ligt text-secondary" asp-action="Details" asp-route-id="@item.ProfessorID">Details</a>
-                        <a class="btn btn-ligt text-danger" asp-action="Delete" asp-route-id="@item.ProfessorID">Delete</a>
+                        <a class="btn btn-light text-secondary" asp-action="Edit" asp-route-id="@item.ProfessorID">Edit</a>
+                        <a class="btn btn-light text-secondary" asp-action="Details" asp-route-id="@item.ProfessorID">Details</a>
+                        <a class="btn btn-light text-danger" asp-action="Delete" asp-route-id="@item.ProfessorID">Delete</a>
                     }
                 </td>
             </tr>
