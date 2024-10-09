@@ -165,6 +165,11 @@ namespace SchoolManagmentSystem.Repositories
             return await _context.Notifications.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Department>> GetDepartmentsAsync()
+        {
+            return await _context.Departments.ToListAsync(); // Fetch departments from the context
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

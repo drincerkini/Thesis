@@ -24,6 +24,7 @@ namespace SchoolManagmentSystem.Interfaces
         Task<Notification> GetNotificationByIdAsync(int id);
         Task<IEnumerable<Enrollment>> GetEnrolledCoursesAsync(int studentId);
         Task RemoveEnrollmentAsync(int studentId, int courseId);
+        Task<IEnumerable<Department>> GetDepartmentsAsync();
 
     }
 }

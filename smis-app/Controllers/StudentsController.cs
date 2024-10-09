@@ -195,20 +195,53 @@ namespace SchoolManagmentSystem.Controllers
             return View(student);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
+            ViewData["DepartmentID"] = new SelectList(await _studentRepository.GetDepartmentsAsync(), "DepartmentID", "Name");
             return View();
         }
 
+        // POST: Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Student student)
         {
             if (ModelState.IsValid)
             {
-                await _studentRepository.AddStudentAsync(student);
-                return RedirectToAction(nameof(Index));
+                // Create a new user
+                var user = new ApplicationUser
+                {
+                    UserName = student.Email,
+                    Email = student.Email,
+                    FirstName = student.Name,
+                    LastName = student.Surname
+                };
+
+                // Create the user with a default password
+                var result = await _userManager.CreateAsync(user, "Password.123");
+
+                if (result.Succeeded)
+                {
+                    // Assign the role of Student
+                    await _userManager.AddToRoleAsync(user, "Student");
+
+                    // Set the user ID for the student
+                    student.ApplicationUserId = user.Id;
+
+                    // Add the student to the repository
+                    await _studentRepository.AddStudentAsync(student);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Handle errors if user creation fails
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
+
+            // Repopulate the departments in case of validation errors
+            ViewData["DepartmentID"] = new SelectList(await _studentRepository.GetDepartmentsAsync(), "DepartmentID", "Name", student.DepartmentID);
             return View(student);
         }
 

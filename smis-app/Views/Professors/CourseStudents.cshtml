@@ -8,41 +8,41 @@
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Email</th>
-                <th>Grade</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var student in Model)
-            {
+    <form asp-action="GradeMultipleStudents" method="post" class="mb-4">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@student.Name @student.Surname</td>
-                    <td>@student.Email</td>
-                    <td>
-                        <!-- Form to assign a grade -->
-                        <form asp-action="GradeStudent" method="post">
-                            <input type="hidden" name="studentId" value="@student.StudentID" />
-                            <input type="hidden" name="courseId" value="@ViewBag.CourseId" />
-                            <div class="input-group">
-                                <select class="form-control w-25" name="score" required>
-                                    <option value="" disabled selected>Select</option>
-                                    @for (int i = 5; i <= 10; i++)
-                                    {
-                                        <option value="@i">@i</option>
-                                    }
-                                </select>
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-success">Assign Grade</button> 
-                                </div>
-                            </div>
-                        </form>
-                    </td>
+                    <th>Select</th>
+                    <th>Student Name</th>
+                    <th>Email</th>
+                    <th>Grade</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var student in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedStudentIds" value="@student.StudentID" />
+                        </td>
+                        <td>@student.Name @student.Surname</td>
+                        <td>@student.Email</td>
+                        <td>
+                            <select class="form-control w-25" name="score" required>
+                                <option value="" disabled selected>Select</option>
+                                @for (int i = 5; i <= 10; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="input-group mb-3">
+            <button type="submit" class="btn btn-success">Assign Grade to Selected Students</button>
+        </div>
+    </form>
 }
