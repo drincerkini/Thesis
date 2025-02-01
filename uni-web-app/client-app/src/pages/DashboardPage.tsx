@@ -41,7 +41,7 @@ const DashboardPage: React.FC = () => {
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl w-full">
           {/* Contacts Section */}
-          <div className="bg-blue-600 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
             <Link to="/contact-list" className="text-white">
               <p className="text-sm uppercase">Contacts</p>
               <FontAwesomeIcon
@@ -55,7 +55,7 @@ const DashboardPage: React.FC = () => {
           </div>
 
           {/* Applications Section */}
-          <div className="bg-orange-600 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
             <Link to="/application-list" className="text-white">
               <p className="text-sm uppercase">Applications</p>
               <FontAwesomeIcon
@@ -69,7 +69,7 @@ const DashboardPage: React.FC = () => {
           </div>
 
           {/* News Section */}
-          <div className="bg-green-600 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
             <Link to="/" className="text-white">
               <p className="text-sm uppercase">News</p>
               <FontAwesomeIcon
@@ -83,7 +83,7 @@ const DashboardPage: React.FC = () => {
           </div>
 
           {/* News Section */}
-          <div className="bg-red-600 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
             <Link to="/activities" className="text-white">
               <p className="text-sm uppercase">Activities</p>
               <FontAwesomeIcon
